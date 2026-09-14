@@ -6,11 +6,12 @@ import Moment from "./hud/Moment";
 import MomentStrip from "./hud/MomentStrip";
 import Tooltip from "./hud/Tooltip";
 import Onboarding from "./hud/Onboarding";
+import Compare from "./compare/Compare";
 import EntityPanel from "./panels/EntityPanel";
 import About from "./panels/About";
 import CommandPalette from "./search/CommandPalette";
 import { loadEntities } from "./data/entities";
-import { store, useAtlas, setYear, select } from "./app/store";
+import { store, useAtlas, setYear, select, toggleCompare } from "./app/store";
 import { yearToFrac, fracToYear } from "./timeline/timeScale";
 
 function isTyping(t: EventTarget | null): boolean {
@@ -54,9 +55,11 @@ export default function App() {
         if (s.commandOpen) store.set({ commandOpen: false });
         else if (s.aboutOpen) store.set({ aboutOpen: false });
         else if (s.selection) select(null);
+        else if (s.compareYear !== null) store.set({ compareYear: null });
         return;
       }
       if (e.key === "/") { e.preventDefault(); store.set({ commandOpen: true }); return; }
+      if (e.key === "c" || e.key === "C") { e.preventDefault(); toggleCompare(); return; }
       if (e.key === " ") { e.preventDefault(); store.set({ playing: !s.playing }); return; }
 
       const nudge = (mult: number) => {
@@ -78,6 +81,7 @@ export default function App() {
   return (
     <div className="app">
       <HistoricalMap />
+      <Compare />
       <div className="vignette" aria-hidden="true" />
 
       <Hud />

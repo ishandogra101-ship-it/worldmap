@@ -6,7 +6,7 @@
 
 /* A whisper of depth at the edges. Dark only, and barely there. */
 .vignette {
-  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  position: absolute; inset: 0; pointer-events: none; z-index: 5;
   background: radial-gradient(135% 100% at 50% 45%, transparent 68%, rgba(0,0,0,0.20) 100%);
   opacity: 1;
 }
@@ -27,7 +27,7 @@
 .maplibregl-ctrl-group button span { filter: var(--ctrl-filter, none); }
 [data-theme="dark"] .maplibregl-ctrl-group button span { filter: invert(1) opacity(.72); }
 [data-theme="light"] .maplibregl-ctrl-group button span { filter: opacity(.62); }
-.maplibregl-ctrl-bottom-right { margin: 0 14px 132px 0; z-index: 5; }
+.maplibregl-ctrl-bottom-right { margin: 0 14px 132px 0; z-index: 6; }
 
 /* ============ map overlay: labels + markers ============ */
 .overlay { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
@@ -611,3 +611,64 @@ kbd {
   .tl-era__name { display: none; }
   .sheet { bottom: 168px; max-height: 42vh; }
 }
+
+
+/* ---- compare: two years, one camera ------------------------------------ */
+/* The second map renders the whole world and is clipped to the right of the
+   seam, so both sides stay live and either can be dragged. Sitting above the
+   first map's label overlay keeps its own labels from showing through. */
+.cmp { position: absolute; inset: 0; z-index: 4; }
+
+.cmp__seam {
+  position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; z-index: 6;
+  background: var(--accent); cursor: col-resize; touch-action: none;
+  outline: none;
+}
+.cmp__seam::before {
+  /* a wider invisible grab area than the visible line */
+  content: ""; position: absolute; top: 0; bottom: 0; left: -9px; right: -9px;
+}
+.cmp__seam:focus-visible { box-shadow: 0 0 0 2px var(--accent-quiet); }
+
+.cmp__grip {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 26px; height: 26px; border-radius: var(--r2);
+  display: grid; place-items: center;
+  background: var(--accent); color: #fff;
+  box-shadow: var(--shadow);
+}
+.cmp__seam.is-dragging .cmp__grip { transform: translate(-50%, -50%) scale(1.06); }
+
+.cmp__tag {
+  position: absolute; top: 78px; z-index: 6; pointer-events: none;
+  display: flex; align-items: baseline; gap: 6px;
+}
+.cmp__tagYear {
+  font-size: 12.5px; font-weight: 600; letter-spacing: .02em;
+  color: var(--text); background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r1);
+  padding: 3px 7px;
+}
+.cmp__tag--r .cmp__tagYear { color: var(--accent-text); border-color: var(--border-hi); }
+
+/* ---- compare readout in the tooltip ------------------------------------ */
+.tip__cmp { display: grid; gap: 3px; }
+.tip__cmpRow { display: flex; align-items: center; gap: 7px; }
+.tip__cmpYear {
+  font-size: 10.5px; color: var(--text-3); min-width: 52px; letter-spacing: .02em;
+}
+.tip__cmpNone { font-size: 11.5px; color: var(--text-3); font-style: italic; }
+.tip__cmp.is-changed .tip__cmpRow:last-child .tip__name { color: var(--accent-text); }
+
+/* ---- timeline in compare -------------------------------------------- */
+.timeline__pair { display: flex; align-items: baseline; gap: 10px; font-size: 27px; font-weight: 600; line-height: 1; }
+.timeline__pairRule { width: 14px; height: 1px; background: var(--border-hi); align-self: center; }
+.timeline__yearB { color: var(--accent-text); }
+.timeline__plain {
+  background: none; border: 0; padding: 0; color: var(--text-3);
+  font: inherit; cursor: pointer; text-decoration: underline;
+  text-underline-offset: 2px; text-decoration-color: var(--border-hi);
+}
+.timeline__plain:hover { color: var(--text); }
+.tl-rail__span { position: absolute; top: 0; bottom: 0; background: var(--accent); opacity: .5; }
+.tl-handle--b .tl-handle__grip { background: var(--accent-text, var(--accent)); }

@@ -11,7 +11,7 @@ const KIND_ICON: Record<ResultKind, IconName> = {
   event: "battle",
   city: "city",
   polity: "polity",
-  action: "command",
+  action: "compare",
 };
 
 const SUGGESTIONS = [
@@ -52,7 +52,11 @@ export default function CommandPalette() {
   const close = () => store.set({ commandOpen: false });
 
   const run = (r: SearchResult) => {
-    if (r.kind === "year" && r.year !== undefined) {
+    if (r.action === "compare") {
+      const s = store.get();
+      const other = r.year ?? (s.year > 1626 ? s.year - 300 : s.year + 300);
+      store.set({ compareYear: other, playing: false });
+    } else if (r.kind === "year" && r.year !== undefined) {
       setYear(r.year);
     } else if (r.entity) {
       setYear(

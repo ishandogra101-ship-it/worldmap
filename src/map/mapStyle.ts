@@ -1,4 +1,4 @@
-import type { StyleSpecification } from "maplibre-gl";
+import type { ExpressionSpecification, StyleSpecification } from "maplibre-gl";
 import { asset } from "../util";
 
 /** Filter sentinel meaning "match nothing" for the hover/selection layers. */
@@ -38,6 +38,31 @@ export const MAP_THEMES: Record<"dark" | "light", MapTheme> = {
  * map, and no tile-vendor styling. Text is rendered as DOM labels, so the style
  * needs no glyph server.
  */
+/**
+ * How much of its normal weight a realm keeps at world zoom.
+ *
+ * Most snapshots are dominated by realms too small to read at that scale — 476
+ * of the 566 in 1700 cover under 12 planar deg², against France at 64 and the
+ * Netherlands at 170 — and drawing them all at full strength turns a continent
+ * into coloured static. Ramping rather than cutting means no visible edge
+ * between what fades and what does not.
+ */
+const AREA_FADE: ExpressionSpecification = [
+  "interpolate", ["linear"], ["get", "__area"],
+  5, 0.3,
+  45, 1,
+];
+
+/** Picks a value by the feature's tier. Usable inside a zoom stop. */
+function byTier(major: number, regional: number, minor: number): ExpressionSpecification {
+  return [
+    "case",
+    ["==", ["get", "__tier"], 0], major,
+    ["==", ["get", "__tier"], 1], regional,
+    minor,
+  ] as ExpressionSpecification;
+}
+
 export function baseStyle(theme: "dark" | "light"): StyleSpecification {
   const t = MAP_THEMES[theme];
   const dark = theme === "dark";
@@ -63,11 +88,19 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
         paint: {
           "fill-color": ["get", "__color"],
           // Weight by tier: large realms sit forward, minor ones recede.
+          //
+          // The smallest tier also recedes with scale. Some snapshots map a
+          // region as hundreds of separate peoples — Australia in 1700 is the
+          // clearest case — and at world zoom that reads as coloured static
+          // rather than as territory. Fading it toward the land lets the
+          // continent hold together until the view is close enough to tell the
+          // groups apart, at which point each returns to its own colour.
+          // ["zoom"] is only legal as the input to a top-level interpolate, so the
+          // per-feature choice lives inside each stop rather than wrapping it.
           "fill-opacity": [
-            "case",
-            ["==", ["get", "__tier"], 0], dark ? 0.52 : 0.46,
-            ["==", ["get", "__tier"], 1], dark ? 0.38 : 0.34,
-            dark ? 0.26 : 0.24,
+            "interpolate", ["linear"], ["zoom"],
+            1.4, ["*", byTier(dark ? 0.52 : 0.46, dark ? 0.38 : 0.34, dark ? 0.26 : 0.24), AREA_FADE],
+            3.2, byTier(dark ? 0.52 : 0.46, dark ? 0.38 : 0.34, dark ? 0.26 : 0.24),
           ],
           "fill-antialias": true,
         },
@@ -84,7 +117,12 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
             ["==", ["get", "__tier"], 1], 0.7,
             0.5,
           ],
-          "line-opacity": 0.85,
+          // minor boundaries thin out with the fills they enclose
+          "line-opacity": [
+            "interpolate", ["linear"], ["zoom"],
+            1.4, ["*", 0.85, AREA_FADE],
+            3.2, 0.85,
+          ],
         },
       },
       {

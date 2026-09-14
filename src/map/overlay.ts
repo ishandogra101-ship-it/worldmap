@@ -90,6 +90,12 @@ export class OverlayEngine {
   private selectedKey: string | null = null;
   private frame = 0;
   private dirty = true;
+  /** Horizontal window this overlay may place in, in canvas px. Compare mode
+   *  gives each side of the split its own window so no label crosses the seam. */
+  private xMin = -Infinity;
+  private xMax = Infinity;
+  /** Compare mode reads the shape of realms, not the people in them. */
+  private labelsOnly = false;
   private hoveredKey: string | null = null;
 
   constructor(map: maplibregl.Map, cb: OverlayCallbacks) {
@@ -134,6 +140,21 @@ export class OverlayEngine {
     }
   }
   setLayers(layers: Record<LayerId, boolean>): void { this.layers = layers; this.dirty = true; this.schedule(); }
+
+  setXRange(min: number, max: number): void {
+    if (min === this.xMin && max === this.xMax) return;
+    this.xMin = min; this.xMax = max;
+    this.clearHover();
+    this.schedule();
+  }
+
+  setLabelsOnly(on: boolean): void {
+    if (on === this.labelsOnly) return;
+    this.labelsOnly = on;
+    this.dirty = true;
+    this.clearHover();
+    this.schedule();
+  }
   setSelectedKey(key: string | null): void { this.selectedKey = key; this.schedule(); }
 
   /**
@@ -307,9 +328,13 @@ export class OverlayEngine {
     const eThresh = eventThreshold(zoom);
     const cThresh = cityThreshold(zoom);
 
+    const xLo = Math.max(0, this.xMin);
+    const xHi = Math.min(vw, this.xMax);
+
     // 1. gate by zoom rules, project, cull to viewport
     const visible: Placed[] = [];
     for (const cand of this.candidates) {
+      if (this.labelsOnly && cand.kind !== "label") continue;
       if (cand.kind === "event") {
         if (cand.entity!.prominence < eThresh) continue;
       } else if (cand.kind === "city") {
@@ -319,13 +344,16 @@ export class OverlayEngine {
       }
       const pt = map.project([cand.lng, cand.lat]);
       if (cand.kind === "label") {
-        // a label must fit fully on screen, or it reads as clipped text
+        // a label must fit fully inside its window, or it reads as clipped text
         const m = 10;
         if (
-          pt.x - cand.w / 2 < m || pt.x + cand.w / 2 > vw - m ||
+          pt.x - cand.w / 2 < xLo + m || pt.x + cand.w / 2 > xHi - m ||
           pt.y - cand.h / 2 < m || pt.y + cand.h / 2 > vh - m
         ) continue;
-      } else if (pt.x < -pad || pt.y < -pad || pt.x > vw + pad || pt.y > vh + pad) {
+      } else if (
+        pt.x < Math.max(-pad, xLo) || pt.x > Math.min(vw + pad, xHi) ||
+        pt.y < -pad || pt.y > vh + pad
+      ) {
         continue;
       }
       visible.push({ ...cand, x: pt.x, y: pt.y });

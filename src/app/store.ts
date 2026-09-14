@@ -20,6 +20,11 @@ export interface AtlasState {
   aboutOpen: boolean;
   /** entity or polity the timeline is scoped to, if any */
   followed: { label: string; from: number; to: number } | null;
+  /**
+   * The second year, when the map is split. `year` remains the left-hand year,
+   * so every other part of the app keeps working unchanged while compare is on.
+   */
+  compareYear: number | null;
   booted: boolean;
   loadingMap: boolean;
 }
@@ -56,6 +61,7 @@ const initial: AtlasState = {
   commandOpen: false,
   aboutOpen: false,
   followed: null,
+  compareYear: null,
   booted: false,
   loadingMap: true,
 };
@@ -151,6 +157,18 @@ export function select(selection: Selection | null): void {
 export function toggleLayer(id: LayerId): void {
   const layers = { ...store.get().layers, [id]: !store.get().layers[id] };
   store.set({ layers });
+}
+
+export function setCompareYear(year: number): void {
+  store.set({ compareYear: Math.max(MIN_YEAR, Math.min(MAX_YEAR, Math.round(year))) });
+}
+
+/** Opens the split on a year far enough from the current one to show a change. */
+export function toggleCompare(): void {
+  const s = store.get();
+  if (s.compareYear !== null) { store.set({ compareYear: null }); return; }
+  const other = s.year + (s.year > MAX_YEAR - 400 ? -300 : 300);
+  store.set({ compareYear: Math.max(MIN_YEAR, Math.min(MAX_YEAR, other)), playing: false });
 }
 
 export function follow(label: string, from: number, to: number): void {

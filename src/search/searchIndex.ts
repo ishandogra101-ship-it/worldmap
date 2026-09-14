@@ -55,6 +55,21 @@ export function search({ query, entities, polities, limit = 24 }: BuildArgs): Se
 
   if (!q) return out;
 
+  // "compare", "compare 1900", "vs 1600"
+  const cmp = q.match(/^(?:compare|vs\.?|split)\b\s*(.*)$/i);
+  if (cmp) {
+    const target = cmp[1].trim() ? parseYearQuery(cmp[1].trim()) : null;
+    out.push({
+      id: "action:compare",
+      kind: "action",
+      title: target === null ? "Compare two years" : `Compare with ${formatYear(target)}`,
+      subtitle: "Split the map and drag the seam",
+      score: 2000,
+      action: "compare",
+      year: target ?? undefined,
+    });
+  }
+
   const y = parseYearQuery(q);
   if (y !== null) {
     out.push({

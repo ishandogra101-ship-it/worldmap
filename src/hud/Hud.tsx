@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { store, useAtlas, toggleTheme, toggleLayer, setYear, select } from "../app/store";
+import { store, useAtlas, toggleTheme, toggleLayer, setYear, select, toggleCompare } from "../app/store";
 import { Icon } from "../design/icons";
 import { mapController } from "../map/HistoricalMap";
 import type { Entity, LayerId } from "../types";
@@ -37,6 +37,7 @@ export default function Hud() {
   const theme = useAtlas((s) => s.theme);
   const layers = useAtlas((s) => s.layers);
   const entities = useAtlas((s) => s.entities);
+  const comparing = useAtlas((s) => s.compareYear !== null);
   const [layersOpen, setLayersOpen] = useState(false);
 
   const explore = () => {
@@ -81,6 +82,16 @@ export default function Hud() {
           title="Take me somewhere interesting"
         >
           <Icon name="exploration" size={17} />
+        </button>
+
+        <button
+          className={`hud__btn hud__icon ${comparing ? "is-on" : ""}`}
+          onClick={toggleCompare}
+          aria-pressed={comparing}
+          aria-label="Compare two years"
+          title="Compare two years"
+        >
+          <Icon name="compare" size={17} />
         </button>
 
         <div className="hud__group">

@@ -76,4 +76,7 @@ export interface HoverInfo {
   color?: string;
   x: number;
   y: number;
+  /** compare mode: what each of the two years holds under the cursor */
+  rows?: Array<{ when: string; held: { name: string; group: string; color: string } | null }>;
+  changed?: boolean;
 }

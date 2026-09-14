@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { yearToFrac, fracToYear, buildTicks } from "./timeScale";
 import { loadManifest } from "../data/snapshots";
-import { store, useAtlas, setYear, unfollow } from "../app/store";
+import { store, useAtlas, setYear, unfollow, setCompareYear, toggleCompare } from "../app/store";
 import { Icon } from "../design/icons";
 import { MIN_YEAR, MAX_YEAR, centuryLabel, eraForYear, ERAS, formatYear, yearNumber, yearSuffix } from "../util";
 import type { BorderManifestEntry } from "../types";
@@ -16,6 +16,7 @@ export default function Timeline() {
   const snapshotYear = useAtlas((s) => s.snapshotYear);
   const playing = useAtlas((s) => s.playing);
   const followed = useAtlas((s) => s.followed);
+  const compareYear = useAtlas((s) => s.compareYear);
   const eventYears = useAtlas(
     (s) => s.entities.filter((e) => e.kind === "event").map((e) => e.startYear).join(","),
   );
@@ -24,6 +25,8 @@ export default function Timeline() {
   const [width, setWidth] = useState(880);
   const [snapshots, setSnapshots] = useState<BorderManifestEntry[]>([]);
   const draggingRef = useRef(false);
+  /** which of the two handles the current drag is moving */
+  const grabbed = useRef<"a" | "b">("a");
 
   useEffect(() => { loadManifest().then(setSnapshots).catch(() => {}); }, []);
 
@@ -66,13 +69,25 @@ export default function Timeline() {
     const el = trackRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    setYear(fracToYear((clientX - r.left) / r.width));
+    const y = fracToYear((clientX - r.left) / r.width);
+    if (grabbed.current === "b") setCompareYear(y);
+    else setYear(y);
   }, []);
 
   const onPointerDown = (e: React.PointerEvent) => {
     draggingRef.current = true;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     store.set({ playing: false });
+    // with the split open there are two handles; grab whichever is nearer
+    const cy = store.get().compareYear;
+    if (cy === null) {
+      grabbed.current = "a";
+    } else {
+      const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      const f = (e.clientX - r.left) / r.width;
+      grabbed.current =
+        Math.abs(f - yearToFrac(cy)) < Math.abs(f - yearToFrac(store.get().year)) ? "b" : "a";
+    }
     seekFromClientX(e.clientX);
   };
   const onPointerMove = (e: React.PointerEvent) => {
@@ -116,14 +131,33 @@ export default function Timeline() {
         </div>
 
         <div className="timeline__readout">
-          <div className="timeline__year tnum">
-            {yearNumber(year)}<span className="timeline__suffix">{yearSuffix(year)}</span>
-          </div>
-          <div className="timeline__sub">
-            <span>{centuryLabel(year)}</span>
-            <span className="timeline__dot" />
-            <span>{era.name}</span>
-          </div>
+          {compareYear === null ? (
+            <>
+              <div className="timeline__year tnum">
+                {yearNumber(year)}<span className="timeline__suffix">{yearSuffix(year)}</span>
+              </div>
+              <div className="timeline__sub">
+                <span>{centuryLabel(year)}</span>
+                <span className="timeline__dot" />
+                <span>{era.name}</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="timeline__pair tnum">
+                <span>{yearNumber(year)}<span className="timeline__suffix">{yearSuffix(year)}</span></span>
+                <span className="timeline__pairRule" aria-hidden="true" />
+                <span className="timeline__yearB">
+                  {yearNumber(compareYear)}<span className="timeline__suffix">{yearSuffix(compareYear)}</span>
+                </span>
+              </div>
+              <div className="timeline__sub">
+                <span>{Math.abs(compareYear - year)} years apart</span>
+                <span className="timeline__dot" />
+                <button className="timeline__plain" onClick={toggleCompare}>Leave compare</button>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="timeline__meta">
@@ -212,7 +246,17 @@ export default function Timeline() {
         )}
 
         <div className="tl-rail" aria-hidden="true">
-          <div className="tl-rail__fill" style={{ width: `${frac * 100}%` }} />
+          {compareYear === null ? (
+            <div className="tl-rail__fill" style={{ width: `${frac * 100}%` }} />
+          ) : (
+            <div
+              className="tl-rail__span"
+              style={{
+                left: `${Math.min(frac, yearToFrac(compareYear)) * 100}%`,
+                width: `${Math.abs(yearToFrac(compareYear) - frac) * 100}%`,
+              }}
+            />
+          )}
         </div>
 
         <div className="tl-ticks" aria-hidden="true">
@@ -230,6 +274,16 @@ export default function Timeline() {
         <div className="tl-handle" style={{ left: `${frac * 100}%` }} aria-hidden="true">
           <span className="tl-handle__grip" />
         </div>
+
+        {compareYear !== null && (
+          <div
+            className="tl-handle tl-handle--b"
+            style={{ left: `${yearToFrac(compareYear) * 100}%` }}
+            aria-hidden="true"
+          >
+            <span className="tl-handle__grip" />
+          </div>
+        )}
       </div>
     </div>
   );

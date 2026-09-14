@@ -27,11 +27,15 @@ async function fetchSnapshot(fileRel: string): Promise<Snapshot> {
   const fc = (await res.json()) as FeatureCollection;
   const polities = summarise(fc);
   const byGroup = new Map(polities.map((p) => [p.group, p]));
-  // second pass: stamp tier onto each feature now that tiers are known
+  // second pass: stamp tier and realm size onto each feature now that both are
+  // known. __area is the whole realm's planar extent, which the style uses to
+  // fade shapes too small to read at world zoom.
   for (const f of fc.features) {
     const props = f.properties as Record<string, unknown>;
     const g = props.__group as string;
-    props.__tier = g ? (byGroup.get(g)?.tier ?? 2) : 2;
+    const p = g ? byGroup.get(g) : undefined;
+    props.__tier = p?.tier ?? 2;
+    props.__area = p?.area ?? 0;
   }
   return { fc, polities, byGroup };
 }

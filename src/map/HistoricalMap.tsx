@@ -11,6 +11,7 @@ import type { Entity, PolitySummary } from "../types";
 /** Imperative handle so search, the palette and panels can drive the camera. */
 export const mapController = {
   map: null as maplibregl.Map | null,
+  overlay: null as OverlayEngine | null,
   flyTo(lng: number, lat: number, zoom?: number) {
     const m = this.map;
     if (!m) return;
@@ -68,6 +69,7 @@ export default function HistoricalMap() {
       onHover: (info) => store.set({ hover: info }),
     });
     overlayRef.current = overlay;
+    mapController.overlay = overlay;
 
     map.on("zoom", () => store.set({ zoom: map.getZoom() }));
 
@@ -109,7 +111,7 @@ export default function HistoricalMap() {
           map.setFilter("polity-hover", ["==", ["get", "__group"], group || NO_MATCH]);
         }
       }
-      if (group) {
+      if (group && store.get().compareYear === null) {
         store.set({
           hover: {
             name: String(p.__name || p.NAME || group),
@@ -127,7 +129,7 @@ export default function HistoricalMap() {
       if (map.getLayer("polity-hover")) {
         map.setFilter("polity-hover", ["==", ["get", "__group"], NO_MATCH]);
       }
-      store.set({ hover: null });
+      if (store.get().compareYear === null) store.set({ hover: null });
     });
 
     // --- react to store changes imperatively (no React re-render on scrub) ---
@@ -201,6 +203,7 @@ export default function HistoricalMap() {
       map.remove();
       mapRef.current = null;
       mapController.map = null;
+      mapController.overlay = null;
     };
   }, []);
 

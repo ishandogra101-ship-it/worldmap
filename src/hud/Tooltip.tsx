@@ -5,6 +5,7 @@ export default function Tooltip() {
   const hover = useAtlas((s) => s.hover);
   if (!hover) return null;
 
+  const rows = hover.rows;
   const flipX = hover.x > window.innerWidth - 240;
   const flipY = hover.y > window.innerHeight - 120;
 
@@ -18,12 +19,32 @@ export default function Tooltip() {
       }}
       aria-hidden="true"
     >
-      <div className="tip__row">
-        {hover.color && <span className="tip__swatch" style={{ background: hover.color }} />}
-        <span className="tip__name">{hover.name}</span>
-      </div>
-      {hover.subtitle && <div className="tip__sub">{hover.subtitle}</div>}
-      {hover.detail && <div className="tip__detail tnum">{hover.detail}</div>}
+      {rows ? (
+        <div className={`tip__cmp ${hover.changed ? "is-changed" : ""}`}>
+          {rows.map((r, i) => (
+            <div className="tip__cmpRow" key={i}>
+              <span className="tip__cmpYear tnum">{r.when}</span>
+              {r.held ? (
+                <>
+                  <span className="tip__swatch" style={{ background: r.held.color }} />
+                  <span className="tip__name">{r.held.name}</span>
+                </>
+              ) : (
+                <span className="tip__cmpNone">Not mapped</span>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className="tip__row">
+            {hover.color && <span className="tip__swatch" style={{ background: hover.color }} />}
+            <span className="tip__name">{hover.name}</span>
+          </div>
+          {hover.subtitle && <div className="tip__sub">{hover.subtitle}</div>}
+          {hover.detail && <div className="tip__detail tnum">{hover.detail}</div>}
+        </>
+      )}
     </div>
   );
 }
