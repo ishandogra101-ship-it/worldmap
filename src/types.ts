@@ -52,6 +52,9 @@ export interface PolitySelection {
   kind: "polity";
   name: string;
   group: string;
+  /** the point the user actually asked about */
+  lng: number;
+  lat: number;
   subjectTo?: string;
   partOf?: string;
   color: string;

@@ -65,7 +65,8 @@ export default function Moment() {
                       onClick={() => {
                         select({
                           kind: "polity", name: p.name, group: p.group, color: p.color,
-                          tier: p.tier, area: p.area, snapshotYear: snapshotYear ?? year,
+                          tier: p.tier, area: p.area, lng: p.lng, lat: p.lat,
+                          snapshotYear: snapshotYear ?? year,
                         });
                         mapController.framePolity(p);
                       }}
@@ -107,9 +108,9 @@ export default function Moment() {
           <div className="moment__legend">
             <div className="eyebrow">What you are seeing</div>
             <ul className="legend__keys">
-              <li><span className="lk lk--t0" /> Major realm</li>
-              <li><span className="lk lk--t1" /> Regional power</li>
-              <li><span className="lk lk--t2" /> Minor polity</li>
+              <li><span className="lk lk--t0" /> Large realm</li>
+              <li><span className="lk lk--t1" /> Regional realm</li>
+              <li><span className="lk lk--t2" /> Small realm</li>
               <li><span className="lk lk--none" /> Not attested in this snapshot</li>
             </ul>
             <p className="moment__fine">

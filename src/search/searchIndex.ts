@@ -98,7 +98,7 @@ export function search({ query, entities, polities, limit = 24 }: BuildArgs): Se
       id: `p:${p.group}`,
       kind: "polity",
       title: p.name,
-      subtitle: p.tier === 0 ? "Major realm" : p.tier === 1 ? "Regional power" : "Minor polity",
+      subtitle: p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm",
       detail: "In the current snapshot",
       score: s + (p.tier === 0 ? 24 : p.tier === 1 ? 10 : 0),
       polity: p,

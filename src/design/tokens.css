@@ -13,7 +13,7 @@
   --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
   --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
 
-  --r1: 6px; --r2: 10px; --r3: 14px; --r4: 20px;
+  --r1: 3px; --r2: 4px; --r3: 6px; --r4: 8px;
 
   /* motion — short, purposeful */
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
@@ -26,19 +26,20 @@
 /* ---- dark (default) ---- */
 :root, [data-theme="dark"] {
   --bg: #0b0d10;
-  --surface: rgba(20, 24, 30, 0.78);
+  --surface: rgba(19, 22, 27, 0.955);
   --surface-solid: #14181e;
-  --surface-hi: rgba(32, 38, 46, 0.92);
-  --border: rgba(255, 255, 255, 0.085);
-  --border-hi: rgba(255, 255, 255, 0.17);
+  --surface-hi: rgba(24, 28, 34, 0.985);
+  --border: rgba(255, 255, 255, 0.10);
+  --border-hi: rgba(255, 255, 255, 0.19);
   --text: #e9ecf1;
   --text-2: #a3abb8;
   --text-3: #6c7583;
   --accent: #d17b45;
   --accent-text: #e59a65;
   --accent-quiet: rgba(209, 123, 69, 0.15);
-  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.45);
-  --shadow-lg: 0 2px 6px rgba(0,0,0,.45), 0 24px 64px rgba(0,0,0,.55);
+  --shadow: 0 1px 2px rgba(0,0,0,.34);
+  --shadow-lg: 0 2px 10px rgba(0,0,0,.38);
+  --blur: 10px;
 
   --map-ocean: #0b1219;
   --map-land: #232932;
@@ -52,19 +53,19 @@
 /* ---- light ---- */
 [data-theme="light"] {
   --bg: #eceae5;
-  --surface: rgba(255, 255, 255, 0.84);
+  --surface: rgba(252, 251, 249, 0.965);
   --surface-solid: #ffffff;
-  --surface-hi: rgba(255, 255, 255, 0.96);
-  --border: rgba(18, 20, 24, 0.10);
-  --border-hi: rgba(18, 20, 24, 0.20);
+  --surface-hi: rgba(255, 255, 255, 0.99);
+  --border: rgba(18, 20, 24, 0.13);
+  --border-hi: rgba(18, 20, 24, 0.24);
   --text: #15181c;
   --text-2: #565d67;
   --text-3: #878e98;
   --accent: #a8562a;
   --accent-text: #9c5026;
   --accent-quiet: rgba(168, 86, 42, 0.11);
-  --shadow: 0 1px 2px rgba(20,22,28,.07), 0 8px 24px rgba(20,22,28,.10);
-  --shadow-lg: 0 2px 8px rgba(20,22,28,.09), 0 24px 56px rgba(20,22,28,.16);
+  --shadow: 0 1px 2px rgba(20,22,28,.09);
+  --shadow-lg: 0 2px 10px rgba(20,22,28,.13);
 
   --map-ocean: #d7e2e8;
   --map-land: #f7f5f1;
@@ -111,8 +112,8 @@ a:hover { text-decoration: underline; }
 
 .panel-surface {
   background: var(--surface);
-  backdrop-filter: blur(20px) saturate(1.5);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(var(--blur, 10px));
+  -webkit-backdrop-filter: blur(var(--blur, 10px));
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }

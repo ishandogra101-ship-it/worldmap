@@ -61,7 +61,8 @@ export default function HistoricalMap() {
       onSelectPolity: (p) => {
         select({
           kind: "polity", name: p.name, group: p.group, color: p.color,
-          tier: p.tier, area: p.area, snapshotYear: shownSnapshot.current ?? store.get().year,
+          tier: p.tier, area: p.area, lng: p.lng, lat: p.lat,
+          snapshotYear: shownSnapshot.current ?? store.get().year,
         });
       },
       onHover: (info) => store.set({ hover: info }),
@@ -85,6 +86,8 @@ export default function HistoricalMap() {
         color: String(p.__color || "#888"),
         tier: Number(p.__tier || 2) as 0 | 1 | 2,
         area: 0,
+        lng: ev.lngLat.lng,
+        lat: ev.lngLat.lat,
         snapshotYear: shownSnapshot.current ?? store.get().year,
       });
     });

@@ -437,7 +437,7 @@ export class OverlayEngine {
       this.hoveredKey = `L:${p.group}`;
       this.cb.onHover({
         name: p.name,
-        subtitle: p.tier === 0 ? "Major realm" : p.tier === 1 ? "Regional power" : "Minor polity",
+        subtitle: p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm",
         detail: undefined,
         color: p.color,
         x: (ev as PointerEvent).clientX,

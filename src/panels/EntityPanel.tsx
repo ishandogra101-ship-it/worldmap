@@ -1,9 +1,11 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { store, useAtlas, select, setYear, follow } from "../app/store";
 import { Icon, eventIcon, figureIcon } from "../design/icons";
 import { mapController } from "../map/HistoricalMap";
 import { formatYear, centuryLabel, asset } from "../util";
-import type { Entity, PolitySelection } from "../types";
+import type { Entity, PolitySelection, PolitySummary } from "../types";
+import { regionOf, type Region } from "../data/regions";
+import { beforeAndAfter, type HeldBy } from "../map/pointLookup";
 
 /**
  * Match a realm against the realm named on a person's record.
@@ -48,9 +50,62 @@ function related(a: string, b: string): boolean {
   return false;
 }
 
+/**
+ * What else was going on, at this same moment, somewhere else. One entry per
+ * region so a single busy corner of the world cannot fill the list.
+ */
+function elsewhereAt(
+  entities: Entity[],
+  year: number,
+  home: Region,
+  limit = 5,
+): Array<{ region: Region; e: Entity }> {
+  const best = new Map<Region, Entity>();
+  for (const e of entities) {
+    if (e.kind === "city") continue;
+    if (e.startYear > year || year > e.endYear) continue;
+    const r = regionOf(e.lng, e.lat);
+    if (r === home || r === "Elsewhere") continue;
+    const cur = best.get(r);
+    if (!cur || e.prominence > cur.prominence) best.set(r, e);
+  }
+  return [...best.entries()]
+    .map(([region, e]) => ({ region, e }))
+    .sort((a, b) => b.e.prominence - a.e.prominence)
+    .slice(0, limit);
+}
+
+/** One major realm per region, away from the region in focus. */
+function realmsElsewhere(
+  polities: PolitySummary[],
+  home: Region,
+  limit = 4,
+): Array<{ region: Region; p: PolitySummary }> {
+  const best = new Map<Region, PolitySummary>();
+  for (const p of polities) {
+    if (p.tier === 2) continue;
+    const r = regionOf(p.lng, p.lat);
+    if (r === home || r === "Elsewhere") continue;
+    const cur = best.get(r);
+    if (!cur || p.area > cur.area) best.set(r, p);
+  }
+  return [...best.entries()]
+    .map(([region, p]) => ({ region, p }))
+    .sort((a, b) => b.p.area - a.p.area)
+    .slice(0, limit);
+}
+
+const KIND_LABEL: Record<Entity["kind"], string> = {
+  ruler: "Ruler",
+  figure: "Figure",
+  event: "Event",
+  city: "City",
+};
+
 export default function EntityPanel() {
   const selection = useAtlas((s) => s.selection);
   const entities = useAtlas((s) => s.entities);
+  const polities = useAtlas((s) => s.polities);
   const year = useAtlas((s) => s.year);
 
   const close = () => select(null);
@@ -63,13 +118,15 @@ export default function EntityPanel() {
         <Icon name="close" size={16} />
       </button>
       {selection.kind === "polity"
-        ? <PolityView p={selection} entities={entities} year={year} />
-        : <EntityView e={selection.entity} entities={entities} />}
+        ? <PolityView p={selection} entities={entities} polities={polities} year={year} />
+        : <EntityView e={selection.entity} entities={entities} polities={polities} />}
     </aside>
   );
 }
 
-function PolityView({ p, entities, year }: { p: PolitySelection; entities: Entity[]; year: number }) {
+function PolityView({ p, entities, polities, year }: {
+  p: PolitySelection; entities: Entity[]; polities: PolitySummary[]; year: number;
+}) {
   const rulersNow = useMemo(
     () => entities.filter(
       (e) => e.kind === "ruler" && e.category && related(p.name, e.category)
@@ -90,7 +147,23 @@ function PolityView({ p, entities, year }: { p: PolitySelection; entities: Entit
     [entities, p.name],
   );
 
-  const tierName = p.tier === 0 ? "Major realm" : p.tier === 1 ? "Regional power" : "Minor polity";
+  const tierName = p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm";
+
+  // What held this exact place in the mapped years either side of this one.
+  const [ba, setBa] = useState<{ before: HeldBy | null; after: HeldBy | null } | null>(null);
+  useEffect(() => {
+    let alive = true;
+    setBa(null);
+    beforeAndAfter(p.lng, p.lat, p.snapshotYear)
+      .then((r) => { if (alive) setBa(r); })
+      .catch(() => { if (alive) setBa({ before: null, after: null }); });
+    return () => { alive = false; };
+  }, [p.lng, p.lat, p.snapshotYear]);
+
+  const elsewhere = useMemo(
+    () => elsewhereAt(entities, year, regionOf(p.lng, p.lat)),
+    [entities, year, p.lng, p.lat],
+  );
 
   return (
     <div className="sheet__body">
@@ -111,6 +184,16 @@ function PolityView({ p, entities, year }: { p: PolitySelection; entities: Entit
       )}
       {(p.partOf && p.partOf !== p.name && p.partOf !== p.subjectTo) && (
         <Row label="Part of" value={p.partOf} />
+      )}
+
+      {ba && (ba.before || ba.after) && (
+        <Section title="This place, before and after">
+          <div className="ba">
+            <BaRow when="Before" held={ba.before} current={p.group} />
+            <BaRow when="Now" held={{ name: p.name, group: p.group, color: p.color, year: p.snapshotYear }} current={p.group} isNow />
+            <BaRow when="After" held={ba.after} current={p.group} />
+          </div>
+        </Section>
       )}
 
       {rulersNow.length > 0 && (
@@ -138,6 +221,11 @@ function PolityView({ p, entities, year }: { p: PolitySelection; entities: Entit
         </p>
       )}
 
+      <Elsewhere
+        realms={realmsElsewhere(polities, regionOf(p.lng, p.lat))}
+        people={elsewhere}
+      />
+
       <p className="sheet__fine">
         Borders come from the nearest mapped snapshot rather than a reconstruction of this
         exact year.
@@ -146,13 +234,23 @@ function PolityView({ p, entities, year }: { p: PolitySelection; entities: Entit
   );
 }
 
-function EntityView({ e, entities }: { e: Entity; entities: Entity[] }) {
-  const kindLabel = e.kind === "ruler" ? "Ruler" : e.kind === "figure" ? "Figure" : "Event";
+function EntityView({ e, entities, polities }: {
+  e: Entity; entities: Entity[]; polities: PolitySummary[];
+}) {
+  const kindLabel = KIND_LABEL[e.kind];
   const isPoint = e.kind === "event" && e.startYear === e.endYear;
+  // a city still lived in has a beginning but no recorded end; saying "2026" would
+  // dress a bound up as a fact
   const span = isPoint
     ? formatYear(e.startYear)
-    : `${formatYear(e.startYear)} – ${formatYear(e.endYear)}`;
-  const verb = e.kind === "ruler" ? "Reigned" : e.kind === "figure" ? "Lived" : "Dated";
+    : e.continuing
+      ? `${formatYear(e.startYear)} – present`
+      : `${formatYear(e.startYear)} – ${formatYear(e.endYear)}`;
+  const verb =
+    e.kind === "ruler" ? "Reigned"
+    : e.kind === "figure" ? "Lived"
+    : e.kind === "city" ? "Inhabited"
+    : "Dated";
 
   const peers = useMemo(() => {
     if (!e.category) return [];
@@ -162,13 +260,35 @@ function EntityView({ e, entities }: { e: Entity; entities: Entity[] }) {
       .slice(0, 6);
   }, [entities, e]);
 
-  const contemporaries = useMemo(() => {
-    const mid = Math.round((e.startYear + e.endYear) / 2);
-    return entities
-      .filter((o) => o.id !== e.id && o.kind !== "event" && o.startYear <= mid && mid <= o.endYear)
+  const mid = Math.round((e.startYear + e.endYear) / 2);
+
+  const contemporaries = useMemo(
+    () => entities
+      .filter((o) => o.id !== e.id && o.kind !== "event" && o.kind !== "city"
+        && o.startYear <= mid && mid <= o.endYear)
       .sort((a, b) => b.prominence - a.prominence)
-      .slice(0, 5);
+      .slice(0, 5),
+    [entities, e.id, mid],
+  );
+
+  // events that fall inside this life or reign, wherever they happened
+  const during = useMemo(() => {
+    if (e.kind === "event" || e.startYear === e.endYear) return [];
+    return entities
+      .filter((o) => o.kind === "event" && o.startYear >= e.startYear && o.startYear <= e.endYear)
+      .sort((a, b) => a.startYear - b.startYear)
+      .slice(0, 6);
   }, [entities, e]);
+
+  const elsewhere = useMemo(
+    () => elsewhereAt(entities, mid, regionOf(e.lng, e.lat)),
+    [entities, mid, e.lng, e.lat],
+  );
+
+  const whileLabel = e.kind === "ruler"
+    ? `While ${e.name.split(" ")[0]} ruled`
+    : e.kind === "figure" ? `In ${e.name.split(" ").slice(-1)[0]}'s lifetime`
+    : "";
 
   return (
     <div className="sheet__body">
@@ -228,17 +348,28 @@ function EntityView({ e, entities }: { e: Entity; entities: Entity[] }) {
         )}
       </div>
 
-      {peers.length > 0 && (
+      {e.kind !== "city" && peers.length > 0 && (
         <Section title="Others who held this realm">
           {peers.map((p) => <EntityRow key={p.id} e={p} />)}
         </Section>
       )}
 
-      {contemporaries.length > 0 && (
+      {during.length > 0 && whileLabel && (
+        <Section title={whileLabel}>
+          {during.map((d) => <EntityRow key={d.id} e={d} />)}
+        </Section>
+      )}
+
+      {e.kind !== "city" && contemporaries.length > 0 && (
         <Section title="Alive at the same time">
           {contemporaries.map((c) => <EntityRow key={c.id} e={c} />)}
         </Section>
       )}
+
+      <Elsewhere
+        realms={realmsElsewhere(polities, regionOf(e.lng, e.lat))}
+        people={elsewhere}
+      />
 
       <div className="sheet__foot">
         {e.source && (
@@ -253,6 +384,72 @@ function EntityView({ e, entities }: { e: Entity; entities: Entity[] }) {
         {e.portraitCredit && <span className="sheet__fine">Portrait: {e.portraitCredit}</span>}
       </div>
     </div>
+  );
+}
+
+function Elsewhere({
+  realms, people,
+}: {
+  realms: Array<{ region: Region; p: PolitySummary }>;
+  people: Array<{ region: Region; e: Entity }>;
+}) {
+  if (realms.length === 0 && people.length === 0) return null;
+  return (
+    <Section title="Elsewhere in the world">
+      {realms.map(({ region, p }) => (
+        <button
+          key={p.group}
+          className="erow"
+          onClick={() => {
+            select({
+              kind: "polity", name: p.name, group: p.group, color: p.color,
+              tier: p.tier, area: p.area, lng: p.lng, lat: p.lat,
+              snapshotYear: store.get().snapshotYear ?? store.get().year,
+            });
+            mapController.framePolity(p);
+          }}
+        >
+          <span className="erow__icon"><span className="erow__swatch" style={{ background: p.color }} /></span>
+          <span className="erow__name">{p.name}</span>
+          <span className="erow__region">{region}</span>
+        </button>
+      ))}
+      {people.map(({ region, e }) => <EntityRow key={e.id} e={e} region={region} />)}
+    </Section>
+  );
+}
+
+function BaRow({
+  when, held, current, isNow,
+}: { when: string; held: HeldBy | null; current: string; isNow?: boolean }) {
+  if (!held) {
+    return (
+      <div className="ba__row ba__row--none">
+        <span className="ba__when">{when}</span>
+        <span className="ba__none">Not mapped</span>
+      </div>
+    );
+  }
+  // Repeating the realm's own name either side of "now" answers nothing. Naming a
+  // realm only where power actually changed hands makes the change the thing you see.
+  const same = !isNow && held.group === current;
+  return (
+    <button
+      className={`ba__row ${isNow ? "is-now" : ""}`}
+      onClick={() => !isNow && setYear(held.year)}
+      disabled={isNow}
+    >
+      <span className="ba__when">{when}</span>
+      {same ? (
+        <span className="ba__same">Same realm</span>
+      ) : (
+        <>
+          <span className="ba__swatch" style={{ background: held.color }} />
+          <span className={`ba__name ${isNow ? "" : "is-changed"}`}>{held.name}</span>
+        </>
+      )}
+      <span className="ba__year tnum">{formatYear(held.year)}</span>
+    </button>
   );
 }
 
@@ -274,7 +471,7 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function EntityRow({ e, muted }: { e: Entity; muted?: boolean }) {
+function EntityRow({ e, muted, region }: { e: Entity; muted?: boolean; region?: string }) {
   const isPoint = e.kind === "event" && e.startYear === e.endYear;
   return (
     <button
@@ -293,6 +490,7 @@ function EntityRow({ e, muted }: { e: Entity; muted?: boolean }) {
         />
       </span>
       <span className="erow__name">{e.name}</span>
+      {region && <span className="erow__region">{region}</span>}
       <span className="erow__years tnum">
         {isPoint ? Math.abs(e.startYear) : `${Math.abs(e.startYear)}–${Math.abs(e.endYear)}`}
       </span>

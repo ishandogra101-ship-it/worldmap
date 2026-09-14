@@ -66,6 +66,7 @@ export default function CommandPalette() {
       select({
         kind: "polity", name: r.polity.name, group: r.polity.group,
         color: r.polity.color, tier: r.polity.tier, area: r.polity.area,
+        lng: r.polity.lng, lat: r.polity.lat,
         snapshotYear: store.get().snapshotYear ?? store.get().year,
       });
       mapController.framePolity(r.polity);
