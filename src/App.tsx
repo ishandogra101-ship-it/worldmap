@@ -3,6 +3,7 @@ import HistoricalMap from "./map/HistoricalMap";
 import Timeline from "./timeline/Timeline";
 import Hud from "./hud/Hud";
 import Moment from "./hud/Moment";
+import MomentStrip from "./hud/MomentStrip";
 import Tooltip from "./hud/Tooltip";
 import Onboarding from "./hud/Onboarding";
 import EntityPanel from "./panels/EntityPanel";
@@ -81,6 +82,7 @@ export default function App() {
 
       <Hud />
       <Moment />
+      <MomentStrip />
       <Timeline />
       <EntityPanel />
 

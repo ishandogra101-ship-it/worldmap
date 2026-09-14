@@ -10,7 +10,7 @@ import type { CSSProperties } from "react";
 export type IconName =
   | "ruler" | "polity" | "battle" | "treaty" | "city" | "invention"
   | "discovery" | "science" | "religion" | "revolution" | "birth" | "death"
-  | "exploration" | "search" | "layers" | "settings" | "play" | "pause"
+  | "exploration" | "search" | "layers" | "settings" | "play" | "pause" | "mark"
   | "stepBack" | "stepForward" | "close" | "compare" | "follow" | "chevron"
   | "sun" | "moon" | "globe" | "info" | "arrow" | "command" | "person" | "event";
 
@@ -21,19 +21,23 @@ export const ICON_PATHS: Record<IconName, string> = {
   // Territory: an irregular bounded region with a seat of power.
   polity: '<path d="M3.6 8.4 9 5.3l6.2 2.6L20.4 6v9.7l-5.2 2.4-6.2-2.6-5.4 2.7z"/><circle cx="12" cy="11.6" r="1.35"/>',
   // Crossed blades, abstracted to two strokes and their guards.
-  battle: '<path d="M5 4.6 19 19M19 4.6 5 19"/><path d="M7.6 15.8 4.6 18.8M16.4 15.8l3 3"/>',
+  // Crossed blades with real hilts and pommels, so it reads as a battle mark
+  // and not as a close button.
+  battle: '<path d="M6.2 5.4 17.8 17"/><path d="M17.8 5.4 6.2 17"/><path d="M4.2 15.2h4.2M15.6 15.2h4.2"/><circle cx="6.3" cy="18.6" r="1.1"/><circle cx="17.7" cy="18.6" r="1.1"/>',
   // An accord: a sealed document.
-  treaty: '<path d="M6.4 3.8h8.1l3.8 3.8v12.6H6.4z"/><path d="M14.2 3.9v3.8h3.9"/><circle cx="12" cy="15" r="2.1"/>',
+  // An accord: two parties brought level. Unmistakable at any size.
+  treaty: '<path d="M4.4 9.2h15.2M4.4 14.8h15.2"/><circle cx="12" cy="12" r="8.6"/>',
   // Settlement: massed structures of differing height.
-  city: '<path d="M3.6 20.2V11l4.3-2.3V20.2"/><path d="M7.9 20.2V6.2l5.6-2.6v16.6"/><path d="M13.5 20.2v-8.4l6.9 2.4v6z"/>',
+  city: '<path d="M4.2 20.2v-8.6h6.4v8.6"/><path d="M10.6 20.2V6.4h9.2v13.8"/><path d="M3 20.3h18"/>',
   // A struck spark.
-  invention: '<path d="M12 3.4v3.2M12 17.4v3.2M4.6 12H7.8M16.2 12h3.2"/><path d="m6.8 6.8 2.3 2.3M14.9 14.9l2.3 2.3M17.2 6.8l-2.3 2.3M9.1 14.9l-2.3 2.3"/><circle cx="12" cy="12" r="2.4"/>',
+  // A struck idea: one source, one ray. Reads as a spark, never as an asterisk.
+  invention: '<circle cx="12" cy="14.2" r="4.2"/><path d="M12 5.4V2.6"/><path d="M9.4 15.6h5.2"/>',
   // A bearing taken — waypoint on a heading.
-  discovery: '<circle cx="12" cy="12" r="8.4"/><path d="m15.4 8.6-2 5.4-5.4 2 2-5.4z"/>',
+  discovery: '<circle cx="12" cy="12" r="8.4"/><path d="m15.6 8.4-3 6.6-6.6 3 3-6.6z"/>',
   // A finding: a node and its orbit.
   science: '<circle cx="12" cy="12" r="2.1"/><ellipse cx="12" cy="12" rx="8.6" ry="3.9" transform="rotate(-28 12 12)"/>',
   // A place of gathering, given as an arch.
-  religion: '<path d="M5.2 20.2V12a6.8 6.8 0 0 1 13.6 0v8.2"/><path d="M3.8 20.3h16.4M12 20.1v-6.3"/>',
+  religion: '<path d="M5.4 20.2V12a6.6 6.6 0 0 1 13.2 0v8.2"/><path d="M3.6 20.3h16.8"/>',
   // A turn of the order.
   revolution: '<path d="M20 12a8 8 0 1 1-3.1-6.3"/><path d="M20.4 4.2v4.6h-4.6"/>',
   birth: '<circle cx="12" cy="14.6" r="2.4"/><path d="M12 9.8V3.9M9.2 6.3 12 3.6l2.8 2.7"/>',
@@ -57,7 +61,8 @@ export const ICON_PATHS: Record<IconName, string> = {
   arrow: '<path d="M4.4 12h15.2"/><path d="m13.6 6.2 6 5.8-6 5.8"/>',
   command: '<path d="M8.4 3.6a2.4 2.4 0 1 0 2.4 2.4v12a2.4 2.4 0 1 0 2.4-2.4h-12a2.4 2.4 0 1 0 2.4 2.4V6a2.4 2.4 0 1 0-2.4 2.4h12A2.4 2.4 0 1 0 15.6 6"/>',
   person: '<circle cx="12" cy="8.2" r="3.9"/><path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>',
-  event: '<path d="M12 3.2v4.2M12 16.6v4.2M3.2 12h4.2M16.6 12h4.2"/><circle cx="12" cy="12" r="3.4"/>',
+  event: '<circle cx="12" cy="12" r="3.4"/><path d="M12 2.8v3.4M12 17.8v3.4"/>',
+  mark: '<circle cx="12" cy="12" r="9"/><path d="M3.6 9.1h16.8M3.6 14.9h16.8"/><path d="M14.4 3.4v17.2"/>',
 };
 
 interface IconProps {
@@ -100,15 +105,12 @@ export function iconSvg(name: IconName, size = 16, strokeWidth = 1.6): string {
 /** Event category -> icon. Keeps the event layer one visual family. */
 export function eventIcon(category?: string): IconName {
   switch ((category || "").toLowerCase()) {
-    case "war": case "battle": case "siege": return "battle";
+    case "war": case "battle": case "siege": case "revolution": return "battle";
     case "treaty": case "peace": return "treaty";
-    case "invention": return "invention";
-    case "discovery": return "discovery";
-    case "science": return "science";
+    case "invention": case "science": return "invention";
+    case "discovery": case "exploration": return "discovery";
     case "religion": return "religion";
-    case "revolution": return "revolution";
     case "founding": case "city": return "city";
-    case "exploration": return "exploration";
     default: return "event";
   }
 }

@@ -29,6 +29,7 @@ const LAYERS: { id: LayerId; label: string; note: string }[] = [
   { id: "labels", label: "Realm names", note: "Labels, revealed by scale" },
   { id: "rulers", label: "Rulers", note: "Who held power" },
   { id: "figures", label: "Figures", note: "Thinkers, makers, explorers" },
+  { id: "cities", label: "Cities", note: "Seats of power and trade" },
   { id: "events", label: "Events", note: "Battles, treaties, discoveries" },
 ];
 
@@ -55,8 +56,11 @@ export default function Hud() {
   return (
     <>
       <header className="brand">
-        <h1 className="brand__name">Atlas of Power</h1>
-        <p className="brand__tag">The world, through time</p>
+        <span className="brand__mark" aria-hidden="true"><Icon name="mark" size={26} strokeWidth={1.3} /></span>
+        <span className="brand__text">
+          <h1 className="brand__name">Atlas of Power</h1>
+          <p className="brand__tag">The world, through time</p>
+        </span>
       </header>
 
       <div className="hud">

@@ -1,5 +1,5 @@
 /** One shape for every historical actor on the map. */
-export type EntityKind = "ruler" | "figure" | "event";
+export type EntityKind = "ruler" | "figure" | "event" | "city";
 
 export interface Entity {
   id: string;
@@ -23,6 +23,8 @@ export interface Entity {
   source?: string;
   /** true when the record came from the Wikidata import rather than the curated set. */
   imported?: boolean;
+  /** a city still inhabited today, so its end year is a bound rather than a fall */
+  continuing?: boolean;
 }
 
 export interface BorderManifestEntry {
@@ -62,7 +64,7 @@ export type Selection =
   | PolitySelection
   | { kind: "entity"; entity: Entity };
 
-export type LayerId = "political" | "rulers" | "figures" | "events" | "labels";
+export type LayerId = "political" | "rulers" | "figures" | "events" | "cities" | "labels";
 
 export interface HoverInfo {
   name: string;

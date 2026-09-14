@@ -9,6 +9,7 @@ const KIND_ICON: Record<ResultKind, IconName> = {
   ruler: "ruler",
   figure: "person",
   event: "battle",
+  city: "city",
   polity: "polity",
   action: "command",
 };

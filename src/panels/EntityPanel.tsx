@@ -5,19 +5,47 @@ import { mapController } from "../map/HistoricalMap";
 import { formatYear, centuryLabel, asset } from "../util";
 import type { Entity, PolitySelection } from "../types";
 
-/** Loose name match between a realm and the realm named on a ruler record. */
-function normalise(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/\b(the|of|empire|kingdom|dynasty|sultanate|caliphate|republic|crown|state|states)\b/g, "")
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
+/**
+ * Match a realm against the realm named on a person's record.
+ *
+ * Substring matching is not safe here: "Holy Roman Empire" contains "Roman
+ * Empire", which cheerfully filed Julius Caesar under the HRE. So compare the
+ * place words for equality, and treat the polity *type* separately — a realm and
+ * a person may disagree about "Kingdom of England" vs "England", but the Roman
+ * Republic and the Roman Empire are not the same thing.
+ */
+const TYPE_WORDS = new Set([
+  "empire", "kingdom", "dynasty", "sultanate", "caliphate", "republic", "crown",
+  "state", "states", "realm", "khanate", "shogunate", "confederation", "duchy",
+  "principality", "federation", "union",
+]);
+const FILLER = new Set(["the", "of", "and"]);
+
+function split(s: string): { core: Set<string>; type: Set<string> } {
+  const core = new Set<string>();
+  const type = new Set<string>();
+  for (const w of s.toLowerCase().replace(/[^a-z0-9]+/g, " ").split(" ")) {
+    if (!w || FILLER.has(w)) continue;
+    if (TYPE_WORDS.has(w)) type.add(w);
+    else core.add(w);
+  }
+  return { core, type };
 }
+
+function sameSet(a: Set<string>, b: Set<string>): boolean {
+  if (a.size !== b.size) return false;
+  for (const w of a) if (!b.has(w)) return false;
+  return true;
+}
+
 function related(a: string, b: string): boolean {
-  const x = normalise(a), y = normalise(b);
-  if (!x || !y) return false;
-  if (x === y) return true;
-  return x.includes(y) || y.includes(x);
+  const x = split(a), y = split(b);
+  if (x.core.size === 0 || y.core.size === 0) return false;
+  if (!sameSet(x.core, y.core)) return false;
+  // same place; now make sure they do not name conflicting kinds of polity
+  if (x.type.size === 0 || y.type.size === 0) return true;
+  for (const t of x.type) if (y.type.has(t)) return true;
+  return false;
 }
 
 export default function EntityPanel() {

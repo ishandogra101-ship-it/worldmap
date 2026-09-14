@@ -14,7 +14,7 @@ import { asset } from "../util";
  * recycle instead of rebuilding each frame.
  */
 
-type Kind = "label" | "ruler" | "figure" | "event";
+type Kind = "label" | "ruler" | "figure" | "event" | "city";
 
 interface Candidate {
   key: string;
@@ -26,6 +26,8 @@ interface Candidate {
   h: number;
   entity?: Entity;
   polity?: PolitySummary;
+  tier?: 0 | 1 | 2;
+  subject?: { name: string; group: string; color: string };
 }
 
 interface Placed extends Candidate { x: number; y: number }
@@ -42,6 +44,11 @@ function peopleThreshold(zoom: number): number {
 }
 function eventThreshold(zoom: number): number {
   return Math.max(0, Math.min(100, 84 - (zoom - 2) * 11));
+}
+/** Cities reveal earlier than events: at world scale only the few that anyone
+ *  would name unprompted, then steadily more as the view closes in. */
+function cityThreshold(zoom: number): number {
+  return Math.max(0, Math.min(100, 86 - (zoom - 2) * 10));
 }
 
 /**
@@ -70,11 +77,15 @@ export class OverlayEngine {
   private candidates: Candidate[] = [];
   private entities: Entity[] = [];
   private polityByGroup = new Map<string, PolitySummary>();
-  /** realms actually visible on screen, anchored to a point inside the viewport */
-  private visibleLabels: Array<{ p: PolitySummary; lng: number; lat: number; cells: number }> = [];
+  /** sovereign realms visible on screen, anchored inside the viewport */
+  private visibleSov: Array<{ p: PolitySummary; lng: number; lat: number; cells: number; tier: 0 | 1 | 2 }> = [];
+  /** territories whose own name differs from their sovereign: vassals, subject
+   *  states, hordes. The source data carries these and they are most of what
+   *  makes a zoomed-in view worth reading. */
+  private visibleSub: Array<{ name: string; group: string; color: string; lng: number; lat: number; cells: number }> = [];
   private year = 0;
   private layers: Record<LayerId, boolean> = {
-    political: true, rulers: true, figures: true, events: true, labels: true,
+    political: true, rulers: true, figures: true, events: true, cities: true, labels: true,
   };
   private selectedKey: string | null = null;
   private frame = 0;
@@ -140,14 +151,19 @@ export class OverlayEngine {
    */
   private sampleVisibleRealms(): void {
     const map = this.map;
-    if (!map || !map.getLayer || !map.getLayer("polity-fill")) { this.visibleLabels = []; return; }
+    if (!map || !map.getLayer || !map.getLayer("polity-fill")) {
+      this.visibleSov = []; this.visibleSub = []; return;
+    }
     const canvas = map.getCanvas();
     const vw = canvas.clientWidth;
     const vh = canvas.clientHeight;
     if (vw === 0 || vh === 0) return;
 
     const STEP = 96;
-    const acc = new Map<string, { sx: number; sy: number; n: number }>();
+    type Cell = { sx: number; sy: number; n: number };
+    const sov = new Map<string, Cell>();
+    const sub = new Map<string, Cell & { name: string; group: string }>();
+
     for (let x = STEP / 2; x < vw; x += STEP) {
       for (let y = STEP / 2; y < vh; y += STEP) {
         let feats;
@@ -156,23 +172,53 @@ export class OverlayEngine {
         } catch { continue; }
         const f = feats && feats[0];
         if (!f) continue;
-        const group = String((f.properties as Record<string, unknown>).__group || "");
+        const props = f.properties as Record<string, unknown>;
+        const group = String(props.__group || "");
         if (!group) continue;
-        let e = acc.get(group);
-        if (!e) { e = { sx: 0, sy: 0, n: 0 }; acc.set(group, e); }
+        let e = sov.get(group);
+        if (!e) { e = { sx: 0, sy: 0, n: 0 }; sov.set(group, e); }
         e.sx += x; e.sy += y; e.n++;
+
+        const own = String(props.NAME || "");
+        if (own && own !== group) {
+          const key = group + "|" + own;
+          let t = sub.get(key);
+          if (!t) { t = { sx: 0, sy: 0, n: 0, name: own, group }; sub.set(key, t); }
+          t.sx += x; t.sy += y; t.n++;
+        }
       }
     }
 
-    const out: Array<{ p: PolitySummary; lng: number; lat: number; cells: number }> = [];
-    for (const [group, e] of acc) {
+    let maxCells = 0;
+    for (const e of sov.values()) if (e.n > maxCells) maxCells = e.n;
+
+    const outSov: typeof this.visibleSov = [];
+    for (const [group, e] of sov) {
       const p = this.polityByGroup.get(group);
       if (!p) continue;
       const ll = map.unproject([e.sx / e.n, e.sy / e.n]);
-      out.push({ p, lng: ll.lng, lat: ll.lat, cells: e.n });
+      // Tier by share of *this view*, not of the whole world. Otherwise France
+      // reads as minor next to a bold Kalmar Union while you are looking at France.
+      const share = maxCells ? e.n / maxCells : 0;
+      const tier: 0 | 1 | 2 = share >= 0.45 ? 0 : share >= 0.14 ? 1 : 2;
+      outSov.push({ p, lng: ll.lng, lat: ll.lat, cells: e.n, tier });
     }
-    out.sort((a, b) => b.cells - a.cells);
-    this.visibleLabels = out;
+    outSov.sort((a, b) => b.cells - a.cells);
+    this.visibleSov = outSov;
+
+    const outSub: typeof this.visibleSub = [];
+    for (const t of sub.values()) {
+      if (t.n < 2) continue; // a vassal earns its name only with real presence
+      const p = this.polityByGroup.get(t.group);
+      const ll = map.unproject([t.sx / t.n, t.sy / t.n]);
+      outSub.push({
+        name: t.name, group: t.group, color: p ? p.color : "#888",
+        lng: ll.lng, lat: ll.lat, cells: t.n,
+      });
+    }
+    outSub.sort((a, b) => b.cells - a.cells);
+    this.visibleSub = outSub;
+
     this.dirty = true;
   }
 
@@ -190,19 +236,32 @@ export class OverlayEngine {
 
     if (this.layers.labels) {
       const CELL_AREA = 96 * 96;
-      for (const v of this.visibleLabels) {
-        // must occupy a real share of the viewport to earn a name
+      for (const v of this.visibleSov) {
         if (v.cells * CELL_AREA < LABEL_MIN_SCREEN_AREA) continue;
-        const p = v.p;
-        const base = p.tier === 0 ? 950 : p.tier === 1 ? 620 : 380;
-        const est = p.name.length * (p.tier === 0 ? 6.4 : 5.8);
+        const base = v.tier === 0 ? 950 : v.tier === 1 ? 640 : 420;
+        // tier 0 renders uppercase with wide tracking, so it needs a much
+        // larger allowance than a mixed-case label of the same length
+        const est = v.p.name.length * (v.tier === 0 ? 8.9 : v.tier === 1 ? 6.7 : 6.0);
         c.push({
-          key: `L:${p.group}`,
+          key: `L:${v.p.group}`,
           kind: "label",
           lng: v.lng, lat: v.lat,
-          weight: base + Math.min(120, v.cells * 6),
+          weight: base + Math.min(110, v.cells * 6),
           w: est + 10, h: 16,
-          polity: p,
+          polity: v.p,
+          tier: v.tier,
+        });
+      }
+      // subjects sit beneath every sovereign in the ordering, so they fill in
+      // only once the sovereigns have taken the space they need
+      for (const v of this.visibleSub) {
+        c.push({
+          key: `S:${v.group}|${v.name}`,
+          kind: "label",
+          lng: v.lng, lat: v.lat,
+          weight: 300 + Math.min(80, v.cells * 5),
+          w: v.name.length * 5.2 + 10, h: 15,
+          subject: v,
         });
       }
     }
@@ -212,10 +271,12 @@ export class OverlayEngine {
       if (e.kind === "ruler" && !this.layers.rulers) continue;
       if (e.kind === "figure" && !this.layers.figures) continue;
       if (e.kind === "event" && !this.layers.events) continue;
-      const size = e.kind === "event" ? 24 : 28 + (e.prominence / 100) * 12;
+      if (e.kind === "city" && !this.layers.cities) continue;
+      const size = e.kind === "event" ? 24 : e.kind === "city" ? 16 : 28 + (e.prominence / 100) * 12;
       const weight =
         e.kind === "ruler" ? 700 + e.prominence * 2
         : e.kind === "figure" ? 660 + e.prominence * 2
+        : e.kind === "city" ? 700 + e.prominence * 2
         : 520 + e.prominence * 1.5;
       c.push({
         key: `${e.kind[0].toUpperCase()}:${e.id}`,
@@ -244,12 +305,15 @@ export class OverlayEngine {
 
     const pThresh = peopleThreshold(zoom);
     const eThresh = eventThreshold(zoom);
+    const cThresh = cityThreshold(zoom);
 
     // 1. gate by zoom rules, project, cull to viewport
     const visible: Placed[] = [];
     for (const cand of this.candidates) {
       if (cand.kind === "event") {
         if (cand.entity!.prominence < eThresh) continue;
+      } else if (cand.kind === "city") {
+        if (cand.entity!.prominence < cThresh) continue;
       } else if (cand.kind !== "label") {
         if (cand.entity!.prominence < pThresh) continue;
       }
@@ -267,8 +331,14 @@ export class OverlayEngine {
       visible.push({ ...cand, x: pt.x, y: pt.y });
     }
 
-    // 2. priority order, then greedy collision
-    visible.sort((a, b) => b.weight - a.weight);
+    // 2. priority order, then greedy collision.
+    //
+    // Once the view is regional, a settlement outranks the realm label: the
+    // realm is already obvious from the fill, and the city is the new fact.
+    // Without this, "Aztec Empire" sits exactly on Tenochtitlan and hides it.
+    const cityBoost = zoom >= 3.5 ? 420 : 0;
+    const rank = (c: Placed) => c.weight + (c.kind === "city" ? cityBoost : 0);
+    visible.sort((a, b) => rank(b) - rank(a));
     const placed: Placed[] = [];
     let markerCount = 0;
     let labelCount = 0;
@@ -305,7 +375,14 @@ export class OverlayEngine {
       }
       el.style.transform = `translate3d(${Math.round(item.x)}px, ${Math.round(item.y)}px, 0) translate(-50%, -50%)`;
       el.classList.toggle("is-selected", item.key === this.selectedKey);
-      if (item.entity) el.classList.toggle("is-named", item.entity.prominence >= 86);
+      // A bare symbol on a map means nothing. Name the marquee figures always,
+      // and everyone else as soon as the view is close enough to have room.
+      if (item.entity) {
+        el.classList.toggle(
+          "is-named",
+          item.entity.kind === "city" || item.entity.prominence >= 86 || zoom >= 3,
+        );
+      }
     }
     for (const [key, el] of this.nodes) {
       if (!keep.has(key)) {
@@ -317,14 +394,42 @@ export class OverlayEngine {
   }
 
   private build(item: Candidate): HTMLElement {
-    if (item.kind === "label") return this.buildLabel(item.polity!);
+    if (item.kind === "label") {
+      return item.subject
+        ? this.buildSubjectLabel(item.subject)
+        : this.buildLabel(item.polity!, item.tier ?? 2);
+    }
     return this.buildMarker(item.entity!, item.kind);
   }
 
-  private buildLabel(p: PolitySummary): HTMLElement {
+  private buildSubjectLabel(v: { name: string; group: string; color: string }): HTMLElement {
     const el = document.createElement("button");
     el.type = "button";
-    el.className = `ov-label ov-label--t${p.tier}`;
+    el.className = "ov-label ov-label--sub";
+    el.textContent = v.name;
+    el.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const p = this.polityByGroup.get(v.group);
+      if (p) this.cb.onSelectPolity({ ...p, name: v.name, group: v.group });
+    });
+    el.addEventListener("pointerenter", (ev) => {
+      this.hoveredKey = `S:${v.group}|${v.name}`;
+      this.cb.onHover({
+        name: v.name,
+        subtitle: v.group !== v.name ? `Subject to ${v.group}` : undefined,
+        color: v.color,
+        x: (ev as PointerEvent).clientX,
+        y: (ev as PointerEvent).clientY,
+      });
+    });
+    el.addEventListener("pointerleave", () => this.clearHover());
+    return el;
+  }
+
+  private buildLabel(p: PolitySummary, tier: 0 | 1 | 2): HTMLElement {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = `ov-label ov-label--t${tier}`;
     el.textContent = p.name;
     el.style.setProperty("--realm", p.color);
     el.addEventListener("click", (ev) => { ev.stopPropagation(); this.cb.onSelectPolity(p); });
@@ -333,6 +438,7 @@ export class OverlayEngine {
       this.cb.onHover({
         name: p.name,
         subtitle: p.tier === 0 ? "Major realm" : p.tier === 1 ? "Regional power" : "Minor polity",
+        detail: undefined,
         color: p.color,
         x: (ev as PointerEvent).clientX,
         y: (ev as PointerEvent).clientY,
@@ -353,7 +459,10 @@ export class OverlayEngine {
     const dot = document.createElement("span");
     dot.className = "ov-marker__shape";
 
-    if (e.portrait) {
+    if (kind === "city") {
+      // a settlement reads as a place, not a person: a survey dot, always named
+      dot.classList.add("ov-marker__dot");
+    } else if (e.portrait) {
       const img = document.createElement("img");
       img.className = "ov-marker__img";
       img.src = /^https?:/.test(e.portrait) ? e.portrait : asset(e.portrait);

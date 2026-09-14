@@ -52,7 +52,7 @@ const initial: AtlasState = {
   hover: null,
   entities: [],
   polities: [],
-  layers: { political: true, rulers: true, figures: true, events: true, labels: true },
+  layers: { political: true, rulers: true, figures: true, events: true, cities: true, labels: true },
   commandOpen: false,
   aboutOpen: false,
   followed: null,

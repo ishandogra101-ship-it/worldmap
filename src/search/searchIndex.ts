@@ -1,7 +1,7 @@
 import type { Entity, PolitySummary } from "../types";
 import { MIN_YEAR, MAX_YEAR, formatYear } from "../util";
 
-export type ResultKind = "year" | "ruler" | "figure" | "event" | "polity" | "action";
+export type ResultKind = "year" | "ruler" | "figure" | "event" | "city" | "polity" | "action";
 
 export interface SearchResult {
   id: string;
@@ -113,6 +113,7 @@ export const GROUP_LABEL: Record<ResultKind, string> = {
   ruler: "Rulers",
   figure: "Figures",
   event: "Events",
+  city: "Cities",
   polity: "Realms",
   action: "Actions",
 };

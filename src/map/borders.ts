@@ -63,7 +63,8 @@ function outerRings(geom: Polygon | MultiPolygon): number[][][] {
 }
 
 interface Acc {
-  name: string;
+  /** NAME of the feature that *is* the sovereign (NAME === SUBJECTO), if present */
+  coreName: string;
   color: string;
   area: number;
   homeArea: number; homeCx: number; homeCy: number;
@@ -95,10 +96,14 @@ function summarise(fc: FeatureCollection): PolitySummary[] {
 
     let e = acc.get(group);
     if (!e) {
-      e = { name, color, area: 0, homeArea: 0, homeCx: 0, homeCy: 0, bestArea: 0, bestCx: 0, bestCy: 0 };
+      e = { coreName: "", color, area: 0, homeArea: 0, homeCx: 0, homeCy: 0, bestArea: 0, bestCx: 0, bestCy: 0 };
       acc.set(group, e);
     }
     const isHome = ((props.NAME || "") as string) === group;
+    // Only the realm's own core territory may name it. Taking the first feature
+    // we happened to see would label the Mongol Empire "Tibet" and the Ottomans
+    // "Bulgar Khanate" — whichever vassal came first in the file.
+    if (isHome && !e.coreName) e.coreName = name;
     for (const ring of outerRings(geom)) {
       const [cx, cy, a] = ringCentroid(ring);
       e.area += a;
@@ -116,7 +121,7 @@ function summarise(fc: FeatureCollection): PolitySummary[] {
     const useHome = e.homeArea > 0;
     out.push({
       group,
-      name: e.name,
+      name: e.coreName || group,
       color: e.color,
       tier: tierForArea(e.area, maxArea) as PolityTier,
       lng: useHome ? e.homeCx / e.homeArea : e.bestCx,

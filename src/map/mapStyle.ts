@@ -15,7 +15,7 @@ export interface MapTheme {
 
 export const MAP_THEMES: Record<"dark" | "light", MapTheme> = {
   dark: {
-    ocean: "#070a0e",
+    ocean: "#0b1219",
     land: "#232932",
     landLine: "#3a424e",
     boundary: "rgba(255,255,255,0.30)",
