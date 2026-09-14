@@ -1,19 +1,13 @@
 import type { FeatureCollection, Feature, Polygon, MultiPolygon } from "geojson";
 import { asset } from "../util";
-import { groupKey, colorForGroup, type BorderProps } from "./colors";
+import { groupKey, colorForGroup, tierForArea, type BorderProps } from "./palette";
+import type { PolitySummary, PolityTier } from "../types";
 
-export interface PolityLabel {
-  group: string; // sovereign key
-  name: string; // display name
-  color: string;
-  lng: number;
-  lat: number;
-  area: number; // planar deg^2, for zoom-based visibility
-}
-
-interface Snapshot {
+export interface Snapshot {
   fc: FeatureCollection;
-  labels: PolityLabel[];
+  polities: PolitySummary[];
+  /** group -> summary, for fast lookup on hover/click */
+  byGroup: Map<string, PolitySummary>;
 }
 
 const cache = new Map<string, Promise<Snapshot>>();
@@ -31,40 +25,21 @@ async function fetchSnapshot(fileRel: string): Promise<Snapshot> {
   const res = await fetch(asset(`data/${fileRel}`));
   if (!res.ok) throw new Error(`Failed to load ${fileRel}: ${res.status}`);
   const fc = (await res.json()) as FeatureCollection;
-  annotate(fc);
-  return { fc, labels: computeLabels(fc) };
-}
-
-function annotate(fc: FeatureCollection): void {
+  const polities = summarise(fc);
+  const byGroup = new Map(polities.map((p) => [p.group, p]));
+  // second pass: stamp tier onto each feature now that tiers are known
   for (const f of fc.features) {
-    const props = (f.properties || {}) as BorderProps;
-    const key = groupKey(props);
-    const name = (props.NAME || key || "").toString();
-    (props as Record<string, unknown>).__group = key;
-    (props as Record<string, unknown>).__color = colorForGroup(key);
-    (props as Record<string, unknown>).__name = name;
-    (props as Record<string, unknown>).__hasName = key ? 1 : 0;
-    f.properties = props as Feature["properties"];
+    const props = f.properties as Record<string, unknown>;
+    const g = props.__group as string;
+    props.__tier = g ? (byGroup.get(g)?.tier ?? 2) : 2;
   }
+  return { fc, polities, byGroup };
 }
 
-// --- planar area + centroid, aggregated per sovereign group ---
-
-function ringArea(ring: number[][]): number {
-  let sum = 0;
-  for (let i = 0, n = ring.length; i < n; i++) {
-    const [x1, y1] = ring[i];
-    const [x2, y2] = ring[(i + 1) % n];
-    sum += x1 * y2 - x2 * y1;
-  }
-  return Math.abs(sum) / 2;
-}
+// --- geometry helpers (planar; relative scale only) ---
 
 function ringCentroid(ring: number[][]): [number, number, number] {
-  // returns [cx, cy, area]
-  let cx = 0,
-    cy = 0,
-    a = 0;
+  let cx = 0, cy = 0, a = 0;
   for (let i = 0, n = ring.length; i < n; i++) {
     const [x1, y1] = ring[i];
     const [x2, y2] = ring[(i + 1) % n];
@@ -73,91 +48,82 @@ function ringCentroid(ring: number[][]): [number, number, number] {
     cx += (x1 + x2) * cross;
     cy += (y1 + y2) * cross;
   }
-  a = a / 2;
+  a /= 2;
   if (Math.abs(a) < 1e-9) {
-    // degenerate: fall back to vertex average
-    const avg = ring.reduce(
-      (acc, p) => [acc[0] + p[0], acc[1] + p[1]],
-      [0, 0],
-    );
-    return [avg[0] / ring.length, avg[1] / ring.length, ringArea(ring)];
+    let sx = 0, sy = 0;
+    for (const p of ring) { sx += p[0]; sy += p[1]; }
+    return [sx / ring.length, sy / ring.length, 0];
   }
   return [cx / (6 * a), cy / (6 * a), Math.abs(a)];
 }
 
-function polygonParts(geom: Polygon | MultiPolygon): number[][][] {
-  // outer rings only
+function outerRings(geom: Polygon | MultiPolygon): number[][][] {
   if (geom.type === "Polygon") return [geom.coordinates[0] as number[][]];
   return (geom.coordinates as number[][][][]).map((poly) => poly[0] as number[][]);
 }
 
-interface LabelAcc {
+interface Acc {
   name: string;
   color: string;
-  area: number; // total area of the whole group (drives visibility)
-  // "home" = parts of features whose NAME equals the sovereign group. The label
-  // sits on the homeland (Britain), not the area-weighted centre of a far-flung
-  // empire (which would float into the ocean near its colonies).
-  homeArea: number;
-  homeCx: number;
-  homeCy: number;
-  bestPartArea: number; // largest single part, as a fallback anchor
-  bestCx: number;
-  bestCy: number;
+  area: number;
+  homeArea: number; homeCx: number; homeCy: number;
+  bestArea: number; bestCx: number; bestCy: number;
 }
 
-function computeLabels(fc: FeatureCollection): PolityLabel[] {
-  const acc = new Map<string, LabelAcc>();
+/**
+ * Collapse polygons into one summary per sovereign. The label anchor prefers the
+ * realm's home territory (the feature whose own NAME is the sovereign), so a
+ * far-flung empire is labelled on its homeland rather than at the mean centre of
+ * its colonies — which for a maritime empire lands in open ocean.
+ */
+function summarise(fc: FeatureCollection): PolitySummary[] {
+  const acc = new Map<string, Acc>();
+
   for (const f of fc.features) {
-    const props = (f.properties || {}) as Record<string, unknown>;
-    const group = (props.__group as string) || "";
+    const props = (f.properties || {}) as BorderProps;
+    const group = groupKey(props);
+    const name = (props.NAME || group || "").toString();
+    const color = group ? colorForGroup(group) : "transparent";
+    (props as Record<string, unknown>).__group = group;
+    (props as Record<string, unknown>).__color = color;
+    (props as Record<string, unknown>).__name = name;
+    f.properties = props as Feature["properties"];
     if (!group) continue;
+
     const geom = f.geometry as Polygon | MultiPolygon | null;
     if (!geom || (geom.type !== "Polygon" && geom.type !== "MultiPolygon")) continue;
-    const isHome = ((props.NAME as string) || "") === group;
-    let entry = acc.get(group);
-    if (!entry) {
-      entry = {
-        name: (props.__name as string) || group,
-        color: (props.__color as string) || "#888",
-        area: 0,
-        homeArea: 0,
-        homeCx: 0,
-        homeCy: 0,
-        bestPartArea: 0,
-        bestCx: 0,
-        bestCy: 0,
-      };
-      acc.set(group, entry);
+
+    let e = acc.get(group);
+    if (!e) {
+      e = { name, color, area: 0, homeArea: 0, homeCx: 0, homeCy: 0, bestArea: 0, bestCx: 0, bestCy: 0 };
+      acc.set(group, e);
     }
-    for (const ring of polygonParts(geom)) {
+    const isHome = ((props.NAME || "") as string) === group;
+    for (const ring of outerRings(geom)) {
       const [cx, cy, a] = ringCentroid(ring);
-      entry.area += a;
-      if (isHome) {
-        entry.homeArea += a;
-        entry.homeCx += cx * a;
-        entry.homeCy += cy * a;
-      }
-      if (a > entry.bestPartArea) {
-        entry.bestPartArea = a;
-        entry.bestCx = cx;
-        entry.bestCy = cy;
-      }
+      e.area += a;
+      if (isHome) { e.homeArea += a; e.homeCx += cx * a; e.homeCy += cy * a; }
+      if (a > e.bestArea) { e.bestArea = a; e.bestCx = cx; e.bestCy = cy; }
     }
   }
-  const labels: PolityLabel[] = [];
+
+  let maxArea = 0;
+  for (const e of acc.values()) if (e.area > maxArea) maxArea = e.area;
+
+  const out: PolitySummary[] = [];
   for (const [group, e] of acc) {
     if (e.area <= 0) continue;
     const useHome = e.homeArea > 0;
-    labels.push({
+    out.push({
       group,
       name: e.name,
       color: e.color,
+      tier: tierForArea(e.area, maxArea) as PolityTier,
       lng: useHome ? e.homeCx / e.homeArea : e.bestCx,
       lat: useHome ? e.homeCy / e.homeArea : e.bestCy,
       area: e.area,
     });
   }
-  labels.sort((a, b) => b.area - a.area);
-  return labels;
+  out.sort((a, b) => b.area - a.area);
+  return out;
 }

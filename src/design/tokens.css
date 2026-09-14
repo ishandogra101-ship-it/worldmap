@@ -1,0 +1,125 @@
+/* Atlas of Power — design tokens.
+   One accent. Restrained neutrals. The map carries the colour. */
+
+:root {
+  /* type */
+  --font-ui: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-editorial: "Iowan Old Style", Charter, "Bitstream Charter", Georgia,
+    "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+
+  /* spacing scale */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+
+  --r1: 6px; --r2: 10px; --r3: 14px; --r4: 20px;
+
+  /* motion — short, purposeful */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 120ms;
+  --t-base: 220ms;
+  --t-slow: 420ms;
+}
+
+/* ---- dark (default) ---- */
+:root, [data-theme="dark"] {
+  --bg: #0b0d10;
+  --surface: rgba(20, 24, 30, 0.78);
+  --surface-solid: #14181e;
+  --surface-hi: rgba(32, 38, 46, 0.92);
+  --border: rgba(255, 255, 255, 0.085);
+  --border-hi: rgba(255, 255, 255, 0.17);
+  --text: #e9ecf1;
+  --text-2: #a3abb8;
+  --text-3: #6c7583;
+  --accent: #d17b45;
+  --accent-text: #e59a65;
+  --accent-quiet: rgba(209, 123, 69, 0.15);
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.45);
+  --shadow-lg: 0 2px 6px rgba(0,0,0,.45), 0 24px 64px rgba(0,0,0,.55);
+
+  --map-ocean: #070a0e;
+  --map-land: #232932;
+  --map-land-line: #3a424e;
+  --map-label: #e9ecf1;
+  --map-label-halo: #0b0f14;
+  --map-label-2: #99a2b0;
+  --scrim: rgba(6, 8, 10, 0.6);
+}
+
+/* ---- light ---- */
+[data-theme="light"] {
+  --bg: #eceae5;
+  --surface: rgba(255, 255, 255, 0.84);
+  --surface-solid: #ffffff;
+  --surface-hi: rgba(255, 255, 255, 0.96);
+  --border: rgba(18, 20, 24, 0.10);
+  --border-hi: rgba(18, 20, 24, 0.20);
+  --text: #15181c;
+  --text-2: #565d67;
+  --text-3: #878e98;
+  --accent: #a8562a;
+  --accent-text: #9c5026;
+  --accent-quiet: rgba(168, 86, 42, 0.11);
+  --shadow: 0 1px 2px rgba(20,22,28,.07), 0 8px 24px rgba(20,22,28,.10);
+  --shadow-lg: 0 2px 8px rgba(20,22,28,.09), 0 24px 56px rgba(20,22,28,.16);
+
+  --map-ocean: #d7e2e8;
+  --map-land: #f7f5f1;
+  --map-land-line: #d9d4ca;
+  --map-label: #15181c;
+  --map-label-halo: #ffffff;
+  --map-label-2: #5d646e;
+  --scrim: rgba(40, 42, 46, 0.34);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+h1,h2,h3,h4,p,ul,ol,figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+button { font: inherit; color: inherit; background: none; border: none; padding: 0; cursor: pointer; }
+input { font: inherit; color: inherit; }
+a { color: var(--accent-text); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* numerals that don't jitter while scrubbing */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+.eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 550;
+}
+
+.panel-surface {
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

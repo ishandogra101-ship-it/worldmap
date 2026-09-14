@@ -1,24 +1,38 @@
 # Atlas of Power
 
-An interactive historical world map. Drag the timeline from **3000 BCE to 2026** and
-the map redraws the political world of that year — colour-coded realms, the notable
-rulers and figures alive then, and the events that mattered. Zoom in and smaller
-polities and lesser-known figures appear. The map's palette ages with the era, from a
-sepia antique atlas to a clean modern map.
+An interactive map of human history. Move the timeline from **3000 BCE to 2026** and the
+map redraws the political world of that year — realms in their own colours, the rulers and
+figures recorded for that moment, and the events around it. Zoom in and smaller powers
+surface beneath the large ones.
 
 ![screenshot](docs/screenshot.png)
 
 ## What it does
 
-- **Real historical borders** for ~50 snapshot years, coloured by sovereign realm
-  (an empire and its vassals share a colour). Land no mapped state held stays blank —
-  so, for example, no "United States" exists on the map before 1783.
-- A **timeline** across the bottom: drag, play through time, step, or type a year.
-  Borders snap to the nearest mapped snapshot; the legend shows which year is drawn.
-- **Rulers and figures** as markers whose size and zoom-visibility track a *prominence*
-  score, so marquee names (Akbar, Napoleon) show at a glance and lesser ones appear as
-  you zoom. **Events** appear as dated markers.
-- Click anything — a realm, a ruler, a figure, an event — for details and a source.
+- **Real historical borders** for ~50 mapped years. Colour identifies a realm and stays with
+  it across every year; visual weight follows its mapped area, so scale reads through
+  emphasis rather than louder colour. An empire and its vassals share a colour.
+- **A timeline built for history, not for arithmetic.** The scale is non-linear — the last six
+  centuries take roughly half the track, because that is where most mapped change happens.
+  Ticks mark the years genuinely mapped, so the snapping is visible and deliberate.
+- **Level of detail that rewards zooming.** A realm is labelled once it actually occupies
+  enough of the screen, and people appear according to a prominence proxy, so a world view
+  stays calm while a regional view fills with minor polities and lesser-known rulers.
+- **Editorial panels** that cross-reference the data: open a ruler and the atlas shows who
+  else held that realm and who was alive at the same time.
+- **Search and a command palette** (`⌘K` / `Ctrl K`) across people, realms, events and years.
+- **Light and dark**, full keyboard navigation, and a mobile layout that keeps the map dominant.
+
+## Honest by construction
+
+- Borders **snap** to the nearest mapped year rather than morphing between snapshots —
+  interpolating them would invent a geography nobody recorded. The timeline always names the
+  year being drawn.
+- **Prominence** decides when a marker appears. It is a reference-count proxy (Wikipedia
+  sitelinks for imported records), not a judgement of historical importance, and it carries
+  the biases of its source. The interface says so wherever it is used.
+- **Blank is not empty.** Land with no fill had no polity in this dataset for that year, which
+  sometimes reflects history and often reflects the limits of the source.
 
 ## Run it
 
