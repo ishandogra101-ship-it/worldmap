@@ -1,0 +1,79 @@
+import { writeFile, mkdir } from "node:fs/promises";
+import path from "node:path";
+
+const COMMONS_API = "https://commons.wikimedia.org/w/api.php";
+const UA =
+  "worldmap-history-atlas/0.1 (https://github.com/ishandogra101-ship-it/worldmap) portrait fetch";
+
+const OK_LICENSE = /public domain|^cc|^pd|cc0|no restrictions/i;
+const BAD_LICENSE = /fair use|non-free|copyright/i;
+
+const stripTags = (s) => (s || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+
+function fileTitleFromImageUrl(url) {
+  const m = /Special:FilePath\/(.+)$/.exec(url);
+  if (!m) return null;
+  try {
+    return decodeURIComponent(m[1]);
+  } catch {
+    return m[1];
+  }
+}
+
+async function commonsInfo(fileTitle) {
+  const u = new URL(COMMONS_API);
+  u.searchParams.set("action", "query");
+  u.searchParams.set("format", "json");
+  u.searchParams.set("titles", `File:${fileTitle}`);
+  u.searchParams.set("prop", "imageinfo");
+  u.searchParams.set("iiprop", "url|extmetadata");
+  u.searchParams.set("iiurlwidth", "220");
+  const res = await fetch(u, { headers: { "User-Agent": UA } });
+  if (!res.ok) throw new Error(`commons ${res.status}`);
+  const json = await res.json();
+  const pages = json.query?.pages || {};
+  const page = Object.values(pages)[0];
+  const info = page?.imageinfo?.[0];
+  if (!info) return null;
+  const ext = info.extmetadata || {};
+  return {
+    thumb: info.thumburl,
+    license: stripTags(ext.LicenseShortName?.value),
+    artist: stripTags(ext.Artist?.value),
+  };
+}
+
+// entities: array with optional `image` (Commons FilePath URL). Mutates entries
+// in place, adding `portrait` (relative path) and `portraitCredit`; deletes `image`.
+// Returns the number of portraits downloaded. Bounded by `limit` (most prominent first).
+export async function fetchPortraits(entities, outDir, { limit = 1500, delayMs = 120 } = {}) {
+  await mkdir(outDir, { recursive: true });
+  const withImage = entities
+    .filter((e) => e.image)
+    .sort((a, b) => b.prominence - a.prominence)
+    .slice(0, limit);
+  let got = 0;
+  for (const e of withImage) {
+    const title = fileTitleFromImageUrl(e.image);
+    if (!title) continue;
+    try {
+      const info = await commonsInfo(title);
+      await new Promise((r) => setTimeout(r, delayMs));
+      if (!info || !info.thumb) continue;
+      if (BAD_LICENSE.test(info.license) || !OK_LICENSE.test(info.license)) continue;
+      const img = await fetch(info.thumb, { headers: { "User-Agent": UA } });
+      if (!img.ok) continue;
+      const buf = Buffer.from(await img.arrayBuffer());
+      const fname = `${e.id}.jpg`;
+      await writeFile(path.join(outDir, fname), buf);
+      e.portrait = `portraits/${fname}`;
+      e.portraitCredit = [info.artist, info.license].filter(Boolean).join(" · ") + " (Wikimedia Commons)";
+      got++;
+      if (got % 100 === 0) console.log(`  portraits: ${got} downloaded`);
+    } catch (err) {
+      console.warn(`  portrait skip ${e.id}: ${err.message}`);
+    }
+  }
+  for (const e of entities) delete e.image;
+  return got;
+}
