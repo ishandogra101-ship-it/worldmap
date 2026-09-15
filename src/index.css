@@ -749,3 +749,13 @@ kbd {
 .story__mark.is-done { background: var(--text-3); }
 .story__mark.is-on { background: var(--accent); }
 .story__nav { display: flex; align-items: center; gap: 6px; }
+
+/* ---- coverage of the imported record ---------------------------------- */
+.cov { margin: 12px 0 14px; display: grid; gap: 4px; }
+.cov__row { display: grid; grid-template-columns: 116px 1fr 46px 52px; align-items: center; gap: 9px; }
+.cov__name { font-size: 11.5px; color: var(--text-2); }
+.cov__bar { height: 4px; border-radius: 1px; background: var(--border); overflow: hidden; }
+.cov__fill { display: block; height: 100%; background: var(--accent); opacity: .75; }
+.cov__pct { font-size: 11px; color: var(--text); text-align: right; }
+.cov__n { font-size: 11px; color: var(--text-3); text-align: right; }
+.cov__point { color: var(--text); font-weight: 500; }

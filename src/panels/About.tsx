@@ -1,5 +1,6 @@
 import { store, useAtlas } from "../app/store";
 import { Icon } from "../design/icons";
+import Coverage from "./Coverage";
 
 export default function About() {
   const open = useAtlas((s) => s.aboutOpen);
@@ -54,6 +55,10 @@ export default function About() {
             reference work — <em>not</em> a verdict on historical importance, and it carries the
             biases of its source. It exists to keep a world view legible, nothing more.
           </p>
+        </Section>
+
+        <Section title="What this atlas covers, and what it does not">
+          <Coverage />
         </Section>
 
         <Section title="Extent is a shape, not a figure">
