@@ -62,6 +62,31 @@ const MAX_MARKERS = 130;
 const MAX_LABELS = 60;
 const EVENT_WINDOW = 6; // years either side, so events are catchable while scrubbing
 
+/**
+ * Buckets each entity into every decade its marker could appear in.
+ *
+ * An event is catchable for EVENT_WINDOW years either side of its date, so its
+ * bucket range is widened to match — otherwise scrubbing past a decade boundary
+ * would blink it out a few years early.
+ */
+function indexByDecade(entities: Entity[]): Map<number, Entity[]> {
+  const out = new Map<number, Entity[]>();
+  for (const e of entities) {
+    const pad = e.kind === "event" && e.startYear === e.endYear ? EVENT_WINDOW : 0;
+    const from = Math.floor((e.startYear - pad) / 10);
+    const to = Math.floor((e.endYear + pad) / 10);
+    // a record with a nonsense span would otherwise be inserted into thousands
+    // of buckets; the importer drops those, and this is the second line
+    if (to - from > 40) continue;
+    for (let d = from; d <= to; d++) {
+      const bucket = out.get(d);
+      if (bucket) bucket.push(e);
+      else out.set(d, [e]);
+    }
+  }
+  return out;
+}
+
 function activeAt(e: Entity, year: number): boolean {
   if (e.kind === "event" && e.startYear === e.endYear) {
     return Math.abs(year - e.startYear) <= EVENT_WINDOW;
@@ -75,7 +100,15 @@ export class OverlayEngine {
   private root: HTMLDivElement;
   private nodes = new Map<string, HTMLElement>();
   private candidates: Candidate[] = [];
-  private entities: Entity[] = [];
+  /**
+   * Entities bucketed by decade of their active span.
+   *
+   * rebuild() runs on every year change, and scrubbing changes the year every
+   * frame. Walking the whole list was fine for fifty curated records and is not
+   * fine for the tens of thousands the Wikidata import brings. Bucketing turns
+   * that per-frame scan into a lookup plus a few hundred candidates.
+   */
+  private byDecade = new Map<number, Entity[]>();
   private polityByGroup = new Map<string, PolitySummary>();
   /** sovereign realms visible on screen, anchored inside the viewport */
   private visibleSov: Array<{ p: PolitySummary; lng: number; lat: number; cells: number; tier: 0 | 1 | 2 }> = [];
@@ -118,7 +151,11 @@ export class OverlayEngine {
     this.schedule();
   }
 
-  setEntities(entities: Entity[]): void { this.entities = entities; this.dirty = true; this.schedule(); }
+  setEntities(entities: Entity[]): void {
+    this.byDecade = indexByDecade(entities);
+    this.dirty = true;
+    this.schedule();
+  }
   setPolities(polities: PolitySummary[]): void {
     this.polityByGroup = new Map(polities.map((p) => [p.group, p]));
     this.sampleVisibleRealms();
@@ -287,7 +324,7 @@ export class OverlayEngine {
       }
     }
 
-    for (const e of this.entities) {
+    for (const e of this.byDecade.get(Math.floor(this.year / 10)) ?? []) {
       if (!activeAt(e, this.year)) continue;
       if (e.kind === "ruler" && !this.layers.rulers) continue;
       if (e.kind === "figure" && !this.layers.figures) continue;

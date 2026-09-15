@@ -256,8 +256,8 @@
 .tl-snap.is-active { background: var(--accent); opacity: 1; width: 2px; height: 7px; }
 .tl-events { top: 24px; height: 4px; }
 .tl-event {
-  position: absolute; top: 1px; width: 2px; height: 2px; border-radius: 50%;
-  background: var(--text-2); opacity: .45; transform: translateX(-1px);
+  position: absolute; top: 0; height: 4px; border-radius: 1px;
+  background: var(--text-2); transform-origin: top center;
 }
 .tl-followband {
   position: absolute; top: 15px; height: 16px; border-radius: 3px;

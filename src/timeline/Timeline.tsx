@@ -17,9 +17,7 @@ export default function Timeline() {
   const playing = useAtlas((s) => s.playing);
   const followed = useAtlas((s) => s.followed);
   const compareYear = useAtlas((s) => s.compareYear);
-  const eventYears = useAtlas(
-    (s) => s.entities.filter((e) => e.kind === "event").map((e) => e.startYear).join(","),
-  );
+  const entities = useAtlas((s) => s.entities);
 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(880);
@@ -40,6 +38,27 @@ export default function Timeline() {
   }, []);
 
   const ticks = useMemo(() => buildTicks(width), [width]);
+
+  /**
+   * Recorded events as a density band, bucketed along the track.
+   *
+   * One element per event was fine for a few dozen curated ones and is not fine
+   * for the thousands the Wikidata import brings: it put a DOM node in the
+   * timeline for every event in history, and rebuilt the list on every tick of
+   * playback. Bucketing gives a fixed number of bars, and a band that actually
+   * reads as density rather than as a solid smear.
+   */
+  const density = useMemo(() => {
+    const BUCKETS = 180;
+    const counts = new Array<number>(BUCKETS).fill(0);
+    for (const e of entities) {
+      if (e.kind !== "event") continue;
+      const i = Math.min(BUCKETS - 1, Math.max(0, Math.floor(yearToFrac(e.startYear) * BUCKETS)));
+      counts[i]++;
+    }
+    const max = Math.max(1, ...counts);
+    return counts.map((n, i) => ({ i, n, share: n / max }));
+  }, [entities]);
   const frac = yearToFrac(year);
   const era = eraForYear(year);
 
@@ -241,12 +260,20 @@ export default function Timeline() {
 
         {/* recorded events, as a density band */}
         <div className="tl-events" aria-hidden="true">
-          {eventYears
-            .split(",")
-            .filter(Boolean)
-            .map((y, i) => (
-              <span key={`${y}-${i}`} className="tl-event" style={{ left: `${yearToFrac(Number(y)) * 100}%` }} />
-            ))}
+          {density.map(({ i, n, share }) =>
+            n === 0 ? null : (
+              <span
+                key={i}
+                className="tl-event"
+                style={{
+                  left: `${(i / density.length) * 100}%`,
+                  width: `${100 / density.length}%`,
+                  opacity: 0.25 + share * 0.75,
+                  transform: `scaleY(${0.35 + share * 0.65})`,
+                }}
+              />
+            ),
+          )}
         </div>
 
         {followed && (
