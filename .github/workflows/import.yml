@@ -74,6 +74,12 @@ jobs:
         timeout-minutes: 35
         run: node scripts/import/build-dataset.mjs portraits
 
+      - name: Assemble production from canonical history
+        run: |
+          npm run canonical:validate
+          npm run build:atlas
+          npm run test:history
+
       - name: Report what was written
         if: inputs.mode == 'full'
         run: |
@@ -95,7 +101,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A public/data public/portraits CREDITS.md 2>/dev/null || true
+          git add -A public/data staging public/portraits CREDITS.md 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "nothing changed"
             exit 0
