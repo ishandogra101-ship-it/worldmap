@@ -26,7 +26,16 @@ import { WATCHLIST, spellingsOf } from "./watchlist.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..", "..");
-const DATA_DIR = path.join(ROOT, "public", "data");
+/**
+ * Imports write to staging, never to production.
+ *
+ * This used to be public/data, which meant a Wikidata query result became
+ * displayed history the moment it finished. That is the architecture this
+ * project moved away from: an import can propose a record, it cannot decide
+ * one. scripts/canonical/build.mjs is what assembles production, and canonical
+ * records win there every time.
+ */
+const DATA_DIR = path.join(ROOT, "staging");
 const PORTRAIT_DIR = path.join(ROOT, "public", "portraits");
 
 // must match MIN_YEAR / MAX_YEAR in src/app/store.ts

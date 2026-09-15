@@ -1,0 +1,481 @@
+{
+  "region": "Sub-Saharan Africa",
+  "sources": [
+    {
+      "title": "UNESCO General History of Africa, Vol. IV: Africa from the Twelfth to the Sixteenth Century",
+      "author": "D. T. Niane (ed.)",
+      "edition": "UNESCO"
+    },
+    {
+      "title": "Sundiata: An Epic of Old Mali",
+      "author": "D. T. Niane",
+      "edition": "Longman"
+    },
+    {
+      "title": "The Travels of Ibn Battuta",
+      "author": "Ibn Battuta, trans. H. A. R. Gibb",
+      "edition": "Hakluyt Society"
+    },
+    {
+      "title": "Tarikh al-Sudan",
+      "author": "Abd al-Rahman al-Sadi",
+      "edition": "17th-century Timbuktu chronicle"
+    },
+    {
+      "title": "The Secret History of the Mongols",
+      "edition": "13th-century Mongol chronicle, trans. Igor de Rachewiltz"
+    },
+    {
+      "title": "Genghis Khan and the Making of the Modern World",
+      "author": "Jack Weatherford",
+      "edition": "Crown"
+    },
+    {
+      "title": "The Cambridge Ancient History, Vol. IX: The Last Age of the Roman Republic",
+      "edition": "2nd ed., Cambridge University Press"
+    },
+    {
+      "title": "Caesar: Life of a Colossus",
+      "author": "Adrian Goldsworthy",
+      "edition": "Yale University Press"
+    }
+  ],
+  "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-15"
+  },
+  "people": [
+    {
+      "id": "mali-sundiata",
+      "canonicalName": "Sundiata Keita",
+      "alternativeNames": [
+        "Sunjata Keïta",
+        "Sundjata",
+        "Mari Djata I"
+      ],
+      "roles": [
+        "mansa"
+      ],
+      "died": {
+        "year": 1255,
+        "range": [
+          1255,
+          1260
+        ]
+      },
+      "region": "Sub-Saharan Africa",
+      "place": {
+        "lng": -8.4,
+        "lat": 11.38,
+        "name": "Niani",
+        "why": "Mali's capital under his line"
+      },
+      "notes": "Founder of the Mali Empire. Known principally through the oral epic and later Arabic chronicles, so his dates are conventional rather than documentary.",
+      "reigns": [
+        {
+          "polityId": "mali-empire",
+          "start": {
+            "year": 1235,
+            "note": "Victory at Kirina over Sumanguru."
+          },
+          "end": 1255,
+          "titles": [
+            "Mansa"
+          ],
+          "successorId": "mali-wali"
+        }
+      ]
+    },
+    {
+      "id": "mali-wali",
+      "canonicalName": "Mansa Wali",
+      "roles": [
+        "mansa"
+      ],
+      "region": "Sub-Saharan Africa",
+      "place": {
+        "lng": -8.4,
+        "lat": 11.38,
+        "name": "Niani",
+        "why": "Mali's capital"
+      },
+      "reigns": [
+        {
+          "polityId": "mali-empire",
+          "start": 1255,
+          "end": 1270,
+          "titles": [
+            "Mansa"
+          ],
+          "predecessorId": "mali-sundiata"
+        }
+      ]
+    },
+    {
+      "id": "mali-sakura",
+      "canonicalName": "Mansa Sakura",
+      "roles": [
+        "mansa"
+      ],
+      "region": "Sub-Saharan Africa",
+      "place": {
+        "lng": -8.4,
+        "lat": 11.38,
+        "name": "Niani",
+        "why": "Mali's capital"
+      },
+      "reigns": [
+        {
+          "polityId": "mali-empire",
+          "start": 1285,
+          "end": 1300,
+          "titles": [
+            "Mansa"
+          ],
+          "predecessorId": "mali-wali"
+        }
+      ]
+    },
+    {
+      "id": "mali-musa",
+      "canonicalName": "Mansa Musa",
+      "alternativeNames": [
+        "Musa I of Mali",
+        "Kankan Musa"
+      ],
+      "roles": [
+        "mansa"
+      ],
+      "died": {
+        "year": 1337,
+        "range": [
+          1332,
+          1337
+        ]
+      },
+      "region": "Sub-Saharan Africa",
+      "place": {
+        "lng": -8.4,
+        "lat": 11.38,
+        "name": "Niani",
+        "why": "Mali's capital; his court also sat at Timbuktu"
+      },
+      "notes": "His pilgrimage to Mecca in 1324 is the best-documented single event in medieval West African history and the reason Mali appears on the 1375 Catalan Atlas.",
+      "reigns": [
+        {
+          "polityId": "mali-empire",
+          "start": 1312,
+          "end": 1337,
+          "titles": [
+            "Mansa"
+          ],
+          "predecessorId": "mali-sakura",
+          "successorId": "mali-maghan"
+        }
+      ]
+    },
+    {
+      "id": "mali-maghan",
+      "canonicalName": "Mansa Maghan",
+      "roles": [
+        "mansa"
+      ],
+      "region": "Sub-Saharan Africa",
+      "place": {
+        "lng": -8.4,
+        "lat": 11.38,
+        "name": "Niani",
+        "why": "Mali's capital"
+      },
+      "reigns": [
+        {
+          "polityId": "mali-empire",
+          "start": 1337,
+          "end": 1341,
+          "titles": [
+            "Mansa"
+          ],
+          "predecessorId": "mali-musa",
+          "successorId": "mali-suleyman"
+        }
+      ]
+    },
+    {
+      "id": "mali-suleyman",
+      "canonicalName": "Mansa Suleyman",
+      "roles": [
+        "mansa"
+      ],
+      "region": "Sub-Saharan Africa",
+      "place": {
+        "lng": -8.4,
+        "lat": 11.38,
+        "name": "Niani",
+        "why": "Mali's capital"
+      },
+      "notes": "Ibn Battuta visited his court in 1352–53 and left the only eyewitness description of the empire.",
+      "reigns": [
+        {
+          "polityId": "mali-empire",
+          "start": 1341,
+          "end": 1360,
+          "titles": [
+            "Mansa"
+          ],
+          "predecessorId": "mali-maghan"
+        }
+      ]
+    },
+    {
+      "id": "genghis-khan",
+      "canonicalName": "Genghis Khan",
+      "alternativeNames": [
+        "Chinggis Khan",
+        "Temujin"
+      ],
+      "roles": [
+        "khagan",
+        "general"
+      ],
+      "born": {
+        "year": 1162,
+        "range": [
+          1155,
+          1167
+        ]
+      },
+      "died": 1227,
+      "region": "Central Asia",
+      "place": {
+        "lng": 102.83,
+        "lat": 47.2,
+        "name": "Karakorum",
+        "why": "the Mongol seat; his own court was mobile"
+      },
+      "notes": "His title was khagan, not king or emperor, which is exactly why a query for monarchs missed him through four imports.",
+      "reigns": [
+        {
+          "polityId": "mongol-empire",
+          "start": {
+            "year": 1206,
+            "note": "Proclaimed Genghis Khan at the kurultai on the Onon."
+          },
+          "end": 1227,
+          "titles": [
+            "Khagan"
+          ],
+          "successorId": "mongol-ogedei"
+        }
+      ]
+    },
+    {
+      "id": "mongol-ogedei",
+      "canonicalName": "Ögedei Khan",
+      "roles": [
+        "khagan"
+      ],
+      "born": 1186,
+      "died": 1241,
+      "region": "Central Asia",
+      "place": {
+        "lng": 102.83,
+        "lat": 47.2,
+        "name": "Karakorum",
+        "why": "he built it as the Mongol capital"
+      },
+      "reigns": [
+        {
+          "polityId": "mongol-empire",
+          "start": 1229,
+          "end": 1241,
+          "titles": [
+            "Khagan"
+          ],
+          "predecessorId": "genghis-khan",
+          "successorId": "mongol-guyuk"
+        }
+      ]
+    },
+    {
+      "id": "mongol-guyuk",
+      "canonicalName": "Güyük Khan",
+      "roles": [
+        "khagan"
+      ],
+      "died": 1248,
+      "region": "Central Asia",
+      "place": {
+        "lng": 102.83,
+        "lat": 47.2,
+        "name": "Karakorum",
+        "why": "Mongol capital"
+      },
+      "reigns": [
+        {
+          "polityId": "mongol-empire",
+          "start": 1246,
+          "end": 1248,
+          "titles": [
+            "Khagan"
+          ],
+          "predecessorId": "mongol-ogedei",
+          "successorId": "mongol-mongke"
+        }
+      ]
+    },
+    {
+      "id": "mongol-mongke",
+      "canonicalName": "Möngke Khan",
+      "roles": [
+        "khagan"
+      ],
+      "born": 1209,
+      "died": 1259,
+      "region": "Central Asia",
+      "place": {
+        "lng": 102.83,
+        "lat": 47.2,
+        "name": "Karakorum",
+        "why": "Mongol capital"
+      },
+      "reigns": [
+        {
+          "polityId": "mongol-empire",
+          "start": 1251,
+          "end": 1259,
+          "titles": [
+            "Khagan"
+          ],
+          "predecessorId": "mongol-guyuk",
+          "successorId": "kublai-khan"
+        }
+      ]
+    },
+    {
+      "id": "kublai-khan",
+      "canonicalName": "Kublai Khan",
+      "roles": [
+        "khagan",
+        "emperor"
+      ],
+      "born": 1215,
+      "died": 1294,
+      "region": "East Asia",
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Khanbaliq",
+        "why": "his capital from 1264"
+      },
+      "reigns": [
+        {
+          "polityId": "mongol-empire",
+          "start": {
+            "year": 1260,
+            "note": "Elected khagan at Kaiping, against his brother Ariq Boke."
+          },
+          "end": 1294,
+          "titles": [
+            "Khagan"
+          ],
+          "predecessorId": "mongol-mongke",
+          "note": "Khagan of the whole Mongol realm, nominally, though the western khanates went their own way."
+        },
+        {
+          "polityId": "yuan",
+          "start": {
+            "year": 1271,
+            "note": "Proclaims the Yuan dynasty, taking a Chinese dynastic name."
+          },
+          "end": 1294,
+          "titles": [
+            "Emperor of the Great Yuan"
+          ],
+          "note": "The Yuan is a distinct polity founded within his reign, not a rename of the Mongol Empire."
+        }
+      ]
+    },
+    {
+      "id": "julius-caesar",
+      "canonicalName": "Julius Caesar",
+      "alternativeNames": [
+        "Gaius Julius Caesar"
+      ],
+      "roles": [
+        "dictator",
+        "general",
+        "statesman",
+        "writer"
+      ],
+      "born": {
+        "year": -100,
+        "range": [
+          -102,
+          -100
+        ],
+        "note": "Sources differ between 102 and 100 BCE; 100 is the usual choice."
+      },
+      "died": {
+        "year": -44,
+        "note": "Assassinated on the Ides of March."
+      },
+      "region": "Europe",
+      "place": {
+        "lng": 12.5,
+        "lat": 41.9,
+        "name": "Rome",
+        "why": "the seat of his power"
+      },
+      "notes": "Never king, never emperor. A data model that asks whether a person was a monarch cannot see him, which is the case this schema's role list exists to handle.",
+      "reigns": [
+        {
+          "polityId": "roman-republic",
+          "start": {
+            "year": -49,
+            "note": "First dictatorship; held the office in 49, 48–47, 46 and 45, and as dictator perpetuo from February 44."
+          },
+          "end": -44,
+          "titles": [
+            "Dictator",
+            "Consul",
+            "Pontifex Maximus"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "augustus",
+      "canonicalName": "Augustus",
+      "alternativeNames": [
+        "Octavian",
+        "Gaius Octavius"
+      ],
+      "roles": [
+        "emperor",
+        "statesman"
+      ],
+      "born": -63,
+      "died": 14,
+      "region": "Europe",
+      "place": {
+        "lng": 12.5,
+        "lat": 41.9,
+        "name": "Rome",
+        "why": "the imperial seat"
+      },
+      "reigns": [
+        {
+          "polityId": "roman-empire",
+          "start": -27,
+          "end": 14,
+          "titles": [
+            "Princeps",
+            "Augustus"
+          ],
+          "predecessorId": "julius-caesar"
+        }
+      ]
+    }
+  ]
+}

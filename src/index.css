@@ -810,3 +810,37 @@ kbd {
   margin-top: 7px; padding-top: 7px;
   border-top: 1px solid color-mix(in srgb, #c2492f 24%, transparent);
 }
+
+/* ============ provenance ============ */
+/* Quiet by design. It answers "on whose authority", which a reader asks
+   occasionally; it is not a caveat attached to everything the atlas shows. */
+.prov {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.prov__line { font-size: 12.5px; line-height: 1.55; color: var(--text-2); margin-top: 7px; }
+.prov__line strong { color: var(--text); font-weight: 600; }
+.prov__sources {
+  margin-top: 8px; display: flex; flex-direction: column; gap: 4px;
+  font-size: 11px; line-height: 1.4; color: var(--text-3);
+}
+.prov__sources li { padding-left: 11px; position: relative; }
+.prov__sources li::before {
+  content: ""; position: absolute; left: 0; top: 7px;
+  width: 4px; height: 1px; background: var(--text-3);
+}
+.prov__state { font-size: 10.5px; line-height: 1.45; color: var(--text-3); margin-top: 9px; }
+
+/* ============ realms the snapshot does not draw ============ */
+.absent {
+  margin-top: 14px; padding: 11px 12px 12px;
+  border-radius: var(--r3);
+  border: 1px solid var(--border-hi);
+  background: var(--accent-quiet);
+}
+.absent__head { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.absent__list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.absent__row { display: flex; align-items: baseline; gap: 8px; font-size: 12.5px; color: var(--text); }
+.absent__years { font-size: 11px; color: var(--text-3); margin-left: auto; }
+.absent__why { font-size: 10.5px; line-height: 1.45; color: var(--text-3); margin-top: 9px; }

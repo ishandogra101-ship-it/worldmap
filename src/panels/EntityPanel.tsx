@@ -11,6 +11,8 @@ import { loadManifest, nearestSnapshot } from "../data/snapshots";
 import { arcFor, type Arc } from "../data/arcs";
 import { isCultureArea } from "../map/kinds";
 import { correctionsFor } from "../data/corrections";
+import { loadCanon, canonFor, missingFrom, endedBefore, type CanonPolity } from "../data/canon";
+import Provenance from "./Provenance";
 
 /**
  * Match a realm against the realm named on a person's record.
@@ -246,6 +248,32 @@ function PolityView({ p, entities, polities, year }: {
     [p.snapshotYear, p.name],
   );
 
+  /**
+   * What the research layer says about this realm, and what it says is missing.
+   *
+   * Two separate questions asked of the same backbone. `canon` is the canonical
+   * record for the realm on screen, which is where the provenance panel gets
+   * its sources. `absent` is every realm the atlas knows existed in the drawn
+   * year that this snapshot does not draw at all — the Ming in 1400 being the
+   * case that forced this to exist.
+   */
+  const [canon, setCanon] = useState<CanonPolity | null>(null);
+  const [gone, setGone] = useState<CanonPolity | null>(null);
+  const [absent, setAbsent] = useState<CanonPolity[]>([]);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const all = await loadCanon();
+      if (!alive || all.length === 0) return;
+      setCanon(canonFor(all, p.name, p.snapshotYear) ?? null);
+      setGone(endedBefore(all, p.name, p.snapshotYear) ?? null);
+      const drawn = polities.map((x) => x.name);
+      const here = regionOf(p.lng, p.lat);
+      setAbsent(missingFrom(all, drawn, p.snapshotYear, { near: here }).slice(0, 5));
+    })().catch(() => { /* canonical layer not built yet */ });
+    return () => { alive = false; };
+  }, [p.name, p.snapshotYear, p.lng, p.lat, polities]);
+
   const tierName = isCultureArea(p.name)
     ? "A people, not a state"
     : p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm";
@@ -320,6 +348,48 @@ function PolityView({ p, entities, polities, year }: {
         </aside>
       ))}
 
+      {gone && (
+        <aside className="fix">
+          <div className="fix__head">
+            <span className="fix__mark" aria-hidden="true">!</span>
+            <span className="eyebrow">This state had already ended</span>
+          </div>
+          <p className="fix__what">
+            <strong>{gone.name}</strong> ended in{" "}
+            {gone.to !== null && gone.to < 0 ? `${-gone.to} BCE` : gone.to} — {p.snapshotYear - (gone.to ?? 0)} years
+            before the year drawn here.
+          </p>
+          <p className="fix__record">{gone.notes ?? "The boundary source carries the earlier shape forward."}</p>
+          <p className="fix__src">{gone.sources.join(" · ")}</p>
+        </aside>
+      )}
+
+      {absent.length > 0 && (
+        <aside className="absent">
+          <div className="absent__head">
+            <span className="eyebrow">The atlas knows these were here</span>
+          </div>
+          <p className="fix__what">
+            This snapshot does not draw them. Their absence is a gap in the boundary
+            source, not a fact about {formatYear(p.snapshotYear)}.
+          </p>
+          <div className="absent__list">
+            {absent.map((a) => (
+              <div className="absent__row" key={a.id}>
+                <span>{a.name}</span>
+                <span className="absent__years tnum">
+                  {a.from < 0 ? `${-a.from} BCE` : a.from}–{a.to === null ? "" : a.to < 0 ? `${-a.to} BCE` : a.to}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="absent__why">
+            No boundary is drawn for them, because inventing one would be the same
+            error in the other direction.
+          </p>
+        </aside>
+      )}
+
       {(p.subjectTo && p.subjectTo !== p.name) && (
         <Row label="Subject to" value={p.subjectTo} />
       )}
@@ -384,6 +454,8 @@ function PolityView({ p, entities, polities, year }: {
         realms={realmsElsewhere(polities, regionOf(p.lng, p.lat), p.group)}
         people={elsewhere}
       />
+
+      {canon && <Provenance p={canon} />}
 
       <p className="sheet__fine">
         Borders come from the nearest mapped snapshot rather than a reconstruction of this

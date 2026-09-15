@@ -1,0 +1,214 @@
+{
+  "region": "Central Asia",
+  "sources": [
+    {
+      "title": "The Cambridge History of Iran, Vol. 6: The Timurid and Safavid Periods",
+      "author": "Peter Jackson and Laurence Lockhart (eds.)",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "Tamerlane: Sword of Islam, Conqueror of the World",
+      "author": "Justin Marozzi",
+      "edition": "HarperCollins"
+    },
+    {
+      "title": "The Rise and Rule of Tamerlane",
+      "author": "Beatrice Forbes Manz",
+      "edition": "Cambridge University Press"
+    }
+  ],
+  "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-15"
+  },
+  "people": [
+    {
+      "id": "timur",
+      "canonicalName": "Timur",
+      "alternativeNames": [
+        "Tamerlane",
+        "Amir Timur",
+        "Temur"
+      ],
+      "roles": [
+        "emperor",
+        "general"
+      ],
+      "born": 1336,
+      "died": 1405,
+      "place": {
+        "lng": 66.96,
+        "lat": 39.65,
+        "name": "Samarkand",
+        "why": "his capital"
+      },
+      "notes": "Ruled as amir in the name of a Chagatayid puppet khan rather than taking the title of khan himself.",
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1370,
+          "end": 1405,
+          "dynasty": "Timurid",
+          "titles": [
+            "Amir"
+          ],
+          "successorId": "timurid-shahrukh"
+        }
+      ]
+    },
+    {
+      "id": "timurid-khalil",
+      "canonicalName": "Khalil Sultan",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 66.96,
+        "lat": 39.65,
+        "name": "Samarkand",
+        "why": "held Samarkand in the succession struggle"
+      },
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1405,
+          "end": 1409,
+          "dynasty": "Timurid",
+          "predecessorId": "timur",
+          "successorId": "timurid-shahrukh"
+        }
+      ]
+    },
+    {
+      "id": "timurid-shahrukh",
+      "canonicalName": "Shah Rukh",
+      "alternativeNames": [
+        "Shahrukh Mirza"
+      ],
+      "roles": [
+        "emperor"
+      ],
+      "born": 1377,
+      "died": 1447,
+      "place": {
+        "lng": 62.2,
+        "lat": 34.34,
+        "name": "Herat",
+        "why": "his capital"
+      },
+      "notes": "Timur's son. Moved the centre of the empire from Samarkand to Herat.",
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1405,
+          "end": 1447,
+          "dynasty": "Timurid",
+          "predecessorId": "timur",
+          "successorId": "timurid-ulughbeg"
+        }
+      ]
+    },
+    {
+      "id": "timurid-ulughbeg",
+      "canonicalName": "Ulugh Beg",
+      "roles": [
+        "emperor",
+        "mathematician",
+        "scientist"
+      ],
+      "born": 1394,
+      "died": 1449,
+      "place": {
+        "lng": 66.96,
+        "lat": 39.65,
+        "name": "Samarkand",
+        "why": "governed there from 1409 and built its observatory"
+      },
+      "notes": "An astronomer of the first rank as well as a sovereign; his Zij-i Sultani star catalogue stood for two centuries. The import held him only as an astronomer, which is half of him.",
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1447,
+          "end": 1449,
+          "dynasty": "Timurid",
+          "predecessorId": "timurid-shahrukh",
+          "successorId": "timurid-abdallatif"
+        }
+      ]
+    },
+    {
+      "id": "timurid-abdallatif",
+      "canonicalName": "Abd al-Latif Mirza",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 66.96,
+        "lat": 39.65,
+        "name": "Samarkand",
+        "why": "Timurid seat"
+      },
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1449,
+          "end": 1450,
+          "dynasty": "Timurid",
+          "predecessorId": "timurid-ulughbeg",
+          "successorId": "timurid-abusaid"
+        }
+      ]
+    },
+    {
+      "id": "timurid-abusaid",
+      "canonicalName": "Abu Sa'id Mirza",
+      "roles": [
+        "emperor"
+      ],
+      "died": 1469,
+      "place": {
+        "lng": 66.96,
+        "lat": 39.65,
+        "name": "Samarkand",
+        "why": "his seat"
+      },
+      "notes": "Babur's great-grandfather, and so the link between the Timurids and the Mughals.",
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1451,
+          "end": 1469,
+          "dynasty": "Timurid",
+          "predecessorId": "timurid-abdallatif",
+          "successorId": "timurid-husayn"
+        }
+      ]
+    },
+    {
+      "id": "timurid-husayn",
+      "canonicalName": "Husayn Bayqara",
+      "roles": [
+        "emperor"
+      ],
+      "born": 1438,
+      "died": 1506,
+      "place": {
+        "lng": 62.2,
+        "lat": 34.34,
+        "name": "Herat",
+        "why": "his capital"
+      },
+      "notes": "His Herat was the cultural high point of the later Timurids: Behzad, Jami and Ali-Shir Nava'i all worked under his patronage.",
+      "reigns": [
+        {
+          "polityId": "timurid",
+          "start": 1469,
+          "end": 1506,
+          "dynasty": "Timurid",
+          "predecessorId": "timurid-abusaid"
+        }
+      ]
+    }
+  ]
+}

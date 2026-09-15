@@ -1,0 +1,444 @@
+{
+  "region": "East Asia",
+  "sources": [
+    {
+      "title": "The Cambridge History of China, Vol. 7: The Ming Dynasty, 1368–1644, Part 1",
+      "author": "Frederick W. Mote and Denis Twitchett (eds.)",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "The Cambridge History of China, Vol. 8: The Ming Dynasty, Part 2",
+      "author": "Denis Twitchett and Frederick W. Mote (eds.)",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "Imperial China 900–1800",
+      "author": "Frederick W. Mote",
+      "edition": "Harvard University Press"
+    }
+  ],
+  "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-15"
+  },
+  "people": [
+    {
+      "id": "ming-hongwu",
+      "canonicalName": "Hongwu Emperor",
+      "alternativeNames": [
+        "Zhu Yuanzhang",
+        "Taizu"
+      ],
+      "roles": [
+        "emperor"
+      ],
+      "born": -1328,
+      "died": 1398,
+      "place": {
+        "lng": 118.8,
+        "lat": 32.06,
+        "name": "Nanjing",
+        "why": "Ming capital during his reign"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1368,
+          "end": 1398,
+          "dynasty": "Zhu",
+          "titles": [
+            "Emperor of the Great Ming"
+          ],
+          "successorId": "ming-jianwen"
+        }
+      ]
+    },
+    {
+      "id": "ming-jianwen",
+      "canonicalName": "Jianwen Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 118.8,
+        "lat": 32.06,
+        "name": "Nanjing",
+        "why": "Ming capital during his reign"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1398,
+          "end": {
+            "year": 1402,
+            "note": "Deposed in the Jingnan campaign; his fate is unrecorded."
+          },
+          "dynasty": "Zhu",
+          "predecessorId": "ming-hongwu",
+          "successorId": "ming-yongle"
+        }
+      ]
+    },
+    {
+      "id": "ming-yongle",
+      "canonicalName": "Yongle Emperor",
+      "alternativeNames": [
+        "Zhu Di",
+        "Chengzu"
+      ],
+      "roles": [
+        "emperor"
+      ],
+      "born": 1360,
+      "died": 1424,
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "moved the capital there in 1421"
+      },
+      "notes": "Commissioned Zheng He's treasure voyages from 1405 and moved the capital to Beijing.",
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1402,
+          "end": 1424,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-jianwen",
+          "successorId": "ming-hongxi"
+        }
+      ]
+    },
+    {
+      "id": "ming-hongxi",
+      "canonicalName": "Hongxi Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1424,
+          "end": 1425,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-yongle",
+          "successorId": "ming-xuande"
+        }
+      ]
+    },
+    {
+      "id": "ming-xuande",
+      "canonicalName": "Xuande Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1425,
+          "end": 1435,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-hongxi",
+          "successorId": "ming-zhengtong"
+        }
+      ]
+    },
+    {
+      "id": "ming-zhengtong",
+      "canonicalName": "Zhengtong Emperor",
+      "alternativeNames": [
+        "Tianshun Emperor",
+        "Zhu Qizhen"
+      ],
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1435,
+          "end": {
+            "year": 1449,
+            "note": "Captured by the Oirats at Tumu; his brother took the throne."
+          },
+          "dynasty": "Zhu",
+          "titles": [
+            "Zhengtong Emperor"
+          ],
+          "predecessorId": "ming-xuande",
+          "successorId": "ming-jingtai",
+          "note": "First reign, as Zhengtong."
+        },
+        {
+          "polityId": "ming",
+          "start": 1457,
+          "end": 1464,
+          "dynasty": "Zhu",
+          "titles": [
+            "Tianshun Emperor"
+          ],
+          "predecessorId": "ming-jingtai",
+          "successorId": "ming-chenghua",
+          "note": "Restored after deposing his brother, reigning under a new era name."
+        }
+      ],
+      "notes": "The only Ming emperor to reign twice. Flattening the two into one span erases the Jingtai reign between them."
+    },
+    {
+      "id": "ming-jingtai",
+      "canonicalName": "Jingtai Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "notes": "Took the throne after the Tumu Crisis while Zhengtong was a Mongol captive.",
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1449,
+          "end": 1457,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-zhengtong",
+          "successorId": "ming-zhengtong"
+        }
+      ]
+    },
+    {
+      "id": "ming-chenghua",
+      "canonicalName": "Chenghua Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1464,
+          "end": 1487,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-zhengtong",
+          "successorId": "ming-hongzhi"
+        }
+      ]
+    },
+    {
+      "id": "ming-hongzhi",
+      "canonicalName": "Hongzhi Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1487,
+          "end": 1505,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-chenghua",
+          "successorId": "ming-zhengde"
+        }
+      ]
+    },
+    {
+      "id": "ming-zhengde",
+      "canonicalName": "Zhengde Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1505,
+          "end": 1521,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-hongzhi",
+          "successorId": "ming-jiajing"
+        }
+      ]
+    },
+    {
+      "id": "ming-jiajing",
+      "canonicalName": "Jiajing Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1521,
+          "end": 1567,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-zhengde",
+          "successorId": "ming-longqing"
+        }
+      ]
+    },
+    {
+      "id": "ming-longqing",
+      "canonicalName": "Longqing Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1567,
+          "end": 1572,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-jiajing",
+          "successorId": "ming-wanli"
+        }
+      ]
+    },
+    {
+      "id": "ming-wanli",
+      "canonicalName": "Wanli Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1572,
+          "end": 1620,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-longqing",
+          "successorId": "ming-taichang"
+        }
+      ]
+    },
+    {
+      "id": "ming-taichang",
+      "canonicalName": "Taichang Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1620,
+          "end": {
+            "year": 1620,
+            "note": "Reigned one month."
+          },
+          "dynasty": "Zhu",
+          "predecessorId": "ming-wanli",
+          "successorId": "ming-tianqi"
+        }
+      ]
+    },
+    {
+      "id": "ming-tianqi",
+      "canonicalName": "Tianqi Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1620,
+          "end": 1627,
+          "dynasty": "Zhu",
+          "predecessorId": "ming-taichang",
+          "successorId": "ming-chongzhen"
+        }
+      ]
+    },
+    {
+      "id": "ming-chongzhen",
+      "canonicalName": "Chongzhen Emperor",
+      "roles": [
+        "emperor"
+      ],
+      "died": 1644,
+      "place": {
+        "lng": 116.4,
+        "lat": 39.9,
+        "name": "Beijing",
+        "why": "Ming capital"
+      },
+      "reigns": [
+        {
+          "polityId": "ming",
+          "start": 1627,
+          "end": {
+            "year": 1644,
+            "note": "Took his own life as Li Zicheng's forces entered Beijing."
+          },
+          "dynasty": "Zhu",
+          "predecessorId": "ming-tianqi"
+        }
+      ]
+    }
+  ]
+}

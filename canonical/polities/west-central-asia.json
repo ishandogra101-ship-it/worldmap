@@ -1,0 +1,589 @@
+{
+  "region": "West Asia",
+  "sources": [
+    {
+      "title": "The Cambridge History of Iran",
+      "edition": "Cambridge University Press, 7 vols."
+    },
+    {
+      "title": "The Cambridge History of Islam",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "The Cambridge History of Inner Asia",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "A History of the Ottoman Empire",
+      "author": "Douglas A. Howard",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "The Mongols",
+      "author": "David Morgan",
+      "edition": "2nd ed., Blackwell"
+    }
+  ],
+  "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-15"
+  },
+  "polities": [
+    {
+      "id": "akkad",
+      "canonicalName": "Akkadian Empire",
+      "type": "empire",
+      "founded": -2334,
+      "ended": -2154,
+      "capitals": [
+        {
+          "name": "Akkad",
+          "lng": 44.4,
+          "lat": 33.1,
+          "note": "Site not securely identified."
+        }
+      ],
+      "mapsTo": [
+        "Akkad",
+        "Akkadian Empire"
+      ]
+    },
+    {
+      "id": "babylon-old",
+      "canonicalName": "Old Babylonian Empire",
+      "type": "kingdom",
+      "founded": -1894,
+      "ended": -1595,
+      "capitals": [
+        {
+          "name": "Babylon",
+          "lng": 44.42,
+          "lat": 32.54
+        }
+      ],
+      "mapsTo": [
+        "Babylonia",
+        "Babylon",
+        "Old Babylonian Empire"
+      ]
+    },
+    {
+      "id": "assyria",
+      "canonicalName": "Neo-Assyrian Empire",
+      "type": "empire",
+      "founded": -911,
+      "ended": -609,
+      "capitals": [
+        {
+          "name": "Nineveh",
+          "lng": 43.15,
+          "lat": 36.36,
+          "from": -705
+        }
+      ],
+      "mapsTo": [
+        "Assyria",
+        "Neo-Assyrian Empire",
+        "Assyrian Empire"
+      ]
+    },
+    {
+      "id": "achaemenid",
+      "canonicalName": "Achaemenid Empire",
+      "type": "empire",
+      "founded": {
+        "year": -550,
+        "note": "Cyrus defeats Astyages."
+      },
+      "ended": -330,
+      "capitals": [
+        {
+          "name": "Persepolis",
+          "lng": 52.89,
+          "lat": 29.94
+        },
+        {
+          "name": "Susa",
+          "lng": 48.25,
+          "lat": 32.19
+        }
+      ],
+      "dynasty": "Achaemenid",
+      "mapsTo": [
+        "Achaemenid Empire",
+        "Persia",
+        "Persian Empire"
+      ]
+    },
+    {
+      "id": "seleucid",
+      "canonicalName": "Seleucid Empire",
+      "type": "empire",
+      "founded": -312,
+      "ended": -63,
+      "capitals": [
+        {
+          "name": "Antioch",
+          "lng": 36.16,
+          "lat": 36.2
+        }
+      ],
+      "predecessors": [
+        "achaemenid"
+      ],
+      "mapsTo": [
+        "Seleucid Empire",
+        "Seleucids"
+      ]
+    },
+    {
+      "id": "parthia",
+      "canonicalName": "Parthian Empire",
+      "type": "empire",
+      "founded": -247,
+      "ended": 224,
+      "capitals": [
+        {
+          "name": "Ctesiphon",
+          "lng": 44.58,
+          "lat": 33.09
+        }
+      ],
+      "dynasty": "Arsacid",
+      "successors": [
+        "sasanian"
+      ],
+      "mapsTo": [
+        "Parthia",
+        "Parthian Empire",
+        "Arsacid"
+      ]
+    },
+    {
+      "id": "sasanian",
+      "canonicalName": "Sasanian Empire",
+      "type": "empire",
+      "founded": 224,
+      "ended": 651,
+      "capitals": [
+        {
+          "name": "Ctesiphon",
+          "lng": 44.58,
+          "lat": 33.09
+        }
+      ],
+      "dynasty": "Sasan",
+      "predecessors": [
+        "parthia"
+      ],
+      "successors": [
+        "rashidun"
+      ],
+      "mapsTo": [
+        "Sasanian Empire",
+        "Sassanid Empire",
+        "Persia"
+      ]
+    },
+    {
+      "id": "rashidun",
+      "canonicalName": "Rashidun Caliphate",
+      "type": "caliphate",
+      "founded": 632,
+      "ended": 661,
+      "capitals": [
+        {
+          "name": "Medina",
+          "lng": 39.61,
+          "lat": 24.47
+        }
+      ],
+      "successors": [
+        "umayyad"
+      ],
+      "mapsTo": [
+        "Rashidun Caliphate",
+        "Caliphate",
+        "Rashidun"
+      ]
+    },
+    {
+      "id": "umayyad",
+      "canonicalName": "Umayyad Caliphate",
+      "type": "caliphate",
+      "founded": 661,
+      "ended": 750,
+      "capitals": [
+        {
+          "name": "Damascus",
+          "lng": 36.29,
+          "lat": 33.51
+        }
+      ],
+      "dynasty": "Umayyad",
+      "predecessors": [
+        "rashidun"
+      ],
+      "successors": [
+        "abbasid"
+      ],
+      "mapsTo": [
+        "Umayyad Caliphate",
+        "Umayyad",
+        "Caliphate"
+      ]
+    },
+    {
+      "id": "abbasid",
+      "canonicalName": "Abbasid Caliphate",
+      "type": "caliphate",
+      "founded": 750,
+      "ended": {
+        "year": 1258,
+        "note": "Mongol sack of Baghdad; a Cairo line continues under the Mamluks."
+      },
+      "capitals": [
+        {
+          "name": "Baghdad",
+          "lng": 44.36,
+          "lat": 33.31,
+          "from": 762
+        }
+      ],
+      "dynasty": "Abbasid",
+      "predecessors": [
+        "umayyad"
+      ],
+      "mapsTo": [
+        "Abbasid Caliphate",
+        "Abbasid",
+        "Caliphate"
+      ]
+    },
+    {
+      "id": "fatimid",
+      "canonicalName": "Fatimid Caliphate",
+      "type": "caliphate",
+      "founded": 909,
+      "ended": 1171,
+      "capitals": [
+        {
+          "name": "Cairo",
+          "lng": 31.24,
+          "lat": 30.04,
+          "from": 973
+        }
+      ],
+      "mapsTo": [
+        "Fatimid Caliphate",
+        "Fatimids"
+      ]
+    },
+    {
+      "id": "seljuk",
+      "canonicalName": "Great Seljuk Empire",
+      "type": "empire",
+      "founded": 1037,
+      "ended": 1194,
+      "dynasty": "Seljuk",
+      "mapsTo": [
+        "Seljuk Empire",
+        "Seljuks",
+        "Great Seljuk"
+      ]
+    },
+    {
+      "id": "ayyubid",
+      "canonicalName": "Ayyubid Sultanate",
+      "type": "sultanate",
+      "founded": 1171,
+      "ended": 1260,
+      "capitals": [
+        {
+          "name": "Cairo",
+          "lng": 31.24,
+          "lat": 30.04
+        }
+      ],
+      "predecessors": [
+        "fatimid"
+      ],
+      "successors": [
+        "mamluk"
+      ],
+      "mapsTo": [
+        "Ayyubid",
+        "Ayyubids"
+      ]
+    },
+    {
+      "id": "mamluk",
+      "canonicalName": "Mamluk Sultanate",
+      "type": "sultanate",
+      "founded": 1250,
+      "ended": {
+        "year": 1517,
+        "note": "Ottoman conquest under Selim I."
+      },
+      "capitals": [
+        {
+          "name": "Cairo",
+          "lng": 31.24,
+          "lat": 30.04
+        }
+      ],
+      "predecessors": [
+        "ayyubid"
+      ],
+      "mapsTo": [
+        "Mamluk",
+        "Mamluk Sultanate",
+        "Mamluks",
+        "Egypt"
+      ]
+    },
+    {
+      "id": "mongol-empire",
+      "canonicalName": "Mongol Empire",
+      "type": "empire",
+      "founded": {
+        "year": 1206,
+        "note": "Temujin proclaimed Genghis Khan at the kurultai."
+      },
+      "ended": {
+        "year": 1294,
+        "note": "Death of Kublai; the empire had already divided into the four khanates by 1260."
+      },
+      "capitals": [
+        {
+          "name": "Karakorum",
+          "lng": 102.83,
+          "lat": 47.2,
+          "to": 1260
+        }
+      ],
+      "dynasty": "Borjigin",
+      "successors": [
+        "golden-horde",
+        "chagatai",
+        "ilkhanate",
+        "yuan"
+      ],
+      "mapsTo": [
+        "Mongol Empire",
+        "Great Khanate"
+      ],
+      "region": "Central Asia"
+    },
+    {
+      "id": "golden-horde",
+      "canonicalName": "Golden Horde",
+      "type": "khanate",
+      "founded": 1242,
+      "ended": 1502,
+      "predecessors": [
+        "mongol-empire"
+      ],
+      "mapsTo": [
+        "Golden Horde",
+        "Kipchak Khanate"
+      ],
+      "region": "Central Asia"
+    },
+    {
+      "id": "chagatai",
+      "canonicalName": "Chagatai Khanate",
+      "type": "khanate",
+      "founded": 1226,
+      "ended": 1687,
+      "predecessors": [
+        "mongol-empire"
+      ],
+      "mapsTo": [
+        "Chagatai Khanate",
+        "Chagatai"
+      ],
+      "region": "Central Asia"
+    },
+    {
+      "id": "ilkhanate",
+      "canonicalName": "Ilkhanate",
+      "type": "khanate",
+      "founded": 1256,
+      "ended": 1335,
+      "capitals": [
+        {
+          "name": "Tabriz",
+          "lng": 46.29,
+          "lat": 38.08
+        }
+      ],
+      "predecessors": [
+        "mongol-empire"
+      ],
+      "mapsTo": [
+        "Ilkhanate",
+        "Ilkhanid"
+      ]
+    },
+    {
+      "id": "timurid",
+      "canonicalName": "Timurid Empire",
+      "type": "empire",
+      "founded": {
+        "year": 1370,
+        "note": "Timur takes Balkh and is proclaimed sovereign."
+      },
+      "ended": {
+        "year": 1507,
+        "note": "Uzbek conquest of Herat. The Mughal line in India descends from it."
+      },
+      "capitals": [
+        {
+          "name": "Samarkand",
+          "lng": 66.96,
+          "lat": 39.65,
+          "to": 1405
+        },
+        {
+          "name": "Herat",
+          "lng": 62.2,
+          "lat": 34.34,
+          "from": 1405
+        }
+      ],
+      "dynasty": "Timurid",
+      "successors": [
+        "mughal",
+        "safavid"
+      ],
+      "mapsTo": [
+        "Timurid Empire",
+        "Timurid Emirates",
+        "Timurid"
+      ],
+      "region": "Central Asia"
+    },
+    {
+      "id": "safavid",
+      "canonicalName": "Safavid Empire",
+      "type": "empire",
+      "founded": 1501,
+      "ended": 1736,
+      "capitals": [
+        {
+          "name": "Tabriz",
+          "lng": 46.29,
+          "lat": 38.08,
+          "to": 1555
+        },
+        {
+          "name": "Isfahan",
+          "lng": 51.68,
+          "lat": 32.65,
+          "from": 1598
+        }
+      ],
+      "dynasty": "Safavid",
+      "mapsTo": [
+        "Safavid Empire",
+        "Safavids",
+        "Persia"
+      ]
+    },
+    {
+      "id": "durrani",
+      "canonicalName": "Durrani Empire",
+      "type": "empire",
+      "founded": {
+        "year": 1747,
+        "note": "Ahmad Shah Durrani elected at Kandahar."
+      },
+      "ended": 1823,
+      "capitals": [
+        {
+          "name": "Kandahar",
+          "lng": 65.71,
+          "lat": 31.61,
+          "to": 1776
+        },
+        {
+          "name": "Kabul",
+          "lng": 69.21,
+          "lat": 34.53,
+          "from": 1776
+        }
+      ],
+      "dynasty": "Durrani",
+      "mapsTo": [
+        "Afghanistan",
+        "Durrani Empire",
+        "Durrani"
+      ],
+      "notes": "Held Kashmir from 1752 until Ranjit Singh took it in 1819.",
+      "region": "Central Asia"
+    },
+    {
+      "id": "ottoman",
+      "canonicalName": "Ottoman Empire",
+      "type": "empire",
+      "founded": {
+        "year": 1299,
+        "range": [
+          1299,
+          1302
+        ],
+        "note": "Conventional date for Osman's principality; the state proper consolidates later."
+      },
+      "ended": 1922,
+      "capitals": [
+        {
+          "name": "Bursa",
+          "lng": 29.06,
+          "lat": 40.19,
+          "to": 1365
+        },
+        {
+          "name": "Edirne",
+          "lng": 26.56,
+          "lat": 41.68,
+          "from": 1365,
+          "to": 1453
+        },
+        {
+          "name": "Constantinople",
+          "lng": 28.98,
+          "lat": 41.01,
+          "from": 1453
+        }
+      ],
+      "dynasty": "Osman",
+      "mapsTo": [
+        "Ottoman Empire",
+        "Ottoman",
+        "Turkey"
+      ]
+    },
+    {
+      "id": "qajar",
+      "canonicalName": "Qajar Iran",
+      "type": "empire",
+      "founded": 1789,
+      "ended": 1925,
+      "capitals": [
+        {
+          "name": "Tehran",
+          "lng": 51.39,
+          "lat": 35.69
+        }
+      ],
+      "dynasty": "Qajar",
+      "mapsTo": [
+        "Persia",
+        "Qajar",
+        "Iran"
+      ]
+    }
+  ]
+}

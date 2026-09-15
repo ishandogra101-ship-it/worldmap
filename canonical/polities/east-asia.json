@@ -1,0 +1,122 @@
+{
+  "region": "East Asia",
+  "sources": [
+    { "title": "The Cambridge History of China", "author": "Denis Twitchett and John K. Fairbank (general eds.)", "edition": "Cambridge University Press, 15 vols." },
+    { "title": "The Cambridge History of Japan", "edition": "Cambridge University Press, 6 vols." },
+    { "title": "The Cambridge History of Korea", "edition": "Cambridge University Press" },
+    { "title": "China: A New History", "author": "John K. Fairbank and Merle Goldman", "edition": "2nd enlarged ed., Belknap Press" }
+  ],
+  "verification": { "method": "drafted", "by": "claude", "date": "2026-09-15" },
+  "polities": [
+    { "id": "shang", "canonicalName": "Shang dynasty", "type": "dynasty",
+      "founded": { "year": -1600, "range": [-1700, -1550], "note": "Traditional and archaeological datings differ; the conventional date is used." },
+      "ended": { "year": -1046, "note": "Battle of Muye, conventional date." },
+      "capitals": [{ "name": "Yin (Anyang)", "lng": 114.35, "lat": 36.1, "from": -1300 }],
+      "successors": ["zhou"], "mapsTo": ["Shang", "Shang Dynasty"] },
+
+    { "id": "zhou", "canonicalName": "Zhou dynasty", "type": "dynasty",
+      "founded": -1046, "ended": -256,
+      "capitals": [{ "name": "Haojing", "lng": 108.9, "lat": 34.27, "to": -771 }, { "name": "Luoyang", "lng": 112.45, "lat": 34.62, "from": -770 }],
+      "predecessors": ["shang"], "successors": ["qin"], "mapsTo": ["Zhou", "Zhou Dynasty", "Eastern Zhou", "Western Zhou"] },
+
+    { "id": "qin", "canonicalName": "Qin dynasty", "type": "empire",
+      "founded": { "year": -221, "note": "Unification under Qin Shi Huang; the state of Qin is older." },
+      "ended": -206, "capitals": [{ "name": "Xianyang", "lng": 108.7, "lat": 34.33 }],
+      "predecessors": ["zhou"], "successors": ["han"], "mapsTo": ["Qin", "Qin Empire", "Qin Dynasty"] },
+
+    { "id": "han", "canonicalName": "Han dynasty", "type": "empire",
+      "founded": -202, "ended": { "year": 220, "note": "Interrupted by the Xin interregnum, 9–23 CE." },
+      "capitals": [{ "name": "Chang'an", "lng": 108.9, "lat": 34.27, "to": 25 }, { "name": "Luoyang", "lng": 112.45, "lat": 34.62, "from": 25 }],
+      "predecessors": ["qin"], "successors": ["three-kingdoms"], "mapsTo": ["Han", "Han Empire", "Han Dynasty", "Eastern Han", "Western Han"] },
+
+    { "id": "three-kingdoms", "canonicalName": "Three Kingdoms", "type": "state",
+      "founded": 220, "ended": 280, "predecessors": ["han"], "successors": ["jin-dynasty"],
+      "mapsTo": ["Three Kingdoms", "Wei", "Shu", "Wu", "Cao Wei"] },
+
+    { "id": "jin-dynasty", "canonicalName": "Jin dynasty (265–420)", "type": "dynasty",
+      "founded": 265, "ended": 420, "predecessors": ["three-kingdoms"], "mapsTo": ["Jin", "Jin Dynasty", "Western Jin", "Eastern Jin"] },
+
+    { "id": "northern-southern", "canonicalName": "Northern and Southern dynasties", "type": "state",
+      "founded": 420, "ended": 589, "predecessors": ["jin-dynasty"], "successors": ["sui"],
+      "mapsTo": ["Northern Wei", "Liu Song", "Southern Qi", "Northern Zhou", "Northern Qi"] },
+
+    { "id": "sui", "canonicalName": "Sui dynasty", "type": "empire",
+      "founded": 581, "ended": 618, "capitals": [{ "name": "Daxing (Chang'an)", "lng": 108.9, "lat": 34.27 }],
+      "predecessors": ["northern-southern"], "successors": ["tang"], "mapsTo": ["Sui", "Sui Empire", "Sui Dynasty"] },
+
+    { "id": "tang", "canonicalName": "Tang dynasty", "type": "empire",
+      "founded": 618, "ended": 907, "capitals": [{ "name": "Chang'an", "lng": 108.9, "lat": 34.27 }],
+      "predecessors": ["sui"], "successors": ["five-dynasties"], "mapsTo": ["Tang", "Tang Empire", "Tang Dynasty"] },
+
+    { "id": "five-dynasties", "canonicalName": "Five Dynasties and Ten Kingdoms", "type": "state",
+      "founded": 907, "ended": 979, "predecessors": ["tang"], "successors": ["song"],
+      "mapsTo": ["Later Liang", "Later Tang", "Later Jin", "Later Han", "Later Zhou"] },
+
+    { "id": "song", "canonicalName": "Song dynasty", "type": "empire",
+      "founded": 960, "ended": { "year": 1279, "note": "Northern Song to 1127, Southern Song thereafter." },
+      "capitals": [{ "name": "Kaifeng", "lng": 114.3, "lat": 34.8, "to": 1127 }, { "name": "Lin'an (Hangzhou)", "lng": 120.15, "lat": 30.27, "from": 1127 }],
+      "predecessors": ["five-dynasties"], "successors": ["yuan"], "mapsTo": ["Song", "Song Empire", "Song Dynasty", "Northern Song", "Southern Song"] },
+
+    { "id": "liao", "canonicalName": "Liao dynasty", "type": "empire",
+      "founded": 916, "ended": 1125, "dynasty": "Khitan",
+      "successors": ["jin-jurchen"], "mapsTo": ["Liao", "Liao Empire", "Khitan"] },
+
+    { "id": "western-xia", "canonicalName": "Western Xia", "type": "empire",
+      "founded": 1038, "ended": 1227, "dynasty": "Tangut",
+      "mapsTo": ["Western Xia", "Xi Xia", "Tangut"] },
+
+    { "id": "jin-jurchen", "canonicalName": "Jin dynasty (1115–1234)", "type": "empire",
+      "founded": 1115, "ended": 1234, "dynasty": "Jurchen",
+      "predecessors": ["liao"], "successors": ["yuan"], "mapsTo": ["Jin", "Jurchen Jin", "Jin Empire"] },
+
+    { "id": "yuan", "canonicalName": "Yuan dynasty", "type": "empire",
+      "founded": { "year": 1271, "note": "Kublai proclaims the Yuan; Mongol rule in north China begins earlier." },
+      "ended": { "year": 1368, "note": "Ming capture of Khanbaliq. The Northern Yuan continues in Mongolia and is a separate record." },
+      "capitals": [{ "name": "Khanbaliq (Beijing)", "lng": 116.4, "lat": 39.9 }],
+      "dynasty": "Borjigin", "predecessors": ["song", "jin-jurchen"], "successors": ["ming", "northern-yuan"],
+      "mapsTo": ["Yuan", "Yuan Dynasty", "Great Khanate", "Mongol Empire"] },
+
+    { "id": "northern-yuan", "canonicalName": "Northern Yuan", "type": "khanate",
+      "founded": 1368, "ended": 1635, "dynasty": "Borjigin",
+      "predecessors": ["yuan"], "mapsTo": ["Northern Yuan", "Mongolia"],
+      "notes": "The Yuan remnant after 1368, in Mongolia and not in China proper. This is the polity the 1400 border snapshot draws over the whole of China as 'Great Khanate'." },
+
+    { "id": "ming", "canonicalName": "Ming dynasty", "type": "empire",
+      "founded": { "year": 1368, "note": "Hongwu proclaims the dynasty at Nanjing and Ming forces take Khanbaliq in the same year." },
+      "ended": { "year": 1644, "note": "Fall of Beijing to Li Zicheng, then to the Qing. Southern Ming resistance continues to 1662." },
+      "capitals": [{ "name": "Nanjing", "lng": 118.8, "lat": 32.06, "from": 1368, "to": 1421 }, { "name": "Beijing", "lng": 116.4, "lat": 39.9, "from": 1421 }],
+      "dynasty": "Zhu", "predecessors": ["yuan"], "successors": ["qing"],
+      "mapsTo": ["Ming Empire", "Ming Chinese Empire", "Ming", "Ming Dynasty"] },
+
+    { "id": "qing", "canonicalName": "Qing dynasty", "type": "empire",
+      "founded": { "year": 1636, "note": "Proclaimed in Manchuria; rule over China proper from 1644." },
+      "ended": 1912, "capitals": [{ "name": "Beijing", "lng": 116.4, "lat": 39.9, "from": 1644 }],
+      "dynasty": "Aisin Gioro", "predecessors": ["ming"],
+      "mapsTo": ["Qing Empire", "Manchu Empire", "Qing", "China"] },
+
+    { "id": "goguryeo", "canonicalName": "Goguryeo", "type": "kingdom",
+      "founded": -37, "ended": 668, "region": "East Asia", "mapsTo": ["Goguryeo", "Koguryo"] },
+    { "id": "silla", "canonicalName": "Silla", "type": "kingdom",
+      "founded": -57, "ended": 935, "mapsTo": ["Silla", "Unified Silla"] },
+    { "id": "goryeo", "canonicalName": "Goryeo", "type": "kingdom",
+      "founded": 918, "ended": 1392, "capitals": [{ "name": "Kaesong", "lng": 126.55, "lat": 37.97 }],
+      "predecessors": ["silla"], "successors": ["joseon"], "mapsTo": ["Goryeo", "Koryo"] },
+    { "id": "joseon", "canonicalName": "Joseon", "type": "kingdom",
+      "founded": 1392, "ended": 1897, "capitals": [{ "name": "Hanseong (Seoul)", "lng": 126.98, "lat": 37.57 }],
+      "dynasty": "Yi", "predecessors": ["goryeo"], "mapsTo": ["Joseon", "Korea", "Chosun"] },
+
+    { "id": "yamato", "canonicalName": "Yamato state", "type": "state",
+      "founded": { "year": 250, "range": [200, 350], "note": "Emergence rather than a foundation event." },
+      "ended": 710, "successors": ["nara-japan"], "mapsTo": ["Yamato", "Japan"] },
+    { "id": "nara-japan", "canonicalName": "Nara and Heian Japan", "type": "state",
+      "founded": 710, "ended": 1185, "capitals": [{ "name": "Heian-kyo (Kyoto)", "lng": 135.77, "lat": 35.01, "from": 794 }],
+      "predecessors": ["yamato"], "successors": ["kamakura"], "mapsTo": ["Japan"] },
+    { "id": "kamakura", "canonicalName": "Kamakura shogunate", "type": "state",
+      "founded": 1185, "ended": 1333, "predecessors": ["nara-japan"], "successors": ["ashikaga"], "mapsTo": ["Japan", "Kamakura"] },
+    { "id": "ashikaga", "canonicalName": "Ashikaga shogunate", "type": "state",
+      "founded": 1336, "ended": 1573, "predecessors": ["kamakura"], "successors": ["tokugawa"], "mapsTo": ["Japan", "Ashikaga", "Muromachi"] },
+    { "id": "tokugawa", "canonicalName": "Tokugawa shogunate", "type": "state",
+      "founded": 1603, "ended": 1868, "capitals": [{ "name": "Edo", "lng": 139.69, "lat": 35.69 }],
+      "dynasty": "Tokugawa", "predecessors": ["ashikaga"], "mapsTo": ["Japan", "Tokugawa", "Edo Japan"] }
+  ]
+}

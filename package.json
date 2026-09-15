@@ -12,7 +12,11 @@
     "build:borders": "node scripts/build-borders.mjs",
     "build:arcs": "node scripts/build-arcs.mjs",
     "import:wikidata": "node scripts/import/build-dataset.mjs",
-    "audit:borders": "node scripts/audit/check-borders.mjs"
+    "audit:borders": "node scripts/audit/check-borders.mjs",
+    "canonical:validate": "node scripts/canonical/validate.mjs",
+    "test:history": "node tests/history/anchors.mjs",
+    "build:atlas": "node scripts/canonical/build.mjs",
+    "canonical:promote": "node scripts/canonical/promote.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

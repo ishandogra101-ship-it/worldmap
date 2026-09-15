@@ -1,0 +1,114 @@
+{
+  "region": "South Asia",
+  "sources": [
+    { "title": "The New Cambridge History of India", "edition": "Cambridge University Press, multi-volume" },
+    { "title": "A History of India", "author": "Hermann Kulke and Dietmar Rothermund", "edition": "4th ed., Routledge" },
+    { "title": "The Oxford History of India", "author": "Vincent A. Smith, rev. Percival Spear", "edition": "4th ed., Oxford University Press" },
+    { "title": "India: A History", "author": "John Keay", "edition": "rev. ed., Grove Press" }
+  ],
+  "verification": { "method": "drafted", "by": "claude", "date": "2026-09-15" },
+  "polities": [
+    { "id": "magadha", "canonicalName": "Magadha", "type": "kingdom",
+      "founded": { "year": -600, "range": [-700, -550], "note": "One of the mahajanapadas; emergence rather than foundation." },
+      "ended": -322, "successors": ["maurya"], "mapsTo": ["Magadha", "Nanda", "Nanda Empire"] },
+
+    { "id": "maurya", "canonicalName": "Maurya Empire", "type": "empire",
+      "founded": { "year": -322, "note": "Chandragupta's accession." }, "ended": -185,
+      "capitals": [{ "name": "Pataliputra", "lng": 85.14, "lat": 25.61 }],
+      "dynasty": "Maurya", "predecessors": ["magadha"], "successors": ["shunga"],
+      "mapsTo": ["Maurya", "Mauryan Empire", "Maurya Empire"] },
+
+    { "id": "shunga", "canonicalName": "Shunga Empire", "type": "empire",
+      "founded": -185, "ended": -73, "predecessors": ["maurya"], "mapsTo": ["Shunga", "Sunga"] },
+
+    { "id": "satavahana", "canonicalName": "Satavahana dynasty", "type": "kingdom",
+      "founded": { "year": -100, "range": [-230, -30], "note": "Dating of the dynasty's start is disputed." },
+      "ended": 220, "mapsTo": ["Satavahana", "Satavahanas", "Andhra"] },
+
+    { "id": "kushan", "canonicalName": "Kushan Empire", "type": "empire",
+      "founded": 30, "ended": 375, "capitals": [{ "name": "Purushapura (Peshawar)", "lng": 71.58, "lat": 34.01 }],
+      "mapsTo": ["Kushan", "Kushan Empire", "Kushans"] },
+
+    { "id": "gupta", "canonicalName": "Gupta Empire", "type": "empire",
+      "founded": 320, "ended": 550, "capitals": [{ "name": "Pataliputra", "lng": 85.14, "lat": 25.61 }],
+      "dynasty": "Gupta", "mapsTo": ["Gupta", "Gupta Empire"] },
+
+    { "id": "harsha", "canonicalName": "Empire of Harsha", "type": "empire",
+      "founded": 606, "ended": 647, "capitals": [{ "name": "Kannauj", "lng": 79.92, "lat": 27.06 }],
+      "mapsTo": ["Harsha", "Kannauj", "Harsha Empire"] },
+
+    { "id": "chalukya", "canonicalName": "Chalukya dynasty of Badami", "type": "kingdom",
+      "founded": 543, "ended": 753, "capitals": [{ "name": "Badami", "lng": 75.68, "lat": 15.92 }],
+      "mapsTo": ["Chalukya", "Chalukyas", "Western Chalukya"] },
+
+    { "id": "pallava", "canonicalName": "Pallava dynasty", "type": "kingdom",
+      "founded": 275, "ended": 897, "capitals": [{ "name": "Kanchipuram", "lng": 79.7, "lat": 12.84 }],
+      "mapsTo": ["Pallava", "Pallavas"] },
+
+    { "id": "rashtrakuta", "canonicalName": "Rashtrakuta dynasty", "type": "kingdom",
+      "founded": 753, "ended": 982, "predecessors": ["chalukya"], "mapsTo": ["Rashtrakuta", "Rashtrakutas"] },
+
+    { "id": "chola", "canonicalName": "Chola Empire", "type": "empire",
+      "founded": { "year": 848, "note": "The imperial Cholas under Vijayalaya; the Chola name is far older." },
+      "ended": 1279, "capitals": [{ "name": "Thanjavur", "lng": 79.14, "lat": 10.79 }],
+      "dynasty": "Chola", "mapsTo": ["Chola", "Cholas", "Chola Empire"] },
+
+    { "id": "delhi-sultanate", "canonicalName": "Delhi Sultanate", "type": "sultanate",
+      "founded": 1206, "ended": 1526,
+      "capitals": [{ "name": "Delhi", "lng": 77.21, "lat": 28.61 }],
+      "successors": ["mughal"], "mapsTo": ["Delhi Sultanate", "Sultanate of Delhi", "Delhi"],
+      "notes": "Five successive dynasties: Mamluk, Khalji, Tughlaq, Sayyid, Lodi." },
+
+    { "id": "vijayanagara", "canonicalName": "Vijayanagara Empire", "type": "empire",
+      "founded": 1336, "ended": { "year": 1646, "note": "Effective collapse after Talikota in 1565; remnants persist to 1646." },
+      "capitals": [{ "name": "Vijayanagara (Hampi)", "lng": 76.46, "lat": 15.33 }],
+      "mapsTo": ["Vijayanagara", "Vijayanagar", "Vijayanagara Empire"] },
+
+    { "id": "bahmani", "canonicalName": "Bahmani Sultanate", "type": "sultanate",
+      "founded": 1347, "ended": 1527, "capitals": [{ "name": "Gulbarga", "lng": 76.83, "lat": 17.33 }, { "name": "Bidar", "lng": 77.52, "lat": 17.91, "from": 1425 }],
+      "mapsTo": ["Bahmani", "Bahmani Sultanate", "Bahmanid"] },
+
+    { "id": "mughal", "canonicalName": "Mughal Empire", "type": "empire",
+      "founded": { "year": 1526, "note": "First Battle of Panipat." },
+      "ended": { "year": 1857, "note": "Formally abolished after the rebellion; effective power gone long before." },
+      "capitals": [{ "name": "Agra", "lng": 78.01, "lat": 27.18, "to": 1571 }, { "name": "Fatehpur Sikri", "lng": 77.66, "lat": 27.09, "from": 1571, "to": 1585 }, { "name": "Delhi", "lng": 77.21, "lat": 28.61, "from": 1648 }],
+      "dynasty": "Timurid (Mughal branch)", "predecessors": ["delhi-sultanate"],
+      "mapsTo": ["Mughal Empire", "Mughal", "Mogul Empire"] },
+
+    { "id": "maratha", "canonicalName": "Maratha Confederacy", "type": "confederation",
+      "founded": { "year": 1674, "note": "Shivaji's coronation. The confederacy of peshwas and chiefs develops after 1707." },
+      "ended": { "year": 1818, "note": "Third Anglo-Maratha War." },
+      "capitals": [{ "name": "Raigad", "lng": 73.44, "lat": 18.23, "to": 1689 }, { "name": "Pune", "lng": 73.86, "lat": 18.52, "from": 1714 }],
+      "mapsTo": ["Maratha Confederacy", "Maratha", "Mahratta states"],
+      "notes": "Their furthest north was Attock and Peshawar, taken in 1758 and lost by 1761. They never held Kashmir." },
+
+    { "id": "sikh-empire", "canonicalName": "Sikh Empire", "type": "empire",
+      "founded": { "year": 1799, "range": [1799, 1801], "note": "Ranjit Singh takes Lahore in 1799 and is proclaimed Maharaja in 1801." },
+      "ended": 1849, "capitals": [{ "name": "Lahore", "lng": 74.33, "lat": 31.55 }],
+      "mapsTo": ["Sikh Empire", "Sikhs", "Lahore", "Punjab"],
+      "notes": "Took Kashmir in 1819 and Peshawar in 1834. Before 1819 Kashmir was Durrani." },
+
+    { "id": "ladakh", "canonicalName": "Kingdom of Ladakh", "type": "kingdom",
+      "founded": 930, "ended": { "year": 1842, "note": "Dogra conquest under Zorawar Singh, 1834–1842." },
+      "capitals": [{ "name": "Leh", "lng": 77.58, "lat": 34.16 }],
+      "dynasty": "Namgyal", "mapsTo": ["Ladakh", "Kashmir and Ladakh"],
+      "notes": "Independent under the Namgyal dynasty through the period the border data assigns it to Punjab powers." },
+
+    { "id": "kashmir-sultanate", "canonicalName": "Kashmir Sultanate", "type": "sultanate",
+      "founded": 1339, "ended": { "year": 1586, "note": "Mughal annexation under Akbar." },
+      "capitals": [{ "name": "Srinagar", "lng": 74.8, "lat": 34.08 }],
+      "mapsTo": ["Kashmir", "Kashmir Sultanate", "Kashmir and Ladakh"] },
+
+    { "id": "british-raj", "canonicalName": "British Raj", "type": "state",
+      "founded": { "year": 1858, "note": "Crown rule; Company rule from 1757." },
+      "ended": 1947, "capitals": [{ "name": "Calcutta", "lng": 88.36, "lat": 22.57, "to": 1911 }, { "name": "New Delhi", "lng": 77.21, "lat": 28.61, "from": 1911 }],
+      "mapsTo": ["British Raj", "British India", "British East India Company"] },
+
+    { "id": "bundelkhand", "canonicalName": "Bundelkhand", "type": "state",
+      "founded": { "year": 1531, "range": [1501, 1560], "note": "Bundela consolidation under Rudra Pratap Singh; the region is older than any state in it." },
+      "ended": { "year": 1858, "note": "Absorbed into British India." },
+      "capitals": [{ "name": "Orchha", "lng": 78.64, "lat": 25.35 }],
+      "mapsTo": ["Bundelkhand"],
+      "notes": "A region of central India, roughly between the Yamuna and the Narmada, never a power reaching the Himalaya. The 1800 border snapshot draws it over Delhi and Agra, which is the error the audit catches." }
+  ]
+}
