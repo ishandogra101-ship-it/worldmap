@@ -1,14 +1,14 @@
-// Phase B: build the full people/events dataset from Wikidata and download
-// portraits from Wikimedia Commons, then write the files the app reads.
+// Builds the people and events layers from Wikidata and writes the files the app
+// reads at runtime.
 //
 //   node scripts/import/build-dataset.mjs
 //
-// Requires network access to query.wikidata.org, www.wikidata.org and
-// commons.wikimedia.org / upload.wikimedia.org. If your environment blocks these
-// (see README), run it somewhere they are reachable, then commit the output.
+// Needs query.wikidata.org and commons.wikimedia.org. The environment this repo
+// is normally edited from cannot reach either, so this runs in GitHub Actions —
+// see .github/workflows/import.yml.
 //
-// Writes: public/data/rulers.json, figures.json, events.json  and  public/portraits/*.jpg
-// The app merges these over src/data/highlights.json at runtime (by id).
+// Writes public/data/{rulers,figures,events}.json and public/portraits/*.jpg,
+// which the app merges over src/data/highlights.json by id.
 
 import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
@@ -23,36 +23,113 @@ const ROOT = path.resolve(__dirname, "..", "..");
 const DATA_DIR = path.join(ROOT, "public", "data");
 const PORTRAIT_DIR = path.join(ROOT, "public", "portraits");
 
+// must match MIN_YEAR / MAX_YEAR in src/app/store.ts
+const MIN_YEAR = -3000;
+const MAX_YEAR = 2026;
+
+/**
+ * Drops anything the map could only draw wrongly.
+ *
+ * Wikidata is a public wiki and carries the occasional reversed reign, a
+ * coordinate at the wrong pole, or a date typed with an extra digit. None of
+ * that is worth rendering, and silently clamping it would put a marker
+ * somewhere no source claims. Each rejection is counted and reported.
+ */
+function clean(records, label) {
+  const reasons = {};
+  const drop = (why) => { reasons[why] = (reasons[why] || 0) + 1; return false; };
+  const out = records.filter((e) => {
+    if (!e.name || /^Q\d+$/.test(e.name)) return drop("no English label");
+    if (!Number.isFinite(e.startYear) || !Number.isFinite(e.endYear)) return drop("non-numeric year");
+    if (e.endYear < e.startYear) return drop("ends before it starts");
+    if (e.endYear < MIN_YEAR || e.startYear > MAX_YEAR) return drop("outside the atlas range");
+    if (e.endYear - e.startYear > 200) return drop("span over 200 years");
+    if (!Number.isFinite(e.lng) || !Number.isFinite(e.lat)) return drop("no coordinate");
+    if (Math.abs(e.lat) > 90 || Math.abs(e.lng) > 180) return drop("coordinate off the globe");
+    if (e.lat === 0 && e.lng === 0) return drop("null island");
+    return true;
+  });
+  const lost = records.length - out.length;
+  console.log(`  ${label}: ${out.length} kept, ${lost} dropped`);
+  for (const [why, n] of Object.entries(reasons).sort((a, b) => b[1] - a[1])) {
+    console.log(`    ${n} ${why}`);
+  }
+  return out;
+}
+
+function summarise(records, label) {
+  if (records.length === 0) return;
+  const years = records.map((e) => e.startYear).sort((a, b) => a - b);
+  const prom = records.map((e) => e.prominence).sort((a, b) => a - b);
+  const q = (arr, f) => arr[Math.floor(arr.length * f)];
+  const withPortrait = records.filter((e) => e.portrait).length;
+  console.log(
+    `  ${label}: years ${years[0]}..${years[years.length - 1]} (median ${q(years, 0.5)}), ` +
+    `prominence ${prom[0]}..${prom[prom.length - 1]} (median ${q(prom, 0.5)}), ` +
+    `${withPortrait} with a portrait`,
+  );
+  const top = [...records].sort((a, b) => b.prominence - a.prominence).slice(0, 6);
+  console.log(`    most documented: ${top.map((e) => `${e.name} (${e.prominence})`).join(", ")}`);
+}
+
 async function main() {
   await mkdir(DATA_DIR, { recursive: true });
+  const t0 = Date.now();
 
-  console.log("Fetching rulers from Wikidata…");
-  const rulers = await fetchRulers();
-  console.log(`  -> ${rulers.length} rulers`);
+  console.log("\n=== rulers ===");
+  let rulers = clean(await fetchRulers(), "rulers");
 
-  console.log("Fetching figures from Wikidata…");
-  const figures = await fetchFigures();
-  console.log(`  -> ${figures.length} figures`);
+  console.log("\n=== figures ===");
+  let figures = clean(await fetchFigures(), "figures");
 
-  console.log("Fetching events from Wikidata…");
-  const events = await fetchEvents();
-  console.log(`  -> ${events.length} events`);
+  console.log("\n=== events ===");
+  let events = clean(await fetchEvents(), "events");
 
-  console.log("Downloading portraits from Wikimedia Commons…");
+  console.log("\n=== portraits ===");
   const people = [...rulers, ...figures];
   const got = await fetchPortraits(people, PORTRAIT_DIR);
-  console.log(`  -> ${got} portraits (people without a free image use a role icon)`);
+  for (const e of events) delete e.image;
 
-  // fetchPortraits mutated people in place and stripped the temp `image` field.
+  console.log("\n=== summary ===");
+  summarise(rulers, "rulers");
+  summarise(figures, "figures");
+  summarise(events, "events");
+
   await writeFile(path.join(DATA_DIR, "rulers.json"), JSON.stringify(rulers));
   await writeFile(path.join(DATA_DIR, "figures.json"), JSON.stringify(figures));
-  for (const e of events) delete e.image;
   await writeFile(path.join(DATA_DIR, "events.json"), JSON.stringify(events));
 
-  console.log(
-    `\nDone. rulers=${rulers.length} figures=${figures.length} events=${events.length} portraits=${got}.`,
+  const credited = people.filter((e) => e.portraitCredit);
+  await writeFile(
+    path.join(ROOT, "CREDITS.md"),
+    [
+      "# Credits",
+      "",
+      "Generated by `scripts/import/build-dataset.mjs`. Do not edit by hand.",
+      "",
+      "## Data",
+      "",
+      "- Historical borders: [historical-basemaps](https://github.com/aourednik/historical-basemaps) (GPLv3).",
+      "- Coastlines: [Natural Earth](https://www.naturalearthdata.com/) (public domain).",
+      "- People and events: [Wikidata](https://www.wikidata.org) (CC0). Each record keeps its QID as its id and links to its item page.",
+      "",
+      `## Portraits (${credited.length})`,
+      "",
+      "From Wikimedia Commons. Only images whose licence reads as public domain or",
+      "Creative Commons are downloaded; anything else falls back to a role glyph.",
+      "",
+      ...credited
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((e) => `- **${e.name}** — ${e.portraitCredit}`),
+      "",
+    ].join("\n"),
   );
-  console.log("Review the output, then commit public/data/*.json and public/portraits/.");
+
+  const mins = ((Date.now() - t0) / 60000).toFixed(1);
+  console.log(
+    `\nDone in ${mins} min. rulers=${rulers.length} figures=${figures.length} ` +
+    `events=${events.length} portraits=${got}.`,
+  );
 }
 
 main().catch((err) => {

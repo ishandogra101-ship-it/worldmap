@@ -11,7 +11,15 @@ const UA =
 /** WDQS caps a query at 60s; leave room to notice it rather than hang. */
 const TIMEOUT_MS = 90_000;
 
-export class SparqlTimeout extends Error {}
+/**
+ * The endpoint refused this query for being too expensive.
+ *
+ * WDQS signals that three different ways depending on where it gave up: a 400
+ * carrying a QueryTimeoutException, a bare 502/504 from the load balancer when
+ * the worker is killed, or nothing at all until our own abort fires. All three
+ * mean the same thing — ask for less — and none of them gets better on a retry.
+ */
+export class SparqlTooHeavy extends Error {}
 
 export async function sparql(query, { retries = 3, label = "" } = {}) {
   let attempt = 0;
@@ -36,12 +44,15 @@ export async function sparql(query, { retries = 3, label = "" } = {}) {
         const wait = Number(res.headers.get("retry-after") || 30) * 1000;
         throw Object.assign(new Error(`HTTP 429, retry-after ${wait}ms`), { wait });
       }
+      if (res.status === 502 || res.status === 504) {
+        throw new SparqlTooHeavy(`HTTP ${res.status} after ${ms}ms${label ? ` (${label})` : ""}`);
+      }
       if (res.status >= 500) throw new Error(`HTTP ${res.status} after ${ms}ms`);
       if (!res.ok) {
         const body = (await res.text()).slice(0, 400);
         // WDQS reports its own timeout as 400 with a QueryTimeoutException
         if (/TimeoutException|QueryTimeout/i.test(body)) {
-          throw new SparqlTimeout(`query timed out after ${ms}ms${label ? ` (${label})` : ""}`);
+          throw new SparqlTooHeavy(`timed out after ${ms}ms${label ? ` (${label})` : ""}`);
         }
         throw new Error(`HTTP ${res.status}: ${body}`);
       }
@@ -49,12 +60,11 @@ export async function sparql(query, { retries = 3, label = "" } = {}) {
       return { rows: json.results.bindings, ms };
     } catch (err) {
       if (err.name === "AbortError") {
-        const e = new SparqlTimeout(`aborted after ${TIMEOUT_MS}ms${label ? ` (${label})` : ""}`);
-        if (attempt >= retries) throw e;
-        err.message = e.message;
+        throw new SparqlTooHeavy(`aborted after ${TIMEOUT_MS}ms${label ? ` (${label})` : ""}`);
       }
-      // A query that is simply too heavy will not get lighter on a retry.
-      if (err instanceof SparqlTimeout) throw err;
+      // Asking again for the same too-large answer wastes the endpoint's time
+      // and ours; the caller splits the window instead.
+      if (err instanceof SparqlTooHeavy) throw err;
       attempt++;
       if (attempt > retries) throw err;
       const wait = err.wait ?? 3000 * 2 ** (attempt - 1);
