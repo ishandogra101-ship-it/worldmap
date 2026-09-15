@@ -86,7 +86,9 @@ export default function HistoricalMap() {
         subjectTo: p.SUBJECTO ? String(p.SUBJECTO) : undefined,
         partOf: p.PARTOF ? String(p.PARTOF) : undefined,
         color: String(p.__color || "#888"),
-        tier: Number(p.__tier || 2) as 0 | 1 | 2,
+        // tier 0 is the largest band, so `||` would read it as missing and
+        // relabel every major realm as a small one
+        tier: (p.__tier === undefined ? 2 : Number(p.__tier)) as 0 | 1 | 2,
         area: 0,
         lng: ev.lngLat.lng,
         lat: ev.lngLat.lat,

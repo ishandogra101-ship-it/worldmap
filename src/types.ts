@@ -46,6 +46,13 @@ export interface PolitySummary {
   lat: number;
   /** planar deg^2 — relative scale only, never shown as a real area figure. */
   area: number;
+  /**
+   * Whether the snapshot maps a territory that *is* this realm, rather than only
+   * territories that answer to it. False for a sovereign that appears purely as
+   * an overlord: in 1900 the group "United Kingdom" is anchored on British
+   * India, which would otherwise place the United Kingdom in South Asia.
+   */
+  hasHome: boolean;
 }
 
 export interface PolitySelection {

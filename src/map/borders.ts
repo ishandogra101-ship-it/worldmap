@@ -116,9 +116,6 @@ function summarise(fc: FeatureCollection): PolitySummary[] {
     }
   }
 
-  let maxArea = 0;
-  for (const e of acc.values()) if (e.area > maxArea) maxArea = e.area;
-
   const out: PolitySummary[] = [];
   for (const [group, e] of acc) {
     if (e.area <= 0) continue;
@@ -127,10 +124,11 @@ function summarise(fc: FeatureCollection): PolitySummary[] {
       group,
       name: e.coreName || group,
       color: e.color,
-      tier: tierForArea(e.area, maxArea) as PolityTier,
+      tier: tierForArea(e.area) as PolityTier,
       lng: useHome ? e.homeCx / e.homeArea : e.bestCx,
       lat: useHome ? e.homeCy / e.homeArea : e.bestCy,
       area: e.area,
+      hasHome: useHome,
     });
   }
   out.sort((a, b) => b.area - a.area);

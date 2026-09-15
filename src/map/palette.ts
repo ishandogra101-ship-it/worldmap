@@ -81,11 +81,21 @@ export function colorForGroup(key: string): string {
  * Tier from mapped area, as a share of the largest realm in the snapshot.
  * Relative, so it stays meaningful whether the year has 20 polities or 1300.
  */
-export function tierForArea(area: number, maxArea: number): PolityTier {
-  if (maxArea <= 0) return 2;
-  const share = area / maxArea;
-  if (share >= 0.16) return 0;
-  if (share >= 0.025) return 1;
+/**
+ * Visual weight from a realm's own mapped extent, in planar deg².
+ *
+ * This was a share of the largest realm in the snapshot, which made the answer
+ * depend on the company a realm kept: the Ottoman Empire at its widest in 1600
+ * came out "small" because the central Asian khanates and Muscovy were mapped
+ * larger that year. Fixed bands mean a realm of a given size reads the same
+ * weight in every snapshot, which is also what lets the panel name it out loud.
+ *
+ * Calibrated against the data: 1700 puts Muscovy at 2362, the Ottomans at 495
+ * and France at 64; 1900 puts the Russian Empire at 3477 and Denmark at 4.8.
+ */
+export function tierForArea(area: number): PolityTier {
+  if (area >= 330) return 0;
+  if (area >= 55) return 1;
   return 2;
 }
 

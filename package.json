@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "build:borders": "node scripts/build-borders.mjs",
+    "build:arcs": "node scripts/build-arcs.mjs",
     "import:wikidata": "node scripts/import/build-dataset.mjs"
   },
   "dependencies": {

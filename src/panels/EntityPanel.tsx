@@ -6,6 +6,7 @@ import { formatYear, centuryLabel, asset } from "../util";
 import type { Entity, PolitySelection, PolitySummary } from "../types";
 import { regionOf, type Region } from "../data/regions";
 import { beforeAndAfter, type HeldBy } from "../map/pointLookup";
+import { arcFor, type Arc } from "../data/arcs";
 
 /**
  * Match a realm against the realm named on a person's record.
@@ -79,15 +80,22 @@ function elsewhereAt(
 function realmsElsewhere(
   polities: PolitySummary[],
   home: Region,
+  self: string,
   limit = 4,
 ): Array<{ region: Region; p: PolitySummary }> {
   const best = new Map<Region, PolitySummary>();
   for (const p of polities) {
-    if (p.tier === 2) continue;
+    if (p.tier === 2 || p.group === self) continue;
     const r = regionOf(p.lng, p.lat);
     if (r === home || r === "Elsewhere") continue;
     const cur = best.get(r);
-    if (!cur || p.area > cur.area) best.set(r, p);
+    // A realm with no mapped homeland is anchored on its largest holding, so it
+    // lands in that holding's region: in 1900 the group "United Kingdom" sits on
+    // British India. It still belongs here — the United Kingdom is what held
+    // South Asia that year — but a realm actually seated in the region wins.
+    const better = !cur
+      || (p.hasHome !== cur.hasHome ? p.hasHome : p.area > cur.area);
+    if (better) best.set(r, p);
   }
   return [...best.entries()]
     .map(([region, p]) => ({ region, p }))
@@ -160,9 +168,24 @@ function PolityView({ p, entities, polities, year }: {
     return () => { alive = false; };
   }, [p.lng, p.lat, p.snapshotYear]);
 
+  // How much of the world this realm held in every snapshot it appears in.
+  const [arc, setArc] = useState<Arc | null>(null);
+  useEffect(() => {
+    let alive = true;
+    setArc(null);
+    arcFor(p.group).then((a) => { if (alive) setArc(a); }).catch(() => {});
+    return () => { alive = false; };
+  }, [p.group]);
+
+  // Someone already named above is not "elsewhere", however their coordinates
+  // fall: Suleiman sits in Istanbul, which the region lookup calls Europe.
+  const named = useMemo(
+    () => new Set([...rulersEver, ...figures].map((e) => e.id)),
+    [rulersEver, figures],
+  );
   const elsewhere = useMemo(
-    () => elsewhereAt(entities, year, regionOf(p.lng, p.lat)),
-    [entities, year, p.lng, p.lat],
+    () => elsewhereAt(entities, year, regionOf(p.lng, p.lat)).filter((o) => !named.has(o.e.id)),
+    [entities, year, p.lng, p.lat, named],
   );
 
   return (
@@ -196,6 +219,8 @@ function PolityView({ p, entities, polities, year }: {
         </Section>
       )}
 
+      {arc && <ArcView arc={arc} color={p.color} year={year} />}
+
       {rulersNow.length > 0 && (
         <Section title={`Ruling in ${formatYear(year)}`}>
           {rulersNow.map((r) => <EntityRow key={r.id} e={r} />)}
@@ -222,7 +247,7 @@ function PolityView({ p, entities, polities, year }: {
       )}
 
       <Elsewhere
-        realms={realmsElsewhere(polities, regionOf(p.lng, p.lat))}
+        realms={realmsElsewhere(polities, regionOf(p.lng, p.lat), p.group)}
         people={elsewhere}
       />
 
@@ -367,7 +392,7 @@ function EntityView({ e, entities, polities }: {
       )}
 
       <Elsewhere
-        realms={realmsElsewhere(polities, regionOf(e.lng, e.lat))}
+        realms={realmsElsewhere(polities, regionOf(e.lng, e.lat), "")}
         people={elsewhere}
       />
 
@@ -416,6 +441,115 @@ function Elsewhere({
       ))}
       {people.map(({ region, e }) => <EntityRow key={e.id} e={e} region={region} />)}
     </Section>
+  );
+}
+
+/**
+ * A realm's extent across every snapshot it appears in.
+ *
+ * The dataset is 49 snapshots, not a continuous record, so this says "mapped"
+ * everywhere rather than "founded" or "fell": the Ottomans first appear in the
+ * 1400 snapshot but were founded around 1299, and nothing here knows that.
+ * Extent is a planar measure used only for the shape of the curve — no figure
+ * is shown, because none would be meaningful.
+ */
+function ArcView({ arc, color, year }: { arc: Arc; color: string; year: number }) {
+  const pts = arc.points;
+  const first = pts[0][0];
+  const last = pts[pts.length - 1][0];
+  const peak = pts.reduce((m, q) => (q[1] > m[1] ? q : m), pts[0]);
+  const coverage = `Mapped in ${pts.length} of ${arc.snapshots} snapshots`;
+
+  if (pts.length < 2) {
+    return (
+      <Section title="Across the mapped record">
+        <p className="sheet__note">
+          {coverage} — only {formatYear(first)}. A single appearance says the borders
+          were drawn for that year, not that the realm lasted one year.
+        </p>
+      </Section>
+    );
+  }
+
+  const W = 100, H = 40;
+  const maxE = Math.max(...pts.map((q) => q[1]));
+  // square root, so a realm that grows sixtyfold still shows its early years
+  const x = (yr: number) => ((yr - first) / (last - first)) * W;
+  const h = (e: number) => Math.sqrt(e / maxE) * (H - 3);
+  const line = pts.map((q) => `${x(q[0]).toFixed(2)},${(H - h(q[1])).toFixed(2)}`).join(" ");
+  const area = `${x(first)},${H} ${line} ${x(last)},${H}`;
+  const inSpan = year >= first && year <= last;
+
+  return (
+    <Section title="Across the mapped record">
+      <ArcPlot
+        pts={pts} color={color} year={year} first={first} last={last}
+        W={W} H={H} line={line} area={area} x={x} h={h} peak={peak} inSpan={inSpan}
+      />
+      <p className="sheet__fine">
+        {coverage}. Widest mapped extent {formatYear(peak[0])}.
+      </p>
+    </Section>
+  );
+}
+
+/**
+ * The plot doubles as a scrubber: the whole strip is one target that snaps to
+ * the nearest mapped snapshot, rather than fifteen dots a few pixels wide.
+ */
+function ArcPlot({
+  pts, color, year, first, last, W, H, line, area, x, h, peak, inSpan,
+}: {
+  pts: Array<[number, number]>; color: string; year: number;
+  first: number; last: number; W: number; H: number;
+  line: string; area: string;
+  x: (y: number) => number; h: (e: number) => number;
+  peak: [number, number]; inSpan: boolean;
+}) {
+  const [hoverYear, setHoverYear] = useState<number | null>(null);
+
+  const nearest = (clientX: number, el: HTMLElement): [number, number] => {
+    const r = el.getBoundingClientRect();
+    const target = first + ((clientX - r.left) / r.width) * (last - first);
+    return pts.reduce((m, q) => (Math.abs(q[0] - target) < Math.abs(m[0] - target) ? q : m), pts[0]);
+  };
+
+  const shown = hoverYear !== null ? pts.find((q) => q[0] === hoverYear) : null;
+
+  return (
+    <div
+      className="arc"
+      role="group"
+      aria-label={`Extent from ${formatYear(first)} to ${formatYear(last)}`}
+      onPointerMove={(ev) => setHoverYear(nearest(ev.clientX, ev.currentTarget)[0])}
+      onPointerLeave={() => setHoverYear(null)}
+      onClick={(ev) => setYear(nearest(ev.clientX, ev.currentTarget)[0])}
+    >
+      <svg className="arc__plot" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+        <polygon points={area} fill={color} opacity={0.26} />
+        <polyline points={line} fill="none" stroke={color} strokeWidth={1.1} vectorEffect="non-scaling-stroke" />
+        {inSpan && (
+          <line className="arc__now" x1={x(year)} x2={x(year)} y1={0} y2={H} vectorEffect="non-scaling-stroke" />
+        )}
+        {shown && (
+          <line className="arc__pick" x1={x(shown[0])} x2={x(shown[0])} y1={0} y2={H} vectorEffect="non-scaling-stroke" />
+        )}
+      </svg>
+      <span
+        className="arc__peak"
+        style={{ left: `${x(peak[0])}%`, bottom: `${(h(peak[1]) / H) * 100}%` }}
+        aria-hidden="true"
+      />
+      {shown && (
+        <span className="arc__read tnum" style={{ left: `${x(shown[0])}%` }}>
+          {formatYear(shown[0])}
+        </span>
+      )}
+      <div className="arc__axis">
+        <span className="tnum">{formatYear(first)}</span>
+        <span className="tnum">{formatYear(last)}</span>
+      </div>
+    </div>
   );
 }
 

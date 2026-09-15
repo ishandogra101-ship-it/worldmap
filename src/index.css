@@ -672,3 +672,24 @@ kbd {
 .timeline__plain:hover { color: var(--text); }
 .tl-rail__span { position: absolute; top: 0; bottom: 0; background: var(--accent); opacity: .5; }
 .tl-handle--b .tl-handle__grip { background: var(--accent-text, var(--accent)); }
+
+/* ---- a realm's extent across the mapped snapshots ---------------------- */
+.arc { position: relative; margin: 2px 0 6px; cursor: pointer; }
+.arc__plot { display: block; width: 100%; height: 46px; }
+.arc__now { stroke: var(--accent); stroke-dasharray: 2 2; }
+.arc__pick { stroke: var(--text-2); }
+
+.arc__peak {
+  position: absolute; width: 6px; height: 6px; margin: 0 0 -3px -3px;
+  border-radius: 50%; background: var(--accent); pointer-events: none;
+}
+.arc__read {
+  position: absolute; top: -2px; transform: translateX(-50%);
+  font-size: 10.5px; color: var(--text); background: var(--surface-hi);
+  border: 1px solid var(--border); border-radius: var(--r1);
+  padding: 1px 4px; pointer-events: none; white-space: nowrap;
+}
+.arc__axis {
+  display: flex; justify-content: space-between;
+  font-size: 10.5px; color: var(--text-3); margin-top: 3px;
+}
