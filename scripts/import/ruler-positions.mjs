@@ -26,33 +26,43 @@ const RULER_WORDS =
   + "tsarina|pharaoh|caliph|emir|amir|mansa|negus|inca|sapa|monarch|doge|dux|archon|"
   + "hegemon|maharaja|raja|rani|nizam|peshwa|shogun|daimyo|chief|paramount";
 
-export async function rulerPositions({ minSitelinks = 25, cap = 2000 } = {}) {
-  let rows, ms;
-  try {
-    ({ rows, ms } = await sparql(
-    `SELECT DISTINCT ?pos WHERE {
-       {
-         ?pos wdt:P279* wd:Q48352 .
-       } UNION {
-         ?holder wdt:P31 wd:Q5 ; p:P39/ps:P39 ?pos ; wikibase:sitelinks ?s .
-         FILTER(?s >= ${minSitelinks})
-         ?pos rdfs:label ?l . FILTER(LANG(?l) = "en")
-         FILTER(REGEX(?l, "\\\\b(${RULER_WORDS})\\\\b", "i"))
-       }
-     } LIMIT ${cap}`,
-      { label: "ruler positions", retries: 2 },
-    ));
-  } catch (err) {
-    // Falling back to the inline head of state closure loses the Khaganate and
-    // the Mansas, which is a far smaller loss than the whole ruler layer.
-    console.warn(`  ruler positions failed (${err.message}); using the head of state closure alone`);
+export async function rulerPositions({ minSitelinks = 25, cap = 1500 } = {}) {
+  // Two queries, not one UNION with a LIMIT on it. A limit applies to the whole
+  // result set, so the head of state closure — which alone runs to thousands —
+  // filled the quota and the name sweep never contributed a row. Genghis Khan
+  // and Mansa Musa stayed missing through a run that was supposed to find them.
+  const ask = async (label, where, limit) => {
+    try {
+      const { rows, ms } = await sparql(
+        `SELECT DISTINCT ?pos WHERE { ${where} } LIMIT ${limit}`,
+        { label, retries: 2 },
+      );
+      const ids = rows.map((r) => qid(val(r, "pos"))).filter(Boolean);
+      console.log(`  ${label}: ${ids.length} positions in ${ms}ms`);
+      return ids;
+    } catch (err) {
+      console.warn(`  ${label} failed: ${err.message}`);
+      return [];
+    }
+  };
+
+  const [heads, named] = await Promise.all([
+    ask("head of state closure", "?pos wdt:P279* wd:Q48352 .", cap),
+    ask(
+      "positions named as ruling",
+      `?holder wdt:P31 wd:Q5 ; p:P39/ps:P39 ?pos ; wikibase:sitelinks ?s .
+       FILTER(?s >= ${minSitelinks})
+       ?pos rdfs:label ?l . FILTER(LANG(?l) = "en")
+       FILTER(REGEX(?l, "\\\\b(${RULER_WORDS})\\\\b", "i"))`,
+      cap,
+    ),
+  ]);
+
+  const out = [...new Set([...heads, ...named])];
+  if (out.length === 0) {
+    console.warn("  no positions resolved; falling back to the inline closure");
     return null;
   }
-  const out = [...new Set(rows.map((r) => qid(val(r, "pos"))).filter(Boolean))];
-  console.log(`  ruler positions: ${out.length} in ${ms}ms`);
-  if (out.length > cap) {
-    console.warn(`  over the ${cap} cap; falling back to the head of state closure alone`);
-    return null; // caller keeps the inline P279* form
-  }
+  console.log(`  ruler positions: ${out.length} total (${named.length} from the name sweep)`);
   return out;
 }

@@ -62,6 +62,32 @@ function clean(records, label) {
   return out;
 }
 
+/**
+ * Names that must survive the import, checked out loud.
+ *
+ * Genghis Khan and Mansa Musa were missing for three runs before anyone looked,
+ * because a count going up looks like success. A watchlist of people no atlas of
+ * power can omit turns that into a line in the log.
+ */
+const WATCHLIST = {
+  rulers: ["Genghis Khan", "Mansa Musa", "Kublai Khan", "Ashoka", "Suleiman", "Mehmed II",
+           "Charlemagne", "Qin Shi Huang", "Cyrus", "Mansa", "Sundiata", "Shaka"],
+  figures: ["Leonardo da Vinci", "Ibn Sina", "Confucius", "Al-Khwarizmi", "Ibn Battuta",
+            "Zheng He", "Rumi", "Aryabhata"],
+  events: ["Battle of Hastings", "Fall of Constantinople", "Battle of Talas"],
+};
+
+function checkWatchlist(records, label) {
+  const want = WATCHLIST[label];
+  if (!want) return;
+  const hit = [], miss = [];
+  for (const name of want) {
+    (records.some((e) => e.name && e.name.includes(name)) ? hit : miss).push(name);
+  }
+  console.log(`  watchlist: ${hit.length}/${want.length} found`);
+  if (miss.length) console.log(`    still missing: ${miss.join(", ")}`);
+}
+
 function summarise(records, label) {
   if (records.length === 0) return;
   const years = records.map((e) => e.startYear).sort((a, b) => a - b);
@@ -129,6 +155,7 @@ async function buildLayer(name) {
   }
 
   summarise(merged, name);
+  checkWatchlist(merged, name);
   await writeFile(path.join(DATA_DIR, `${name}.json`), JSON.stringify(merged));
   console.log(`  wrote ${name}.json in ${((Date.now() - t) / 60000).toFixed(1)} min`);
 }
