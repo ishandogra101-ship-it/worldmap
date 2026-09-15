@@ -2,246 +2,246 @@
   {
     "year": -3000,
     "file": "borders/world_bc3000.geojson",
-    "bytes": 62192
+    "bytes": 229515
   },
   {
     "year": -2000,
     "file": "borders/world_bc2000.geojson",
-    "bytes": 71715
+    "bytes": 255936
   },
   {
     "year": -1500,
     "file": "borders/world_bc1500.geojson",
-    "bytes": 80451
+    "bytes": 266934
   },
   {
     "year": -1000,
     "file": "borders/world_bc1000.geojson",
-    "bytes": 80117
+    "bytes": 266680
   },
   {
     "year": -700,
     "file": "borders/world_bc700.geojson",
-    "bytes": 83096
+    "bytes": 270004
   },
   {
     "year": -500,
     "file": "borders/world_bc500.geojson",
-    "bytes": 86727
+    "bytes": 281119
   },
   {
     "year": -400,
     "file": "borders/world_bc400.geojson",
-    "bytes": 86662
+    "bytes": 277786
   },
   {
     "year": -323,
     "file": "borders/world_bc323.geojson",
-    "bytes": 80643
+    "bytes": 270412
   },
   {
     "year": -300,
     "file": "borders/world_bc300.geojson",
-    "bytes": 82970
+    "bytes": 277945
   },
   {
     "year": -200,
     "file": "borders/world_bc200.geojson",
-    "bytes": 88789
+    "bytes": 292935
   },
   {
     "year": -100,
     "file": "borders/world_bc100.geojson",
-    "bytes": 94529
+    "bytes": 291229
   },
   {
     "year": -1,
     "file": "borders/world_bc1.geojson",
-    "bytes": 137909
+    "bytes": 345036
   },
   {
     "year": 100,
     "file": "borders/world_100.geojson",
-    "bytes": 140560
+    "bytes": 345966
   },
   {
     "year": 200,
     "file": "borders/world_200.geojson",
-    "bytes": 125323
+    "bytes": 333359
   },
   {
     "year": 300,
     "file": "borders/world_300.geojson",
-    "bytes": 140100
+    "bytes": 343180
   },
   {
     "year": 400,
     "file": "borders/world_400.geojson",
-    "bytes": 125366
+    "bytes": 328597
   },
   {
     "year": 500,
     "file": "borders/world_500.geojson",
-    "bytes": 95493
+    "bytes": 301026
   },
   {
     "year": 600,
     "file": "borders/world_600.geojson",
-    "bytes": 103336
+    "bytes": 347354
   },
   {
     "year": 700,
     "file": "borders/world_700.geojson",
-    "bytes": 103733
+    "bytes": 303148
   },
   {
     "year": 800,
     "file": "borders/world_800.geojson",
-    "bytes": 100253
+    "bytes": 304733
   },
   {
     "year": 900,
     "file": "borders/world_900.geojson",
-    "bytes": 107912
+    "bytes": 337335
   },
   {
     "year": 1000,
     "file": "borders/world_1000.geojson",
-    "bytes": 115236
+    "bytes": 345011
   },
   {
     "year": 1100,
     "file": "borders/world_1100.geojson",
-    "bytes": 107375
+    "bytes": 329955
   },
   {
     "year": 1200,
     "file": "borders/world_1200.geojson",
-    "bytes": 113267
+    "bytes": 325511
   },
   {
     "year": 1279,
     "file": "borders/world_1279.geojson",
-    "bytes": 104423
+    "bytes": 319625
   },
   {
     "year": 1300,
     "file": "borders/world_1300.geojson",
-    "bytes": 101496
+    "bytes": 313577
   },
   {
     "year": 1400,
     "file": "borders/world_1400.geojson",
-    "bytes": 102901
+    "bytes": 326681
   },
   {
     "year": 1492,
     "file": "borders/world_1492.geojson",
-    "bytes": 953051
+    "bytes": 1647551
   },
   {
     "year": 1500,
     "file": "borders/world_1500.geojson",
-    "bytes": 123052
+    "bytes": 356318
   },
   {
     "year": 1530,
     "file": "borders/world_1530.geojson",
-    "bytes": 181302
+    "bytes": 466231
   },
   {
     "year": 1600,
     "file": "borders/world_1600.geojson",
-    "bytes": 340575
+    "bytes": 645275
   },
   {
     "year": 1650,
     "file": "borders/world_1650.geojson",
-    "bytes": 323256
+    "bytes": 626245
   },
   {
     "year": 1700,
     "file": "borders/world_1700.geojson",
-    "bytes": 322196
+    "bytes": 621419
   },
   {
     "year": 1715,
     "file": "borders/world_1715.geojson",
-    "bytes": 322861
+    "bytes": 639879
   },
   {
     "year": 1783,
     "file": "borders/world_1783.geojson",
-    "bytes": 291071
+    "bytes": 619681
   },
   {
     "year": 1800,
     "file": "borders/world_1800.geojson",
-    "bytes": 286215
+    "bytes": 604429
   },
   {
     "year": 1815,
     "file": "borders/world_1815.geojson",
-    "bytes": 218867
+    "bytes": 654429
   },
   {
     "year": 1878,
     "file": "borders/world_1878.geojson",
-    "bytes": 124356
+    "bytes": 419623
   },
   {
     "year": 1880,
     "file": "borders/world_1880.geojson",
-    "bytes": 122925
+    "bytes": 417602
   },
   {
     "year": 1900,
     "file": "borders/world_1900.geojson",
-    "bytes": 128773
+    "bytes": 418062
   },
   {
     "year": 1914,
     "file": "borders/world_1914.geojson",
-    "bytes": 105094
+    "bytes": 399449
   },
   {
     "year": 1920,
     "file": "borders/world_1920.geojson",
-    "bytes": 123481
+    "bytes": 465795
   },
   {
     "year": 1930,
     "file": "borders/world_1930.geojson",
-    "bytes": 115217
+    "bytes": 428649
   },
   {
     "year": 1938,
     "file": "borders/world_1938.geojson",
-    "bytes": 132897
+    "bytes": 472060
   },
   {
     "year": 1945,
     "file": "borders/world_1945.geojson",
-    "bytes": 119204
+    "bytes": 426361
   },
   {
     "year": 1960,
     "file": "borders/world_1960.geojson",
-    "bytes": 109088
+    "bytes": 400448
   },
   {
     "year": 1994,
     "file": "borders/world_1994.geojson",
-    "bytes": 149121
+    "bytes": 515439
   },
   {
     "year": 2000,
     "file": "borders/world_2000.geojson",
-    "bytes": 148814
+    "bytes": 515524
   },
   {
     "year": 2010,
     "file": "borders/world_2010.geojson",
-    "bytes": 148805
+    "bytes": 515515
   }
 ]

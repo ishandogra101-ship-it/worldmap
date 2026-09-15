@@ -70,11 +70,22 @@ async function buildBorders() {
       console.warn(`  skip ${filename}: ${err.message}`);
       continue;
     }
+    // Keeping 12% of the vertices and snapping to a 0.01 degree grid was too
+    // aggressive by a long way. It discarded 84% of the 1815 geometry and 72%
+    // of 1800, and what it left looked like it: coastlines became chains of
+    // long straight segments meeting at hard angles, and the grid snap faceted
+    // whatever survived. On a map whose whole subject is the shape of
+    // territory, the shapes were the thing being thrown away.
+    //
+    // 60% at 0.001 degrees — about 110 metres — costs roughly two and a half
+    // times the bytes for three and a half times the detail. Files load one
+    // snapshot at a time and are cached after the first visit, so the cost is
+    // paid once per year visited rather than up front.
     const cmd = [
       `-i input.geojson`,
-      `-simplify visvalingam 12% keep-shapes`,
+      `-simplify visvalingam 60% keep-shapes`,
       `-filter-fields NAME,SUBJECTO,PARTOF`,
-      `-o out.geojson format=geojson precision=0.01`,
+      `-o out.geojson format=geojson precision=0.001`,
     ].join(" ");
     const result = await run(cmd, "input.geojson", raw);
     const outName = filename;
@@ -109,11 +120,12 @@ async function buildLand() {
     console.warn("  no Natural Earth land source found; skipping land layer");
     return;
   }
-  const detail = name.includes("50m") ? "30%" : "60%";
+  // the land layer sits under everything and shows the same faceting
+  const detail = name.includes("50m") ? "60%" : "85%";
   const cmd = [
     `-i input.geojson`,
     `-simplify visvalingam ${detail} keep-shapes`,
-    `-o out.geojson format=geojson precision=0.01`,
+    `-o out.geojson format=geojson precision=0.001`,
   ].join(" ");
   const result = await run(cmd, "input.geojson", raw);
   await writeFile(LAND_OUT, result);

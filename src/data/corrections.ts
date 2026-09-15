@@ -45,6 +45,50 @@ export interface Correction {
  */
 export const CORRECTIONS: Correction[] = [
   {
+    snapshot: 1800,
+    polity: "Bundelkhand",
+    area: [76.0, 21.0, 93.0, 31.0],
+    where: "Delhi and the Gangetic plain",
+    drawn:
+      "Bundelkhand stretching from the Narmada to the Himalaya, taking in Delhi, "
+      + "Agra and the Doab.",
+    record:
+      "Bundelkhand is a region of central India, several hundred kilometres "
+      + "south-east of Delhi, and in 1800 it was a patchwork of small states, "
+      + "not one power reaching the Himalaya. Delhi itself was held by Daulat "
+      + "Rao Scindia, with the Mughal emperor Shah Alam II as figurehead, until "
+      + "the British took the city in 1803.",
+    sources: [
+      "Encyclopaedia Britannica, \"Bundelkhand\"",
+      "Encyclopaedia Britannica, \"Shah Alam II\"",
+      "Encyclopaedia Britannica, \"Maratha confederacy\"",
+    ],
+  },
+  {
+    snapshot: 1400,
+    polity: "Great Khanate",
+    area: [81.0, 19.0, 142.0, 58.0],
+    where: "China",
+    drawn:
+      "The Great Khanate — the Mongol Yuan — over the whole of China: Beijing, "
+      + "Nanjing, Xi'an and Guangzhou, alongside Karakorum.",
+    record:
+      "The Ming drove the Yuan out of Beijing in 1368 and held China for the "
+      + "next two and a half centuries. By 1400 the Yuan remnant, the Northern "
+      + "Yuan, was in Mongolia. Everything this snapshot draws as Mongol south "
+      + "of the steppe was Ming: the Hongwu reign had just ended, Yongle was "
+      + "about to begin, and Zheng He's fleets sailed from a Ming coast in 1405. "
+      + "The dataset has this right on either side — the Yuan in 1279 and 1300, "
+      + "the Ming from 1492 — so the 1400 file carries the earlier shape "
+      + "forward. Because the atlas draws the nearest earlier snapshot, this "
+      + "wrong attribution covers every year from 1400 to 1491.",
+    sources: [
+      "Encyclopaedia Britannica, \"Ming dynasty\"",
+      "Encyclopaedia Britannica, \"Yuan dynasty\"",
+      "Encyclopaedia Britannica, \"Hongwu\"",
+    ],
+  },
+  {
     snapshot: 1815,
     polity: "Maratha Confederacy",
     area: [73.0, 31.0, 79.5, 36.5],

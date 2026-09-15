@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "build:borders": "node scripts/build-borders.mjs",
     "build:arcs": "node scripts/build-arcs.mjs",
-    "import:wikidata": "node scripts/import/build-dataset.mjs"
+    "import:wikidata": "node scripts/import/build-dataset.mjs",
+    "audit:borders": "node scripts/audit/check-borders.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",
