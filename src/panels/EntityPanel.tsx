@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { store, useAtlas, select, setYear, follow } from "../app/store";
 import { Icon, eventIcon, figureIcon } from "../design/icons";
 import { mapController } from "../map/HistoricalMap";
@@ -118,10 +118,30 @@ export default function EntityPanel() {
 
   const close = () => select(null);
 
+  // On a phone the sheet is short enough that most realms run past its edge.
+  // Cut text reads as a rendering fault unless the edge says there is more.
+  const ref = useRef<HTMLElement | null>(null);
+  const [more, setMore] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) { setMore(false); return; }
+    const check = () => setMore(el.scrollTop + el.clientHeight < el.scrollHeight - 2);
+    check();
+    el.addEventListener("scroll", check, { passive: true });
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => { el.removeEventListener("scroll", check); ro.disconnect(); };
+  }, [selection]);
+
   if (!selection) return null;
 
   return (
-    <aside className="sheet" role="complementary" aria-label="Details">
+    <aside
+      ref={ref}
+      className={`sheet ${more ? "has-more" : ""}`}
+      role="complementary"
+      aria-label="Details"
+    >
       <button className="sheet__close" onClick={close} aria-label="Close">
         <Icon name="close" size={16} />
       </button>

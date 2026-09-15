@@ -375,9 +375,16 @@
   width: 336px; max-width: calc(100vw - 32px);
   max-height: calc(100vh - 210px);
   border-radius: var(--r3); overflow: hidden auto;
+  overscroll-behavior: contain;
   background: var(--surface); backdrop-filter: blur(10px);
   border: 1px solid var(--border); box-shadow: var(--shadow-lg);
   animation: sheetIn var(--t-base) var(--ease-out);
+}
+/* Cut content reads as broken unless the edge says there is more below it. */
+.sheet.has-more::after {
+  content: ""; position: sticky; bottom: 0; left: 0; display: block;
+  height: 34px; margin-top: -34px; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--surface-hi));
 }
 @keyframes sheetIn { from { opacity: 0; transform: translateX(10px); } }
 .sheet__close {
@@ -604,13 +611,20 @@ kbd {
   .brand__tag { display: none; }
   .brand { top: 15px; left: 14px; }
   .brand__name { font-size: 16px; }
+  /* Six 34px buttons and the wordmark do not both fit across a phone. */
+  .hud { gap: 4px; top: 14px; right: 12px; }
+  .hud__btn { height: 30px; }
+  .hud__icon { width: 30px; }
+  .brand__mark svg { width: 22px; height: 22px; }
   .timeline { bottom: 10px; padding: 11px 14px 13px; border-radius: var(--r3); }
   .timeline__year { font-size: 31px; }
   .timeline__head { gap: 12px; }
   .timeline__meta { display: none; }
   .timeline__track { height: 50px; }
   .tl-era__name { display: none; }
-  .sheet { bottom: 168px; max-height: 42vh; }
+  .sheet { bottom: 168px; max-height: 46vh; }
+  .story { left: 12px; right: 12px; width: auto; bottom: 172px; }
+  .cmp__tag { top: 58px; }
 }
 
 
