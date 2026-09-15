@@ -22,6 +22,7 @@ import { fetchRulers } from "./wikidata-rulers.mjs";
 import { fetchFigures } from "./wikidata-figures.mjs";
 import { fetchEvents } from "./wikidata-events.mjs";
 import { fetchPortraits } from "./fetch-portraits.mjs";
+import { WATCHLIST } from "./watchlist.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..", "..");
@@ -62,21 +63,7 @@ function clean(records, label) {
   return out;
 }
 
-/**
- * Names that must survive the import, checked out loud.
- *
- * Genghis Khan and Mansa Musa were missing for three runs before anyone looked,
- * because a count going up looks like success. A watchlist of people no atlas of
- * power can omit turns that into a line in the log.
- */
-const WATCHLIST = {
-  rulers: ["Genghis Khan", "Mansa Musa", "Kublai Khan", "Ashoka", "Suleiman", "Mehmed II",
-           "Charlemagne", "Qin Shi Huang", "Cyrus", "Mansa", "Sundiata", "Shaka"],
-  figures: ["Leonardo da Vinci", "Ibn Sina", "Confucius", "Al-Khwarizmi", "Ibn Battuta",
-            "Zheng He", "Rumi", "Aryabhata"],
-  events: ["Battle of Hastings", "Fall of Constantinople", "Battle of Talas"],
-};
-
+/** Reported every run: a rising count is not the same as good coverage. */
 function checkWatchlist(records, label) {
   const want = WATCHLIST[label];
   if (!want) return;

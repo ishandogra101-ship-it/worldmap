@@ -1,4 +1,5 @@
 import { sparql, val, qid } from "./sparql.mjs";
+import { WATCHLIST } from "./watchlist.mjs";
 
 /**
  * The set of P39 positions that count as ruling something.
@@ -22,21 +23,26 @@ import { sparql, val, qid } from "./sparql.mjs";
  * in Wikidata containing the word "king".
  */
 const RULER_WORDS =
-  "emperor|empress|king|queen|sultan|sultana|khan|khagan|khagan|shah|shahanshah|tsar|czar|"
-  + "tsarina|pharaoh|caliph|emir|amir|mansa|negus|inca|sapa|monarch|doge|dux|archon|"
-  + "hegemon|maharaja|raja|rani|nizam|peshwa|shogun|daimyo|chief|paramount";
+  "emperor|empress|king|queen|sultan|sultana|khan|khagan|shah|shahanshah|padishah|tsar|"
+  + "czar|tsarina|pharaoh|caliph|emir|amir|mansa|negus|inca|sapa inca|monarch|doge|dux|"
+  + "archon|hegemon|maharaja|maharana|raja|rani|nizam|peshwa|shogun|daimyo|"
+  + "paramount chief|high chief|princely|sovereign|regnant";
 
-export async function rulerPositions({ minSitelinks = 25, cap = 1500 } = {}) {
-  // Two queries, not one UNION with a LIMIT on it. A limit applies to the whole
-  // result set, so the head of state closure — which alone runs to thousands —
-  // filled the quota and the name sweep never contributed a row. Genghis Khan
-  // and Mansa Musa stayed missing through a run that was supposed to find them.
-  const ask = async (label, where, limit) => {
+/**
+ * Words that make a position sound like rule without being it.
+ *
+ * "chief" alone dragged in chief executives and chiefs of staff, which would
+ * have put company founders on a map of who governed what. The exclusion runs
+ * after the title match, so a genuine paramount chief still passes.
+ */
+const NOT_RULING =
+  "executive officer|chief of staff|editor|justice|prosecut|constable|"
+  + "chief minister|police|scout|fire chief|chief engineer|chief scientist";
+
+export async function rulerPositions({ cap = 4000 } = {}) {
+  const ask = async (label, query) => {
     try {
-      const { rows, ms } = await sparql(
-        `SELECT DISTINCT ?pos WHERE { ${where} } LIMIT ${limit}`,
-        { label, retries: 2 },
-      );
+      const { rows, ms } = await sparql(query, { label, retries: 2 });
       const ids = rows.map((r) => qid(val(r, "pos"))).filter(Boolean);
       console.log(`  ${label}: ${ids.length} positions in ${ms}ms`);
       return ids;
@@ -46,23 +52,41 @@ export async function rulerPositions({ minSitelinks = 25, cap = 1500 } = {}) {
     }
   };
 
-  const [heads, named] = await Promise.all([
-    ask("head of state closure", "?pos wdt:P279* wd:Q48352 .", cap),
-    ask(
-      "positions named as ruling",
-      `?holder wdt:P31 wd:Q5 ; p:P39/ps:P39 ?pos ; wikibase:sitelinks ?s .
-       FILTER(?s >= ${minSitelinks})
-       ?pos rdfs:label ?l . FILTER(LANG(?l) = "en")
-       FILTER(REGEX(?l, "\\\\b(${RULER_WORDS})\\\\b", "i"))`,
-      cap,
-    ),
+  const names = WATCHLIST.rulers.map((n) => `"${n}"@en`).join(" ");
+
+  const [heads, named, seeded] = await Promise.all([
+    ask("head of state closure",
+      `SELECT DISTINCT ?pos WHERE { ?pos wdt:P279* wd:Q48352 . } LIMIT ${cap}`),
+
+    // Regex over the positions themselves. Going through their holders meant
+    // scanning every human with any P39 statement before the filter could bite,
+    // and the endpoint answered 502 in seven seconds. There are far fewer
+    // offices than officeholders.
+    ask("positions named as ruling",
+      `SELECT DISTINCT ?pos WHERE {
+         ?pos wdt:P31/wdt:P279* wd:Q4164871 ; rdfs:label ?l .
+         FILTER(LANG(?l) = "en")
+         FILTER(REGEX(?l, "\\\\b(${RULER_WORDS})\\\\b", "i"))
+         FILTER(!REGEX(?l, "(${NOT_RULING})", "i"))
+       } LIMIT ${cap}`),
+
+    // Whatever office the watchlist actually held. Small, exact, and the only
+    // branch that cannot quietly return nothing without it being obvious.
+    ask("positions held by the watchlist",
+      `SELECT DISTINCT ?pos WHERE {
+         VALUES ?n { ${names} }
+         ?person rdfs:label ?n ; wdt:P31 wd:Q5 ; p:P39/ps:P39 ?pos .
+       }`),
   ]);
 
-  const out = [...new Set([...heads, ...named])];
+  const out = [...new Set([...heads, ...named, ...seeded])];
   if (out.length === 0) {
     console.warn("  no positions resolved; falling back to the inline closure");
     return null;
   }
-  console.log(`  ruler positions: ${out.length} total (${named.length} from the name sweep)`);
+  console.log(
+    `  ruler positions: ${out.length} total `
+    + `(${named.length} by name, ${seeded.length} from the watchlist)`,
+  );
   return out;
 }
