@@ -56,12 +56,29 @@ export default function About() {
           </p>
         </Section>
 
-        <Section title="Blank is not empty">
+        <Section title="Extent is a shape, not a figure">
+          <p>
+            A realm's size here is the area of its mapped polygons, scaled by latitude so that a
+            degree near the pole does not count for as much as one at the equator. It decides
+            visual weight and draws the curve in a realm's panel, and it is only ever shown as a
+            shape or a band — never as a number, because it is a measure of what was drawn, at
+            the precision it was drawn to, and not a survey. Read the curve for when a realm grew
+            and shrank, not for how many square kilometres it held.
+          </p>
+        </Section>
+
+        <Section title="Blank is not empty, and full is not tidy">
           <p>
             Land with no fill had no polity in this dataset for that year. Sometimes that reflects
             history; often it reflects the limits of the source. The same applies to people and
             events: the atlas shows what has been recorded, which is a much smaller thing than
             what happened.
+          </p>
+          <p>
+            Where the record is dense it is also untidy. The source stores claims, and claims
+            overlap: in the 1492 Americas some ground falls inside as many as seven territories at
+            once. The atlas draws them all rather than choosing between them, which is why some
+            regions read as layered rather than as a clean partition.
           </p>
         </Section>
 
@@ -98,6 +115,7 @@ export default function About() {
             <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> step through time</li>
             <li><kbd>Shift</kbd> + <kbd>&larr;</kbd><kbd>&rarr;</kbd> larger step</li>
             <li><kbd>Space</kbd> play or pause</li>
+            <li><kbd>C</kbd> split the map across two years</li>
             <li><kbd>/</kbd> or <kbd>&#8984;K</kbd> search</li>
             <li><kbd>Esc</kbd> close</li>
           </ul>
