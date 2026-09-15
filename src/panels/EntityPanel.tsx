@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { store, useAtlas, select, setYear, follow } from "../app/store";
 import { Icon, eventIcon, figureIcon } from "../design/icons";
 import { mapController } from "../map/HistoricalMap";
-import { formatYear, centuryLabel, asset } from "../util";
+import { formatYear, centuryLabel, asset, roughDistance } from "../util";
 import type { Entity, PolitySelection, PolitySummary } from "../types";
 import { regionOf, type Region } from "../data/regions";
 import { beforeAndAfter, entitiesWithin, type HeldBy } from "../map/pointLookup";
@@ -329,12 +329,29 @@ function EntityView({ e, entities, polities }: {
     : e.kind === "city" ? "Inhabited"
     : "Dated";
 
+  /**
+   * Others who held the same realm, in a window around this one.
+   *
+   * The list was the first six by date, so every Ottoman panel showed Osman I
+   * through Murad II and stopped: whoever you opened, you saw the founders and
+   * never the succession. Mehmed II's own panel ended at his predecessor and
+   * gave no hint that Bayezid II, Selim I or Suleiman followed him.
+   *
+   * Centring the window on the subject shows who came just before and just
+   * after, which is the question a succession list is being asked. Where the
+   * subject sits near one end of a dynasty the window slides rather than
+   * shrinking, so a founder still gets a full list of successors.
+   */
   const peers = useMemo(() => {
     if (!e.category) return [];
-    return entities
+    const all = entities
       .filter((o) => o.id !== e.id && o.category && related(e.category!, o.category) && o.kind === "ruler")
-      .sort((a, b) => a.startYear - b.startYear)
-      .slice(0, 6);
+      .sort((a, b) => a.startYear - b.startYear);
+    if (all.length <= 6) return all;
+    const after = all.findIndex((o) => o.startYear > e.startYear);
+    const at = after === -1 ? all.length : after;
+    const start = Math.min(Math.max(0, at - 3), all.length - 6);
+    return all.slice(start, start + 6);
   }, [entities, e]);
 
   const mid = Math.round((e.startYear + e.endYear) / 2);
@@ -348,13 +365,39 @@ function EntityView({ e, entities, polities }: {
     [entities, e.id, mid],
   );
 
-  // events that fall inside this life or reign, wherever they happened
+  /**
+   * Events falling inside this life or reign, anywhere on earth.
+   *
+   * Sorted by how near they happened, not by when. Sorted by year, Mehmed II's
+   * list opened on the Battle of St. Jakob an der Birs in Switzerland and
+   * closed on the Tumu Crisis in China, under a heading reading "While Mehmed
+   * ruled" — every word of it true, and an invitation to read a connection
+   * that is not there. Nearest first puts Varna and Kosovo at the top, where
+   * a reader of the Ottoman panel expects them.
+   *
+   * Nothing is filtered out. Choosing a radius would mean picking a number
+   * with nothing behind it, and a distant event in the same years is worth
+   * seeing. Anything outside the subject's own region carries that region
+   * beside it, so the list says where as well as when and claims nothing by
+   * sitting under the heading.
+   */
   const during = useMemo(() => {
     if (e.kind === "event" || e.startYear === e.endYear) return [];
+    const home = regionOf(e.lng, e.lat);
     return entities
       .filter((o) => o.kind === "event" && o.startYear >= e.startYear && o.startYear <= e.endYear)
-      .sort((a, b) => a.startYear - b.startYear)
-      .slice(0, 6);
+      .sort((a, b) => roughDistance(a, e) - roughDistance(b, e))
+      .slice(0, 6)
+      .map((o) => {
+        // The region boundaries are meridians and parallels, so two points a
+        // few kilometres apart can fall either side of one: Mehmed sits in
+        // Europe and Constantinople in West Asia, across the same strait. A
+        // region is only worth printing once the distance is on the scale of a
+        // region itself, which 10 degrees is and the Bosphorus is not.
+        const r = regionOf(o.lng, o.lat);
+        const far = roughDistance(o, e) > 100;
+        return { e: o, region: r !== home && far ? r : undefined };
+      });
   }, [entities, e]);
 
   const elsewhere = useMemo(
@@ -433,7 +476,7 @@ function EntityView({ e, entities, polities }: {
 
       {during.length > 0 && whileLabel && (
         <Section title={whileLabel}>
-          {during.map((d) => <EntityRow key={d.id} e={d} />)}
+          {during.map((d) => <EntityRow key={d.e.id} e={d.e} region={d.region} />)}
         </Section>
       )}
 

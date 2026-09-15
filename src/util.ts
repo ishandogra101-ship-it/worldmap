@@ -74,3 +74,21 @@ export function eraForYear(year: number): Era {
   }
   return found;
 }
+
+/**
+ * Rough distance between two points on the globe, in degrees of latitude.
+ *
+ * Longitude is scaled by the cosine of the latitude, without which a degree
+ * near the pole counts for as much as one at the equator and northern places
+ * read as further apart than they are. Only ever used to order things by how
+ * near they are, so the small-angle approximation costs nothing and the
+ * square root is skipped.
+ */
+export function roughDistance(
+  a: { lng: number; lat: number },
+  b: { lng: number; lat: number },
+): number {
+  const dLat = a.lat - b.lat;
+  const dLng = (a.lng - b.lng) * Math.cos(((a.lat + b.lat) / 2) * (Math.PI / 180));
+  return dLat * dLat + dLng * dLng;
+}
