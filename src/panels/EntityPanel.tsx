@@ -9,6 +9,7 @@ import { beforeAndAfter, entitiesWithin, type HeldBy } from "../map/pointLookup"
 import { loadSnapshot } from "../map/borders";
 import { loadManifest, nearestSnapshot } from "../data/snapshots";
 import { arcFor, type Arc } from "../data/arcs";
+import { isCultureArea } from "../map/kinds";
 
 /**
  * Match a realm against the realm named on a person's record.
@@ -211,7 +212,23 @@ function PolityView({ p, entities, polities, year }: {
     [here, year, p.name],
   );
 
-  const tierName = p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm";
+  /**
+   * Counted, not written down. The note below used to say "about fifty rulers
+   * worldwide" in any given year, which was true of the era someone happened to
+   * be looking at and is 76 in 1450 and 567 in 2000. A sentence about how thin
+   * the record is should not itself be a number nobody checked.
+   */
+  const rulersThisYear = useMemo(
+    () => entities.reduce(
+      (n, o) => n + (o.kind === "ruler" && o.startYear <= year && year <= o.endYear ? 1 : 0),
+      0,
+    ),
+    [entities, year],
+  );
+
+  const tierName = isCultureArea(p.name)
+    ? "A people, not a state"
+    : p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm";
 
   // What held this exact place in the mapped years either side of this one.
   const [ba, setBa] = useState<{ before: HeldBy | null; after: HeldBy | null } | null>(null);
@@ -290,12 +307,21 @@ function PolityView({ p, entities, polities, year }: {
       )}
 
       {within !== null && rulersNow.length === 0 && figures.length === 0 && (
-        <p className="sheet__note">
-          Nobody in the atlas is recorded within this territory in {formatYear(year)}. The
-          people layer is far thinner than the border layer — about fifty rulers worldwide
-          are recorded as reigning in any given year — and thinner still outside Europe.
-          Absence here means unrecorded, not empty.
-        </p>
+        isCultureArea(p.name) ? (
+          <p className="sheet__note">
+            The source names this a people rather than a state, so the atlas has no ruler
+            to look for and finds none. That is the shape of the record, not of the place:
+            people lived here in {formatYear(year)}, under authority the dataset does not
+            describe.
+          </p>
+        ) : (
+          <p className="sheet__note">
+            Nobody in the atlas is recorded within this territory in {formatYear(year)}. The
+            people layer is far thinner than the border layer — {rulersThisYear} rulers
+            worldwide are recorded as reigning in {formatYear(year)} — and thinner still
+            outside Europe. Absence here means unrecorded, not empty.
+          </p>
+        )
       )}
 
       <Elsewhere
