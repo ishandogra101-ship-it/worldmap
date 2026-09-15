@@ -1,7 +1,12 @@
 // Builds the people and events layers from Wikidata and writes the files the app
 // reads at runtime.
 //
-//   node scripts/import/build-dataset.mjs
+//   node scripts/import/build-dataset.mjs [rulers|figures|events|portraits]
+//
+// Each layer is a separate invocation that writes its own file the moment it is
+// finished. The first full run lost 39 minutes of completed rulers and figures
+// because nothing was written until all three layers were done and the job was
+// killed partway through the third.
 //
 // Needs query.wikidata.org and commons.wikimedia.org. The environment this repo
 // is normally edited from cannot reach either, so this runs in GitHub Actions —
@@ -10,7 +15,7 @@
 // Writes public/data/{rulers,figures,events}.json and public/portraits/*.jpg,
 // which the app merges over src/data/highlights.json by id.
 
-import { writeFile, mkdir } from "node:fs/promises";
+import { writeFile, readFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchRulers } from "./wikidata-rulers.mjs";
@@ -72,32 +77,44 @@ function summarise(records, label) {
   console.log(`    most documented: ${top.map((e) => `${e.name} (${e.prominence})`).join(", ")}`);
 }
 
-async function main() {
-  await mkdir(DATA_DIR, { recursive: true });
-  const t0 = Date.now();
+const FETCH = { rulers: fetchRulers, figures: fetchFigures, events: fetchEvents };
 
-  console.log("\n=== rulers ===");
-  let rulers = clean(await fetchRulers(), "rulers");
+async function readLayer(name) {
+  try {
+    return JSON.parse(await readFile(path.join(DATA_DIR, `${name}.json`), "utf8"));
+  } catch {
+    return [];
+  }
+}
 
-  console.log("\n=== figures ===");
-  let figures = clean(await fetchFigures(), "figures");
+async function buildLayer(name) {
+  console.log(`\n=== ${name} ===`);
+  const t = Date.now();
+  const records = clean(await FETCH[name](), name);
+  summarise(records, name);
+  await writeFile(path.join(DATA_DIR, `${name}.json`), JSON.stringify(records));
+  console.log(`  wrote ${name}.json in ${((Date.now() - t) / 60000).toFixed(1)} min`);
+}
 
-  console.log("\n=== events ===");
-  let events = clean(await fetchEvents(), "events");
-
+/**
+ * Portraits run last and separately, over whatever the layers left on disk, so
+ * a people layer that has already been written is never re-fetched just to put
+ * a face on it.
+ */
+async function buildPortraits() {
   console.log("\n=== portraits ===");
+  const rulers = await readLayer("rulers");
+  const figures = await readLayer("figures");
   const people = [...rulers, ...figures];
+  if (people.length === 0) {
+    console.log("  no people on disk; nothing to do");
+    return;
+  }
   const got = await fetchPortraits(people, PORTRAIT_DIR);
-  for (const e of events) delete e.image;
-
-  console.log("\n=== summary ===");
-  summarise(rulers, "rulers");
-  summarise(figures, "figures");
-  summarise(events, "events");
-
+  // fetchPortraits mutates in place, so the layers are rewritten with their
+  // portrait paths attached
   await writeFile(path.join(DATA_DIR, "rulers.json"), JSON.stringify(rulers));
   await writeFile(path.join(DATA_DIR, "figures.json"), JSON.stringify(figures));
-  await writeFile(path.join(DATA_DIR, "events.json"), JSON.stringify(events));
 
   const credited = people.filter((e) => e.portraitCredit);
   await writeFile(
@@ -125,11 +142,22 @@ async function main() {
     ].join("\n"),
   );
 
-  const mins = ((Date.now() - t0) / 60000).toFixed(1);
-  console.log(
-    `\nDone in ${mins} min. rulers=${rulers.length} figures=${figures.length} ` +
-    `events=${events.length} portraits=${got}.`,
-  );
+  console.log(`  ${got} portraits, ${credited.length} credited`);
+}
+
+async function main() {
+  await mkdir(DATA_DIR, { recursive: true });
+  const which = process.argv[2] || "all";
+  const t0 = Date.now();
+
+  if (which === "portraits") await buildPortraits();
+  else if (FETCH[which]) await buildLayer(which);
+  else {
+    for (const name of Object.keys(FETCH)) await buildLayer(name);
+    await buildPortraits();
+  }
+
+  console.log(`\nDone in ${((Date.now() - t0) / 60000).toFixed(1)} min.`);
 }
 
 main().catch((err) => {

@@ -26,7 +26,7 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,13 +40,38 @@ jobs:
         if: inputs.mode == 'probe'
         run: node scripts/import/probe.mjs
 
-      - name: Build dataset
+      # One step per layer, each writing its own file as it finishes, and each
+      # allowed to fail without taking the others with it. The first full run
+      # lost 39 minutes of finished rulers and figures because a third layer
+      # was still going when the job was killed.
+      - name: Rulers
         if: inputs.mode == 'full'
-        run: node scripts/import/build-dataset.mjs
+        continue-on-error: true
+        timeout-minutes: 20
+        run: node scripts/import/build-dataset.mjs rulers
+
+      - name: Figures
+        if: inputs.mode == 'full'
+        continue-on-error: true
+        timeout-minutes: 60
+        run: node scripts/import/build-dataset.mjs figures
+
+      - name: Events
+        if: inputs.mode == 'full'
+        continue-on-error: true
+        timeout-minutes: 45
+        run: node scripts/import/build-dataset.mjs events
+
+      - name: Portraits
+        if: inputs.mode == 'full'
+        continue-on-error: true
+        timeout-minutes: 35
+        run: node scripts/import/build-dataset.mjs portraits
 
       - name: Report what was written
         if: inputs.mode == 'full'
         run: |
+          du -sh public/portraits 2>/dev/null || true
           ls -la public/data/*.json
           node -e '
             const fs = require("fs");

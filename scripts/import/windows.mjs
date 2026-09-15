@@ -10,7 +10,7 @@ import { sparql, SparqlTooHeavy } from "./sparql.mjs";
  * actual failure lets one setting work from the Bronze Age to the present.
  */
 export async function windowed({
-  from, to, step, minStep = 5, label, build, onRows,
+  from, to, step, minStep = 25, splitBudget = 14, label, build, onRows,
 }) {
   const queue = [];
   for (let y = from; y < to; y += step) queue.push([y, Math.min(y + step, to)]);
@@ -25,11 +25,15 @@ export async function windowed({
       ok++;
       console.log(`    ${tag}: ${rows.length} rows, ${ms}ms`);
     } catch (err) {
-      if (err instanceof SparqlTooHeavy && b - a > minStep) {
+      // Splitting assumes the cost tracks how much falls inside the window.
+      // Where it does not — a query whose real work happens before the date
+      // filter — halving an empty range just buys two more of the same wait, so
+      // the budget caps how far that can go before the window is written off.
+      if (err instanceof SparqlTooHeavy && b - a > minStep && split < splitBudget) {
         const mid = Math.floor((a + b) / 2);
         queue.unshift([a, mid], [mid, b]);
         split++;
-        console.log(`    ${tag}: too heavy, splitting at ${mid}`);
+        console.log(`    ${tag}: too heavy, splitting at ${mid} (${split}/${splitBudget})`);
       } else {
         dropped++;
         console.warn(`    ${tag}: giving up — ${err.message}`);
