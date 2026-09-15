@@ -44,21 +44,36 @@ export default function Timeline() {
   const era = eraForYear(year);
 
   // --- playback: advance along the track, not along the years ---
+  //
+  // Following a realm scopes the sweep to the years it was mapped in, so play
+  // watches one empire rise and fall instead of all of history. A short span
+  // still gets enough seconds to read rather than flashing past.
   useEffect(() => {
     if (!playing) return;
+    const f = store.get().followed;
+    const lo = f ? yearToFrac(f.from) : 0;
+    const hi = f ? yearToFrac(f.to) : 1;
+    const span = Math.max(hi - lo, 1e-4);
+    const duration = f ? Math.max(SWEEP_MS * span, 9_000) : SWEEP_MS;
+
+    // Position is held as a fraction of the track. Reading it back out of the
+    // year each frame rounds the sub-year step away and stops playback dead
+    // wherever the scale is dense, which is most of the last six centuries.
+    let pos = yearToFrac(store.get().year);
+    if (pos < lo || pos >= hi) pos = lo;
+
     let raf = 0;
     let last = performance.now();
     const step = (now: number) => {
       const dt = now - last;
       last = now;
-      const cur = yearToFrac(store.get().year);
-      const next = cur + dt / SWEEP_MS;
-      if (next >= 1) {
-        setYear(MAX_YEAR);
+      pos += (dt / duration) * span;
+      if (pos >= hi) {
+        setYear(f ? f.to : MAX_YEAR);
         store.set({ playing: false });
         return;
       }
-      setYear(fracToYear(next));
+      setYear(fracToYear(pos));
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);

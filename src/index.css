@@ -412,6 +412,7 @@
 .sheet__prose { font-size: 13.5px; line-height: 1.58; color: var(--text-2); margin-top: 12px; }
 .sheet__note { font-size: 12px; line-height: 1.55; color: var(--text-3); margin-top: 16px; }
 .sheet__actions { display: flex; gap: 7px; margin-top: 16px; flex-wrap: wrap; }
+.sheet__actions--tight { margin-top: 8px; }
 .btn {
   display: inline-flex; align-items: center; gap: 7px;
   height: 31px; padding: 0 12px; border-radius: var(--r1);

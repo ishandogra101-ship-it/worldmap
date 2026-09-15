@@ -219,7 +219,7 @@ function PolityView({ p, entities, polities, year }: {
         </Section>
       )}
 
-      {arc && <ArcView arc={arc} color={p.color} year={year} />}
+      {arc && <ArcView arc={arc} color={p.color} year={year} name={p.name} />}
 
       {rulersNow.length > 0 && (
         <Section title={`Ruling in ${formatYear(year)}`}>
@@ -453,7 +453,9 @@ function Elsewhere({
  * Extent is a planar measure used only for the shape of the curve — no figure
  * is shown, because none would be meaningful.
  */
-function ArcView({ arc, color, year }: { arc: Arc; color: string; year: number }) {
+function ArcView({
+  arc, color, year, name,
+}: { arc: Arc; color: string; year: number; name: string }) {
   const pts = arc.points;
   const first = pts[0][0];
   const last = pts[pts.length - 1][0];
@@ -486,6 +488,15 @@ function ArcView({ arc, color, year }: { arc: Arc; color: string; year: number }
         pts={pts} color={color} year={year} first={first} last={last}
         W={W} H={H} line={line} area={area} x={x} h={h} peak={peak} inSpan={inSpan}
       />
+      <div className="sheet__actions sheet__actions--tight">
+        <button
+          className="btn btn--quiet"
+          onClick={() => { follow(name, first, last); setYear(first); store.set({ playing: true }); }}
+        >
+          <Icon name="follow" size={14} />
+          Watch it change
+        </button>
+      </div>
       <p className="sheet__fine">
         {coverage}. Widest mapped extent {formatYear(peak[0])}.
       </p>
