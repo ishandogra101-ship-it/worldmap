@@ -1,5 +1,5 @@
 import { val, qid, parseYear, parsePoint, prominenceFromSitelinks } from "./sparql.mjs";
-import { windowed, dt } from "./windows.mjs";
+import { chunked } from "./chunks.mjs";
 
 /**
  * Thinkers, makers and explorers, placed at their birthplace.
@@ -9,10 +9,13 @@ import { windowed, dt } from "./windows.mjs";
  * It is the one location Wikidata records consistently for a person, and a
  * lifetime is the span the marker is shown across.
  *
- * All the occupations go in one query rather than one pass each. Seventeen
- * separate sweeps of 2,800 years came to roughly 950 queries, which would not
- * finish inside a job; binding them through VALUES cuts that to one sweep and
- * lets the window splitter deal with whatever is left.
+ * Chunked by occupation rather than by date, for the reason the events layer
+ * found the hard way: the cost here is the scan over everyone holding these
+ * occupations, and a date filter does not reduce it. Windowing by century spent
+ * forty to sixty seconds per window whether the window held four people or
+ * three hundred, and timed out at 1250 CE with two thirds of the range unread.
+ * Chunking along P106, which is indexed, asks for something the endpoint can
+ * look up. Dates are applied after the rows arrive, where they are free.
  *
  * The sitelink floor sits low for the same reason it does for rulers: the
  * level-of-detail system decides what reaches a crowded screen, so a high floor
@@ -44,32 +47,31 @@ const FIELD = {
   Q39631: "medicine",       // physician
 };
 
-const VALUES = Object.keys(FIELD).map((q) => `wd:${q}`).join(" ");
-
-const build = (a, b) => `
+const build = (occs) => `
 SELECT ?person ?personLabel ?occ ?birth ?death ?coord ?image ?sitelinks WHERE {
-  VALUES ?occ { ${VALUES} }
-  ?person wdt:P106 ?occ ; wdt:P569 ?birth ; wikibase:sitelinks ?sitelinks .
-  FILTER(?birth >= ${dt(a)} && ?birth < ${dt(b)})
+  VALUES ?occ { ${occs.map((q) => `wd:${q}`).join(" ")} }
+  ?person wdt:P106 ?occ ; wdt:P569 ?birth ; wdt:P19 ?bp ;
+          wikibase:sitelinks ?sitelinks .
+  ?bp wdt:P625 ?coord .
   FILTER(?sitelinks >= ${MIN_SITELINKS})
   OPTIONAL { ?person wdt:P570 ?death. }
-  OPTIONAL { ?person wdt:P19 ?bp. ?bp wdt:P625 ?coord. }
   OPTIONAL { ?person wdt:P18 ?image. }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }`;
 
-export async function fetchFigures({ from = -800, to = 2000, step = 50 } = {}) {
+export async function fetchFigures({ from = -3000, to = 2026 } = {}) {
   const byId = new Map();
-  let noPlace = 0;
+  let noPlace = 0, outOfRange = 0;
 
-  await windowed({
-    from, to, step, label: "figures", build,
+  await chunked({
+    items: Object.keys(FIELD), size: 2, label: "figures", build,
     onRows(rows) {
       for (const r of rows) {
         const id = qid(val(r, "person"));
         if (!id || byId.has(id)) continue; // first occupation seen wins the glyph
         const birth = parseYear(val(r, "birth"));
         if (birth === null) continue;
+        if (birth < from || birth > to) { outOfRange++; continue; }
         const pt = parsePoint(val(r, "coord"));
         if (!pt) { noPlace++; continue; }
         const death = parseYear(val(r, "death"));
@@ -90,6 +92,9 @@ export async function fetchFigures({ from = -800, to = 2000, step = 50 } = {}) {
     },
   });
 
-  console.log(`  figures: ${byId.size} kept, ${noPlace} dropped for no birthplace coordinate`);
+  console.log(
+    `  figures: ${byId.size} kept, ${noPlace} dropped for no birthplace coordinate, `
+    + `${outOfRange} outside the atlas range`,
+  );
   return [...byId.values()];
 }

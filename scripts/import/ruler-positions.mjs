@@ -26,8 +26,10 @@ const RULER_WORDS =
   + "tsarina|pharaoh|caliph|emir|amir|mansa|negus|inca|sapa|monarch|doge|dux|archon|"
   + "hegemon|maharaja|raja|rani|nizam|peshwa|shogun|daimyo|chief|paramount";
 
-export async function rulerPositions({ minSitelinks = 15, cap = 2000 } = {}) {
-  const { rows, ms } = await sparql(
+export async function rulerPositions({ minSitelinks = 25, cap = 2000 } = {}) {
+  let rows, ms;
+  try {
+    ({ rows, ms } = await sparql(
     `SELECT DISTINCT ?pos WHERE {
        {
          ?pos wdt:P279* wd:Q48352 .
@@ -37,9 +39,15 @@ export async function rulerPositions({ minSitelinks = 15, cap = 2000 } = {}) {
          ?pos rdfs:label ?l . FILTER(LANG(?l) = "en")
          FILTER(REGEX(?l, "\\\\b(${RULER_WORDS})\\\\b", "i"))
        }
-     }`,
-    { label: "ruler positions", retries: 2 },
-  );
+     } LIMIT ${cap}`,
+      { label: "ruler positions", retries: 2 },
+    ));
+  } catch (err) {
+    // Falling back to the inline head of state closure loses the Khaganate and
+    // the Mansas, which is a far smaller loss than the whole ruler layer.
+    console.warn(`  ruler positions failed (${err.message}); using the head of state closure alone`);
+    return null;
+  }
   const out = [...new Set(rows.map((r) => qid(val(r, "pos"))).filter(Boolean))];
   console.log(`  ruler positions: ${out.length} in ${ms}ms`);
   if (out.length > cap) {

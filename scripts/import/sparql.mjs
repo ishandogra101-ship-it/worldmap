@@ -56,7 +56,17 @@ export async function sparql(query, { retries = 3, label = "" } = {}) {
         }
         throw new Error(`HTTP ${res.status}: ${body}`);
       }
-      const json = await res.json();
+      // Not res.json(). A label carrying a raw control character makes the
+      // parser throw "Bad control character in string literal", which killed the
+      // whole ruler layer on its first query. Wikidata holds user-entered text,
+      // so that is a hazard of every query that returns a label, not a one-off.
+      const text = await res.text();
+      let json;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        json = JSON.parse(text.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, " "));
+      }
       return { rows: json.results.bindings, ms };
     } catch (err) {
       if (err.name === "AbortError") {
