@@ -87,6 +87,16 @@ function indexByDecade(entities: Entity[]): Map<number, Entity[]> {
   return out;
 }
 
+/**
+ * Whether a marker carries its name at this zoom.
+ *
+ * Collision sizing and rendering have to agree on this, or the box reserved is
+ * not the box drawn.
+ */
+function isNamed(e: Entity, zoom: number): boolean {
+  return e.kind === "city" || e.prominence >= 86 || zoom >= 3;
+}
+
 function activeAt(e: Entity, year: number): boolean {
   if (e.kind === "event" && e.startYear === e.endYear) {
     return Math.abs(year - e.startYear) <= EVENT_WINDOW;
@@ -370,7 +380,7 @@ export class OverlayEngine {
 
     // 1. gate by zoom rules, project, cull to viewport
     const visible: Placed[] = [];
-    for (const cand of this.candidates) {
+    for (let cand of this.candidates) {
       if (this.labelsOnly && cand.kind !== "label") continue;
       if (cand.kind === "event") {
         if (cand.entity!.prominence < eThresh) continue;
@@ -380,6 +390,15 @@ export class OverlayEngine {
         if (cand.entity!.prominence < pThresh) continue;
       }
       const pt = map.project([cand.lng, cand.lat]);
+      if (cand.entity && isNamed(cand.entity, zoom)) {
+        // The circle was the whole collision box, so two markers could sit a
+        // comfortable distance apart and still have their names written across
+        // each other. With fifty curated records that almost never happened;
+        // with eighteen thousand it is constant. 150px is the CSS clamp on a
+        // marker name, 5.6px a per-character estimate at its size.
+        const nameW = Math.min(150, cand.entity.name.length * 5.6) + 8;
+        cand = { ...cand, w: Math.max(cand.w, nameW), h: cand.h + 15 };
+      }
       if (cand.kind === "label") {
         // a label must fit fully inside its window, or it reads as clipped text
         const m = 10;
@@ -443,10 +462,7 @@ export class OverlayEngine {
       // A bare symbol on a map means nothing. Name the marquee figures always,
       // and everyone else as soon as the view is close enough to have room.
       if (item.entity) {
-        el.classList.toggle(
-          "is-named",
-          item.entity.kind === "city" || item.entity.prominence >= 86 || zoom >= 3,
-        );
+        el.classList.toggle("is-named", isNamed(item.entity, zoom));
       }
     }
     for (const [key, el] of this.nodes) {
