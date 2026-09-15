@@ -1,10 +1,21 @@
 export const MIN_YEAR = -3000;
 export const MAX_YEAR = 2026;
 
-/** Resolve a path against the app base so it works locally and on Pages. */
+declare const __BUILD_STAMP__: string;
+
+/**
+ * Resolve a path against the app base so it works locally and on Pages.
+ *
+ * Fetched files carry the build stamp so a rebuilt dataset actually reaches a
+ * returning visitor; see vite.config.ts. Images are left alone — they are
+ * content that does not change under a stable name, and a query string on a
+ * portrait only costs a cache miss.
+ */
 export function asset(pathUnderPublic: string): string {
   const base = import.meta.env.BASE_URL || "/";
-  return base.replace(/\/$/, "") + "/" + pathUnderPublic.replace(/^\//, "");
+  const path = pathUnderPublic.replace(/^\//, "");
+  const url = base.replace(/\/$/, "") + "/" + path;
+  return /\.(json|geojson)$/.test(path) ? `${url}?v=${__BUILD_STAMP__}` : url;
 }
 
 export function formatYear(year: number): string {

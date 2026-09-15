@@ -47,6 +47,21 @@ export const MAP_THEMES: Record<"dark" | "light", MapTheme> = {
  * continent into coloured static. Ramping rather than cutting means no visible
  * edge between what fades and what does not.
  */
+/**
+ * Round joins and caps on every line in the style.
+ *
+ * MapLibre defaults to a miter join, which meets two segments at a point. On a
+ * coastline that is a chain of short segments turning sharply, every one of
+ * those points is a hard corner, and at the angles historical boundaries
+ * actually make it reads as faceted and spiky however much geometry is behind
+ * it. It is the reason the map still looked cornered after the vendoring was
+ * rebuilt at three and a half times the detail: more vertices meant more
+ * corners, drawn just as sharply.
+ *
+ * Round is the cartographic default for a reason. It costs nothing.
+ */
+const ROUND_JOINS = { "line-join": "round", "line-cap": "round" } as const;
+
 const AREA_FADE: ExpressionSpecification = [
   "interpolate", ["linear"], ["get", "__area"],
   4, 0.3,
@@ -78,6 +93,7 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
       {
         id: "land-line",
         type: "line",
+        layout: ROUND_JOINS,
         source: "land",
         paint: { "line-color": t.landLine, "line-width": 0.7 },
       },
@@ -114,6 +130,7 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
       {
         id: "polity-line",
         type: "line",
+        layout: ROUND_JOINS,
         source: "borders",
         paint: {
           "line-color": t.boundary,
@@ -141,6 +158,7 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
         // data/corrections.ts.
         id: "polity-doubt",
         type: "line",
+        layout: ROUND_JOINS,
         source: "borders",
         filter: ["==", ["get", "__doubt"], 1],
         paint: {
@@ -157,6 +175,7 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
       {
         id: "polity-hover",
         type: "line",
+        layout: ROUND_JOINS,
         source: "borders",
         filter: ["==", ["get", "__group"], NO_MATCH],
         paint: { "line-color": t.boundaryStrong, "line-width": 1.6 },
@@ -164,6 +183,7 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
       {
         id: "polity-selected",
         type: "line",
+        layout: ROUND_JOINS,
         source: "borders",
         filter: ["==", ["get", "__group"], NO_MATCH],
         paint: { "line-color": t.selected, "line-width": 2.2 },
