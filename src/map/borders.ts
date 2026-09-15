@@ -1,6 +1,7 @@
 import type { FeatureCollection, Feature, Polygon, MultiPolygon } from "geojson";
 import { asset } from "../util";
 import { isCultureArea } from "./kinds";
+import { CORRECTIONS } from "../data/corrections";
 import { groupKey, colorForGroup, tierForArea, type BorderProps } from "./palette";
 import type { PolitySummary, PolityTier } from "../types";
 
@@ -22,7 +23,44 @@ export function loadSnapshot(fileRel: string): Promise<Snapshot> {
   return p;
 }
 
+/**
+ * Whether this feature is one a correction names.
+ *
+ * The test is the polygon's own bounding box against the note's extent, so a
+ * realm drawn correctly in one place and wrongly in another is only flagged
+ * when the two overlap. The 1815 Marathas are a single 123-point ring running
+ * from the Deccan to the Karakoram, so the mark lands on the whole shape — the
+ * note says which end of it is wrong, which is more use than quietly splitting
+ * a boundary nobody surveyed.
+ */
+function inDoubt(year: number | null, name: string | undefined, f: Feature): boolean {
+  if (year === null || !name || !f.geometry) return false;
+  const notes = CORRECTIONS.filter((c) => c.snapshot === year && c.polity === name);
+  if (notes.length === 0) return false;
+  const g = f.geometry as Polygon | MultiPolygon;
+  const rings = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+  let w = 180, s = 90, e = -180, n = -90;
+  for (const poly of rings) {
+    for (const [x, y] of poly[0]) {
+      if (x < w) w = x; if (x > e) e = x;
+      if (y < s) s = y; if (y > n) n = y;
+    }
+  }
+  return notes.some((c) => {
+    const [cw, cs, ce, cn] = c.area;
+    return w <= ce && e >= cw && s <= cn && n >= cs;
+  });
+}
+
+/** The snapshot year, read off the file the borders came from. */
+function yearOfFile(fileRel: string): number | null {
+  const m = /world_(bc)?(\d+)/.exec(fileRel);
+  if (!m) return null;
+  return m[1] ? -Number(m[2]) : Number(m[2]);
+}
+
 async function fetchSnapshot(fileRel: string): Promise<Snapshot> {
+  const year = yearOfFile(fileRel);
   const res = await fetch(asset(`data/${fileRel}`));
   if (!res.ok) throw new Error(`Failed to load ${fileRel}: ${res.status}`);
   const fc = (await res.json()) as FeatureCollection;
@@ -41,6 +79,9 @@ async function fetchSnapshot(fileRel: string): Promise<Snapshot> {
     // drawing one around "Savanna hunter-gatherers" claims a frontier nobody
     // held. See kinds.ts for how the two are told apart and how far that goes.
     props.__people = isCultureArea(props.NAME as string ?? props.name as string) ? 1 : 0;
+    // A shape the record contradicts is marked, never redrawn. See
+    // data/corrections.ts for why a wrong border stays on screen.
+    props.__doubt = inDoubt(year, props.NAME as string, f) ? 1 : 0;
   }
   return { fc, polities, byGroup };
 }

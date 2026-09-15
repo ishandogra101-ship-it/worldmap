@@ -781,3 +781,32 @@ kbd {
 .cov__pct { font-size: 11px; color: var(--text); text-align: right; }
 .cov__n { font-size: 11px; color: var(--text-3); text-align: right; }
 .cov__point { color: var(--text); font-weight: 500; }
+
+/* ============ a correction on the source ============ */
+/* Deliberately the loudest thing in the panel after the name. A note saying
+   the map is wrong is worth more than anything below it, and a reader who
+   scrolls no further should still leave having read it. */
+.fix {
+  margin-top: 14px;
+  padding: 11px 12px 12px;
+  border-radius: var(--r3);
+  border: 1px solid color-mix(in srgb, #c2492f 42%, transparent);
+  background: color-mix(in srgb, #c2492f 11%, transparent);
+}
+.fix__head { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.fix__mark {
+  display: grid; place-items: center; flex: none;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: #c2492f; color: #fff;
+  font-size: 10px; font-weight: 700; line-height: 1;
+}
+.fix__head .eyebrow { color: color-mix(in srgb, #c2492f 62%, var(--text)); }
+.fix__what { font-size: 12.5px; line-height: 1.5; color: var(--text); }
+.fix__what strong { font-weight: 600; }
+.fix__record { font-size: 12.5px; line-height: 1.55; color: var(--text-2); margin-top: 7px; }
+.fix__src { font-size: 10.5px; line-height: 1.45; color: var(--text-3); margin-top: 8px; }
+.fix__policy {
+  font-size: 10.5px; line-height: 1.45; color: var(--text-3);
+  margin-top: 7px; padding-top: 7px;
+  border-top: 1px solid color-mix(in srgb, #c2492f 24%, transparent);
+}

@@ -135,6 +135,26 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
         },
       },
       {
+        // A boundary the record contradicts, drawn dashed rather than redrawn.
+        // Dashes are the right word for it: the shape underneath is still the
+        // source's, and the dash says only that it is not to be trusted. See
+        // data/corrections.ts.
+        id: "polity-doubt",
+        type: "line",
+        source: "borders",
+        filter: ["==", ["get", "__doubt"], 1],
+        paint: {
+          "line-color": t.boundaryStrong,
+          "line-width": 1.3,
+          "line-dasharray": [2, 2.5],
+          "line-opacity": [
+            "interpolate", ["linear"], ["zoom"],
+            1.4, 0.55,
+            3.2, 0.85,
+          ],
+        },
+      },
+      {
         id: "polity-hover",
         type: "line",
         source: "borders",

@@ -10,6 +10,7 @@ import { loadSnapshot } from "../map/borders";
 import { loadManifest, nearestSnapshot } from "../data/snapshots";
 import { arcFor, type Arc } from "../data/arcs";
 import { isCultureArea } from "../map/kinds";
+import { correctionsFor } from "../data/corrections";
 
 /**
  * Match a realm against the realm named on a person's record.
@@ -226,6 +227,11 @@ function PolityView({ p, entities, polities, year }: {
     [entities, year],
   );
 
+  const notes = useMemo(
+    () => correctionsFor(p.snapshotYear, p.name),
+    [p.snapshotYear, p.name],
+  );
+
   const tierName = isCultureArea(p.name)
     ? "A people, not a state"
     : p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm";
@@ -274,6 +280,31 @@ function PolityView({ p, entities, polities, year }: {
       <div className="sheet__meta">
         <span>As drawn in {formatYear(p.snapshotYear)}</span>
       </div>
+
+      {/*
+        Directly under the name, before anything the shape is used to argue.
+        A reader who opens this panel and scrolls no further should still leave
+        knowing the outline is wrong.
+      */}
+      {notes.map((c) => (
+        <aside className="fix" key={c.where}>
+          <div className="fix__head">
+            <span className="fix__mark" aria-hidden="true">!</span>
+            <span className="eyebrow">The source is wrong here</span>
+          </div>
+          <p className="fix__what">
+            <strong>{c.where}.</strong> {c.drawn}
+          </p>
+          <p className="fix__record">{c.record}</p>
+          <p className="fix__src">
+            {c.sources.join(" · ")}
+          </p>
+          <p className="fix__policy">
+            The outline stays as the dataset drew it, marked with a dashed edge on the
+            map. Redrawing it would mean inventing a border nobody surveyed.
+          </p>
+        </aside>
+      ))}
 
       {(p.subjectTo && p.subjectTo !== p.name) && (
         <Row label="Subject to" value={p.subjectTo} />

@@ -140,16 +140,38 @@ export default function HistoricalMap() {
     let lastLayers = s.layers;
     let lastSelection = s.selection;
 
+    /**
+     * Swap the borders to the snapshot nearest this year.
+     *
+     * Every await here is a chance for the answer to arrive out of order, and
+     * it did. Scrubbing 1815 -> 1790 -> 1815 started a fetch for 1800 that
+     * landed after the one for 1815, so the map drew 1800 while the readout,
+     * the panel headers and the before-and-after rows all said 1815. The atlas
+     * was stating a year it was not showing, which is the one failure that
+     * makes every other fact on screen unsafe: the Sikh Empire appeared under a
+     * header reading "As drawn in 1815 CE" beside a note saying it is mapped
+     * only in 1800.
+     *
+     * Two rules fix it. A sequence token taken before the first await, so a
+     * superseded load cannot write anything. And shownSnapshot moves only once
+     * the geometry is actually on the map, so it always names what is drawn —
+     * previously it was set on intent, which let the early-return path keep
+     * re-asserting a year whose data had been overwritten.
+     */
+    let loadSeq = 0;
     const applyYear = async (year: number) => {
+      const seq = ++loadSeq;
       overlay.setYear(year);
       const manifest = await loadManifest();
+      if (seq !== loadSeq) return;
       const snap = nearestSnapshot(manifest, year);
       if (snap.year === shownSnapshot.current) {
-        store.set({ snapshotYear: snap.year });
+        store.set({ snapshotYear: snap.year, loadingMap: false });
         return;
       }
-      shownSnapshot.current = snap.year;
       const { fc, polities } = await loadSnapshot(snap.file);
+      if (seq !== loadSeq) return;
+      shownSnapshot.current = snap.year;
       const src = map.getSource("borders") as maplibregl.GeoJSONSource | undefined;
       if (src) src.setData(fc as GeoJSON.FeatureCollection);
       overlay.setPolities(polities);
