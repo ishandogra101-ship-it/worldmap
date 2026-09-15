@@ -11,13 +11,30 @@ import type { BorderManifestEntry } from "../types";
  *  scale instead of racing through antiquity. */
 const SWEEP_MS = 78_000;
 
+/**
+ * Whether an era's name fits the span it labels.
+ *
+ * The test was whether the span covered 7% of the track, which asks nothing
+ * about the word. "Modern" needs a third of what "Late Antiquity" does, and at
+ * 1440px the band read "LATE ANTIQUI" and "AGE OF REVOLUTI" — words cut
+ * mid-letter, which looks like a rendering fault rather than a tight fit. A
+ * name that does not fit is dropped; the era's boundary line still marks where
+ * it begins and the year scale below says which year that is.
+ *
+ * 6.5px is one uppercase character at 9px in the UI stack with its 0.06em
+ * tracking; the 12 is 5px of left padding and 7px of clearance from the next
+ * boundary line.
+ */
+function fits(name: string, spanPx: number): boolean {
+  return spanPx >= name.length * 6.5 + 12;
+}
+
 export default function Timeline() {
   const year = useAtlas((s) => s.year);
   const snapshotYear = useAtlas((s) => s.snapshotYear);
   const playing = useAtlas((s) => s.playing);
   const followed = useAtlas((s) => s.followed);
   const compareYear = useAtlas((s) => s.compareYear);
-  const entities = useAtlas((s) => s.entities);
 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(880);
@@ -39,26 +56,6 @@ export default function Timeline() {
 
   const ticks = useMemo(() => buildTicks(width), [width]);
 
-  /**
-   * Recorded events as a density band, bucketed along the track.
-   *
-   * One element per event was fine for a few dozen curated ones and is not fine
-   * for the thousands the Wikidata import brings: it put a DOM node in the
-   * timeline for every event in history, and rebuilt the list on every tick of
-   * playback. Bucketing gives a fixed number of bars, and a band that actually
-   * reads as density rather than as a solid smear.
-   */
-  const density = useMemo(() => {
-    const BUCKETS = 180;
-    const counts = new Array<number>(BUCKETS).fill(0);
-    for (const e of entities) {
-      if (e.kind !== "event") continue;
-      const i = Math.min(BUCKETS - 1, Math.max(0, Math.floor(yearToFrac(e.startYear) * BUCKETS)));
-      counts[i]++;
-    }
-    const max = Math.max(1, ...counts);
-    return counts.map((n, i) => ({ i, n, share: n / max }));
-  }, [entities]);
   const frac = yearToFrac(year);
   const era = eraForYear(year);
 
@@ -241,13 +238,27 @@ export default function Timeline() {
                 style={{ left: `${l}%`, width: `${w}%` }}
                 title={e.name}
               >
-                {w > 7 && <span className="tl-era__name">{e.name}</span>}
+                {fits(e.name, (w / 100) * width) && (
+                  <span className="tl-era__name">{e.name}</span>
+                )}
               </span>
             );
           })}
         </div>
 
-        {/* years we actually have borders for — makes snapping legible */}
+        {/*
+          The years the borders actually come from, and the honesty mechanism of
+          the whole timeline: ask for 1526 and the map draws 1500, and this is
+          where a reader sees why.
+
+          These ticks used to share twenty vertical pixels with a 180-bucket
+          band of event density and a 55-tick year scale. Three tick systems in
+          one strip, none of them readable. The density band is gone — at five
+          pixels a bucket it could not be read as a distribution, and what it
+          was reaching for, where the record is dense, is now stated with
+          numbers in the coverage panel. The ticks that decide which map you are
+          looking at get the room instead.
+        */}
         <div className="tl-snaps" aria-hidden="true">
           {snapshots.map((s) => (
             <span
@@ -258,23 +269,6 @@ export default function Timeline() {
           ))}
         </div>
 
-        {/* recorded events, as a density band */}
-        <div className="tl-events" aria-hidden="true">
-          {density.map(({ i, n, share }) =>
-            n === 0 ? null : (
-              <span
-                key={i}
-                className="tl-event"
-                style={{
-                  left: `${(i / density.length) * 100}%`,
-                  width: `${100 / density.length}%`,
-                  opacity: 0.25 + share * 0.75,
-                  transform: `scaleY(${0.35 + share * 0.65})`,
-                }}
-              />
-            ),
-          )}
-        </div>
 
         {followed && (
           <div

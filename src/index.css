@@ -259,17 +259,15 @@
   font-size: 9px; letter-spacing: .06em; text-transform: uppercase;
   color: var(--text-3); opacity: .65; padding-left: 5px; white-space: nowrap;
 }
-.tl-snaps, .tl-events { position: absolute; left: 0; right: 0; }
-.tl-snaps { top: 17px; height: 5px; }
+.tl-snaps { position: absolute; left: 0; right: 0; top: 19px; height: 10px; }
 .tl-snap {
-  position: absolute; top: 0; width: 1px; height: 5px;
-  background: var(--text-3); opacity: .38; transform: translateX(-.5px);
+  position: absolute; bottom: 0; width: 1px; height: 6px;
+  background: var(--text-3); opacity: .42; transform: translateX(-.5px);
 }
-.tl-snap.is-active { background: var(--accent); opacity: 1; width: 2px; height: 7px; }
-.tl-events { top: 24px; height: 4px; }
-.tl-event {
-  position: absolute; top: 0; height: 4px; border-radius: 1px;
-  background: var(--text-2); transform-origin: top center;
+/* the year being drawn, which is usually not the year on the handle */
+.tl-snap.is-active {
+  background: var(--accent); opacity: 1; width: 2px; height: 10px;
+  transform: translateX(-1px);
 }
 .tl-followband {
   position: absolute; top: 15px; height: 16px; border-radius: 3px;
