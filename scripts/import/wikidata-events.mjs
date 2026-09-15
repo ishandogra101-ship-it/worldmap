@@ -1,5 +1,5 @@
 import { val, qid, parseYear, parsePoint, prominenceFromSitelinks } from "./sparql.mjs";
-import { windowed, dt } from "./windows.mjs";
+import { chunked } from "./chunks.mjs";
 import { expandSubclasses } from "./expand-types.mjs";
 
 /**
@@ -26,17 +26,19 @@ const ROOT_FIELD = {
 };
 
 // P585 (point in time) or P580 (start time) — an event with neither is unusable.
-const build = (types) => (a, b) => `
+//
+// No date filter: it cannot be pushed down past the UNION, so asking for one
+// costs a full scan and saves nothing. Dates are applied after the rows arrive.
+const build = (types) => `
 SELECT ?e ?eLabel ?type ?when ?coord ?sitelinks WHERE {
   VALUES ?type { ${types.map((q) => `wd:${q}`).join(" ")} }
   ?e wdt:P31 ?type ; wdt:P625 ?coord ; wikibase:sitelinks ?sitelinks .
   { ?e wdt:P585 ?when. } UNION { ?e wdt:P580 ?when. }
-  FILTER(?when >= ${dt(a)} && ?when < ${dt(b)})
   FILTER(?sitelinks >= ${MIN_SITELINKS})
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }`;
 
-export async function fetchEvents({ from = -3000, to = 2026, step = 100 } = {}) {
+export async function fetchEvents({ from = -3000, to = 2026 } = {}) {
   const roots = Object.keys(ROOT_FIELD);
   const types = await expandSubclasses(roots);
 
@@ -46,14 +48,16 @@ export async function fetchEvents({ from = -3000, to = 2026, step = 100 } = {}) 
   const field = (q) => ROOT_FIELD[q] || "event";
 
   const byId = new Map();
-  await windowed({
-    from, to, step, label: "events", build: build(types),
+  let outOfRange = 0;
+  await chunked({
+    items: types, size: 24, label: "events", build,
     onRows(rows) {
       for (const r of rows) {
         const id = qid(val(r, "e"));
         if (!id || byId.has(id)) continue;
         const year = parseYear(val(r, "when"));
         if (year === null) continue;
+        if (year < from || year > to) { outOfRange++; continue; }
         const pt = parsePoint(val(r, "coord"));
         if (!pt) continue;
         byId.set(id, {
@@ -71,6 +75,6 @@ export async function fetchEvents({ from = -3000, to = 2026, step = 100 } = {}) 
     },
   });
 
-  console.log(`  events: ${byId.size} kept`);
+  console.log(`  events: ${byId.size} kept, ${outOfRange} outside the atlas range`);
   return [...byId.values()];
 }
