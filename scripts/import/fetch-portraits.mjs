@@ -67,6 +67,7 @@ export async function fetchPortraits(entities, outDir, {
     .slice(0, limit);
   console.log(`  ${withImage.length} candidates (prominence >= ${minProminence}, cap ${limit})`);
   let skippedLicense = 0;
+  const skipped = new Map();
   let got = 0;
   for (const e of withImage) {
     const title = fileTitleFromImageUrl(e.image);
@@ -89,10 +90,19 @@ export async function fetchPortraits(entities, outDir, {
       got++;
       if (got % 100 === 0) console.log(`  portraits: ${got} downloaded`);
     } catch (err) {
-      console.warn(`  portrait skip ${e.id}: ${err.message}`);
+      // Commons rate-limits hard, and one line per refusal buried the ruler and
+      // figure diagnostics under two thousand identical "commons 429" lines —
+      // which is how a run that fetched nothing new looked like a run that
+      // worked. Counted by reason, reported once.
+      const reason = /\b(\d{3})\b/.exec(err.message)?.[1] ?? err.message.slice(0, 40);
+      skipped.set(reason, (skipped.get(reason) ?? 0) + 1);
     }
   }
   for (const e of entities) delete e.image;
   console.log(`  ${got} downloaded, ${skippedLicense} skipped for licence`);
+  if (skipped.size) {
+    const by = [...skipped].sort((a, b) => b[1] - a[1]).map(([r, n]) => `${n}x ${r}`);
+    console.log(`  ${[...skipped.values()].reduce((a, b) => a + b, 0)} skipped: ${by.join(", ")}`);
+  }
   return got;
 }
