@@ -5,7 +5,9 @@ import { mapController } from "../map/HistoricalMap";
 import { formatYear, centuryLabel, asset } from "../util";
 import type { Entity, PolitySelection, PolitySummary } from "../types";
 import { regionOf, type Region } from "../data/regions";
-import { beforeAndAfter, type HeldBy } from "../map/pointLookup";
+import { beforeAndAfter, entitiesWithin, type HeldBy } from "../map/pointLookup";
+import { loadSnapshot } from "../map/borders";
+import { loadManifest, nearestSnapshot } from "../data/snapshots";
 import { arcFor, type Arc } from "../data/arcs";
 
 /**
@@ -155,24 +157,58 @@ export default function EntityPanel() {
 function PolityView({ p, entities, polities, year }: {
   p: PolitySelection; entities: Entity[]; polities: PolitySummary[]; year: number;
 }) {
+  /**
+   * Who belongs to this realm, decided by where they are rather than by what
+   * their record calls the place.
+   *
+   * Name matching found a ruler for 17 of the 636 realms in the 1600 snapshot
+   * and a figure for none of them, because an imported figure's category is a
+   * field — "art", "science" — where a realm name would go. Testing the place
+   * recorded for a person against the territory the realm actually holds finds
+   * everyone, and needs the two vocabularies to agree about nothing.
+   */
+  const [within, setWithin] = useState<Entity[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    setWithin(null);
+    (async () => {
+      const manifest = await loadManifest();
+      const snap = nearestSnapshot(manifest, p.snapshotYear);
+      const { fc } = await loadSnapshot(snap.file);
+      const people = entities.filter((e) => e.kind === "ruler" || e.kind === "figure");
+      const hit = entitiesWithin(fc, p.group, people);
+      if (alive) setWithin(hit);
+    })().catch(() => { if (alive) setWithin([]); });
+    return () => { alive = false; };
+  }, [entities, p.group, p.snapshotYear]);
+
+  const here = within ?? [];
+  const livingNow = (e: Entity) => e.startYear <= year && year <= e.endYear;
+
+  /**
+   * Inside this territory is not the same as belonging to this realm. In 1600
+   * the Ottomans hold Egypt, so a purely geographic list put Tutankhamun under
+   * their name. Everything shown is therefore scoped to the year being drawn,
+   * and a person whose own record names this realm is ranked above one who
+   * merely stands within it — which is what puts a sultan above the Khan of
+   * Crimea rather than the other way round.
+   */
+  const rank = (e: Entity) => {
+    const named = e.category && related(p.name, e.category) ? 1000 : 0;
+    return named + e.prominence;
+  };
+
   const rulersNow = useMemo(
-    () => entities.filter(
-      (e) => e.kind === "ruler" && e.category && related(p.name, e.category)
-        && e.startYear <= year && year <= e.endYear,
-    ),
-    [entities, p.name, year],
-  );
-  const rulersEver = useMemo(
-    () => entities
-      .filter((e) => e.kind === "ruler" && e.category && related(p.name, e.category))
-      .sort((a, b) => a.startYear - b.startYear),
-    [entities, p.name],
+    () => here.filter((e) => e.kind === "ruler" && livingNow(e))
+      .sort((a, b) => rank(b) - rank(a))
+      .slice(0, 8),
+    [here, year, p.name],
   );
   const figures = useMemo(
-    () => entities
-      .filter((e) => e.kind === "figure" && e.category && related(p.name, e.category))
-      .slice(0, 6),
-    [entities, p.name],
+    () => here.filter((e) => e.kind === "figure" && livingNow(e))
+      .sort((a, b) => rank(b) - rank(a))
+      .slice(0, 8),
+    [here, year, p.name],
   );
 
   const tierName = p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm";
@@ -200,8 +236,8 @@ function PolityView({ p, entities, polities, year }: {
   // Someone already named above is not "elsewhere", however their coordinates
   // fall: Suleiman sits in Istanbul, which the region lookup calls Europe.
   const named = useMemo(
-    () => new Set([...rulersEver, ...figures].map((e) => e.id)),
-    [rulersEver, figures],
+    () => new Set([...rulersNow, ...figures].map((e) => e.id)),
+    [rulersNow, figures],
   );
   const elsewhere = useMemo(
     () => elsewhereAt(entities, year, regionOf(p.lng, p.lat)).filter((o) => !named.has(o.e.id)),
@@ -247,22 +283,18 @@ function PolityView({ p, entities, polities, year }: {
         </Section>
       )}
 
-      {rulersEver.length > 0 && (
-        <Section title="Rulers recorded here">
-          {rulersEver.map((r) => <EntityRow key={r.id} e={r} muted={!rulersNow.includes(r)} />)}
-        </Section>
-      )}
-
       {figures.length > 0 && (
-        <Section title="Figures associated">
+        <Section title={`Alive here in ${formatYear(year)}`}>
           {figures.map((f) => <EntityRow key={f.id} e={f} />)}
         </Section>
       )}
 
-      {rulersEver.length === 0 && figures.length === 0 && (
+      {within !== null && rulersNow.length === 0 && figures.length === 0 && (
         <p className="sheet__note">
-          No rulers or figures for this realm are in the atlas yet. The people layer is
-          far thinner than the border layer — absence here means unrecorded, not empty.
+          Nobody in the atlas is recorded within this territory in {formatYear(year)}. The
+          people layer is far thinner than the border layer — about fifty rulers worldwide
+          are recorded as reigning in any given year — and thinner still outside Europe.
+          Absence here means unrecorded, not empty.
         </p>
       )}
 

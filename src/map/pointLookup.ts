@@ -86,3 +86,52 @@ export async function beforeAndAfter(
   const [before, after] = await Promise.all([lookup(prev), lookup(next)]);
   return { before, after };
 }
+
+/**
+ * Everyone whose recorded place falls inside one realm's territory.
+ *
+ * The panel used to find its people by comparing the border dataset's realm
+ * name against the realm named on a person's record. Those two vocabularies
+ * barely overlap — of 636 realms in the 1600 snapshot, 17 found a ruler that
+ * way — and an imported figure carries a field ("art", "science") where a realm
+ * name would go, so no realm ever found a single one of the 14,304.
+ *
+ * Geography is the honest join: a person belongs here if the place recorded for
+ * them lies within what this realm holds in the year being drawn. A bounding
+ * box per feature keeps the ray casting off the great majority of candidates.
+ */
+export function entitiesWithin<T extends { lng: number; lat: number }>(
+  fc: FeatureCollection,
+  group: string,
+  candidates: readonly T[],
+): T[] {
+  const boxes: Array<{ rings: number[][][]; x0: number; y0: number; x1: number; y1: number }> = [];
+
+  for (const f of fc.features) {
+    const props = (f.properties || {}) as Record<string, unknown>;
+    if (String(props.__group || "") !== group) continue;
+    const g = f.geometry;
+    const polys: number[][][][] =
+      g?.type === "Polygon" ? [g.coordinates as number[][][]]
+      : g?.type === "MultiPolygon" ? (g.coordinates as number[][][][])
+      : [];
+    for (const rings of polys) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const [x, y] of rings[0]) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+      boxes.push({ rings, x0, y0, x1, y1 });
+    }
+  }
+  if (boxes.length === 0) return [];
+
+  const out: T[] = [];
+  for (const c of candidates) {
+    for (const b of boxes) {
+      if (c.lng < b.x0 || c.lng > b.x1 || c.lat < b.y0 || c.lat > b.y1) continue;
+      if (inPolygon(b.rings, c.lng, c.lat)) { out.push(c); break; }
+    }
+  }
+  return out;
+}
