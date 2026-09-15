@@ -22,14 +22,40 @@ function measure(entities: Entity[]) {
   const rows = [...byRegion.entries()]
     .map(([region, n]) => ({ region, n, share: n / imported.length }))
     .sort((a, b) => b.n - a.n);
-  return { total: imported.length, rows, since1800 };
+
+  /**
+   * The same question asked of time instead of place.
+   *
+   * The region bars were the only bias the panel showed, and the other one is
+   * steeper: scrub to 1450 and the map is nearly bare, scrub to 1950 and it is
+   * crowded, with nothing on screen to say whether that is history or the
+   * archive. These are people the atlas records as alive in each sample year,
+   * counted from the loaded data. The bars are linear against the largest, so
+   * 1450 renders as a sliver next to 1950 — which is the finding, not a
+   * drafting problem.
+   */
+  const SAMPLES = [-2000, -500, 1, 500, 1000, 1300, 1500, 1700, 1800, 1900, 1950, 2000];
+  const era = SAMPLES.map((year) => {
+    let n = 0;
+    for (const e of imported) {
+      if (e.kind !== "ruler" && e.kind !== "figure") continue;
+      if (e.startYear <= year && year <= e.endYear) n++;
+    }
+    return { year, n };
+  });
+  const eraMax = Math.max(1, ...era.map((e) => e.n));
+
+  return { total: imported.length, rows, since1800, era, eraMax };
 }
 
 export default function Coverage() {
   const entities = useAtlas((s) => s.entities);
-  const { total, rows, since1800 } = useMemo(() => measure(entities), [entities]);
+  const { total, rows, since1800, era, eraMax } = useMemo(() => measure(entities), [entities]);
   if (total === 0) return null;
   const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+  // read off the measurement rather than written beside it, so a later import
+  // cannot leave this paragraph describing a dataset that no longer exists
+  const ratio = (a: number, b: number) => (b > 0 ? Math.round(a / b) : a).toLocaleString();
 
   return (
     <>
@@ -53,10 +79,29 @@ export default function Coverage() {
       </div>
 
       <p>
-        Europe holds more than half. Sub-Saharan Africa and North Africa hold
-        about one record in eighty each. {pct(since1800 / total)} of everything
-        imported falls after 1800.
+        {rows[0].region} holds {pct(rows[0].share)} of it, {ratio(rows[0].n, rows[rows.length - 1].n)} times
+        what {rows[rows.length - 1].region} holds. {pct(since1800 / total)} of everything imported
+        falls after 1800.
       </p>
+
+      <p>
+        The record is as uneven across time as across space. People the atlas
+        holds as alive in each of these years:
+      </p>
+
+      <div className="cov cov--era">
+        {era.map(({ year, n }) => (
+          <div className="cov__row" key={year}>
+            <span className="cov__name tnum">
+              {year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`}
+            </span>
+            <span className="cov__bar" aria-hidden="true">
+              <span className="cov__fill" style={{ width: `${Math.max((n / eraMax) * 100, 0.4)}%` }} />
+            </span>
+            <span className="cov__n tnum">{n.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
 
       <p>
         That shape comes from the sources, not from the past. Wikidata inherits

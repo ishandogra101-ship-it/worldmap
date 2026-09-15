@@ -5,3 +5,6 @@ dist-ssr
 .DS_Store
 scripts/.cache
 .vite
+
+# scratch screenshot harnesses (kept out of the repo)
+_*.mjs
