@@ -87,12 +87,49 @@ async function readLayer(name) {
   }
 }
 
+/**
+ * Fetches a layer and merges it over whatever is already on disk.
+ *
+ * A layer is not reproducible: how much fits in the endpoint's time budget
+ * depends on how busy it is, and windows it refuses are written off. Two runs
+ * of identical code returned 14,296 figures and then 6,271, and because the
+ * second simply overwrote the first, a re-run silently destroyed more than half
+ * the people in the atlas.
+ *
+ * Records are keyed by QID, so a union is safe and the import becomes
+ * monotonic: running it again can add and refresh, never delete. A record that
+ * genuinely should disappear — one whose upstream dates were corrected into
+ * something unusable — survives until the file is deleted deliberately, which
+ * is the right way round for a set of historical people.
+ */
 async function buildLayer(name) {
   console.log(`\n=== ${name} ===`);
   const t = Date.now();
-  const records = clean(await FETCH[name](), name);
-  summarise(records, name);
-  await writeFile(path.join(DATA_DIR, `${name}.json`), JSON.stringify(records));
+  const fetched = clean(await FETCH[name](), name);
+
+  const existing = await readLayer(name);
+  const byId = new Map(existing.map((e) => [e.id, e]));
+  let refreshed = 0;
+  for (const e of fetched) {
+    if (byId.has(e.id)) refreshed++;
+    byId.set(e.id, e);
+  }
+  const merged = [...byId.values()];
+  if (existing.length) {
+    console.log(
+      `  merged with ${existing.length} already on disk: ` +
+      `${merged.length} total, ${refreshed} refreshed, ${merged.length - existing.length} new`,
+    );
+    if (fetched.length < existing.length * 0.8) {
+      console.warn(
+        `  NOTE: this run fetched ${fetched.length}, well under the ${existing.length} ` +
+        `on disk — the endpoint was likely refusing windows. Nothing was lost.`,
+      );
+    }
+  }
+
+  summarise(merged, name);
+  await writeFile(path.join(DATA_DIR, `${name}.json`), JSON.stringify(merged));
   console.log(`  wrote ${name}.json in ${((Date.now() - t) / 60000).toFixed(1)} min`);
 }
 
