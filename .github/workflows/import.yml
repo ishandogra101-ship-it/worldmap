@@ -9,7 +9,7 @@ on:
       mode:
         description: "probe = report what Wikidata returns; full = build and commit the dataset"
         type: choice
-        options: [probe, full]
+        options: [probe, probe-rulers, full]
         default: probe
       commit:
         description: "Commit the generated data (full mode only)"
@@ -41,6 +41,10 @@ jobs:
       - name: Probe Wikidata
         if: inputs.mode == 'probe'
         run: node scripts/import/probe.mjs
+
+      - name: Probe the ruler query
+        if: inputs.mode == 'probe-rulers'
+        run: node scripts/import/probe-rulers.mjs
 
       # One step per layer, each writing its own file as it finishes, and each
       # allowed to fail without taking the others with it. The first full run
