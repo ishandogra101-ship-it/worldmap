@@ -90,12 +90,16 @@ export function colorForGroup(key: string): string {
  * larger that year. Fixed bands mean a realm of a given size reads the same
  * weight in every snapshot, which is also what lets the panel name it out loud.
  *
- * Calibrated against the data: 1700 puts Muscovy at 2362, the Ottomans at 495
- * and France at 64; 1900 puts the Russian Empire at 3477 and Denmark at 4.8.
+ * Calibrated against the measured distribution, in cosine-corrected deg²: the
+ * top band holds the six or seven world powers of a given year (1700: Muscovy
+ * 1098, the Ottomans 412, the Mughals 321), the middle one the thirty or so
+ * realms of regional weight (France 44, the Netherlands 168, Egypt in 1900 at
+ * 166), and the rest — around 500 of the 566 realms mapped in 1700, median 1.5
+ * — fall below both.
  */
 export function tierForArea(area: number): PolityTier {
-  if (area >= 330) return 0;
-  if (area >= 55) return 1;
+  if (area >= 240) return 0;
+  if (area >= 40) return 1;
   return 2;
 }
 

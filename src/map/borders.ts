@@ -42,6 +42,15 @@ async function fetchSnapshot(fileRel: string): Promise<Snapshot> {
 
 // --- geometry helpers (planar; relative scale only) ---
 
+/**
+ * Centroid and area of a ring in lon/lat.
+ *
+ * A degree of longitude narrows towards the poles, so raw deg² is not area at
+ * all: it made Antarctica the largest polity in the atlas and inflated Siberia
+ * past any tropical empire. Scaling by the cosine of the ring's own latitude
+ * corrects that well enough for a ring of this size, and turns the number into
+ * something that can honestly be called extent.
+ */
 function ringCentroid(ring: number[][]): [number, number, number] {
   let cx = 0, cy = 0, a = 0;
   for (let i = 0, n = ring.length; i < n; i++) {
@@ -58,7 +67,9 @@ function ringCentroid(ring: number[][]): [number, number, number] {
     for (const p of ring) { sx += p[0]; sy += p[1]; }
     return [sx / ring.length, sy / ring.length, 0];
   }
-  return [cx / (6 * a), cy / (6 * a), Math.abs(a)];
+  const lat = cy / (6 * a);
+  const scale = Math.max(Math.cos((lat * Math.PI) / 180), 0.05);
+  return [cx / (6 * a), lat, Math.abs(a) * scale];
 }
 
 function outerRings(geom: Polygon | MultiPolygon): number[][][] {

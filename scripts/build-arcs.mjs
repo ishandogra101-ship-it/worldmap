@@ -13,14 +13,22 @@ import path from "node:path";
 const DIR = "public/data/borders";
 const OUT = "public/data/arcs.json";
 
+// Matches ringCentroid() in src/map/borders.ts: a degree of longitude narrows
+// towards the poles, so raw deg² is not area. Without the cosine correction
+// Antarctica came out the largest polity in the atlas.
 function ringArea(ring) {
-  let a = 0;
+  let a = 0, cy = 0;
   for (let i = 0, n = ring.length; i < n; i++) {
     const [x1, y1] = ring[i];
     const [x2, y2] = ring[(i + 1) % n];
-    a += x1 * y2 - x2 * y1;
+    const cross = x1 * y2 - x2 * y1;
+    a += cross;
+    cy += (y1 + y2) * cross;
   }
-  return Math.abs(a / 2);
+  a /= 2;
+  if (Math.abs(a) < 1e-9) return 0;
+  const lat = cy / (6 * a);
+  return Math.abs(a) * Math.max(Math.cos((lat * Math.PI) / 180), 0.05);
 }
 
 function outerRings(g) {

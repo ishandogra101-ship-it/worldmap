@@ -41,16 +41,16 @@ export const MAP_THEMES: Record<"dark" | "light", MapTheme> = {
 /**
  * How much of its normal weight a realm keeps at world zoom.
  *
- * Most snapshots are dominated by realms too small to read at that scale — 476
- * of the 566 in 1700 cover under 12 planar deg², against France at 64 and the
- * Netherlands at 170 — and drawing them all at full strength turns a continent
- * into coloured static. Ramping rather than cutting means no visible edge
- * between what fades and what does not.
+ * Most snapshots are dominated by realms too small to read at that scale — 461
+ * of the 566 mapped in 1700 fall under 8 of these units, against France at 44
+ * and the Netherlands at 168 — and drawing them all at full strength turns a
+ * continent into coloured static. Ramping rather than cutting means no visible
+ * edge between what fades and what does not.
  */
 const AREA_FADE: ExpressionSpecification = [
   "interpolate", ["linear"], ["get", "__area"],
-  5, 0.3,
-  45, 1,
+  4, 0.3,
+  35, 1,
 ];
 
 /** Picks a value by the feature's tier. Usable inside a zoom stop. */
