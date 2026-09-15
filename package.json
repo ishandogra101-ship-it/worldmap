@@ -16,7 +16,8 @@
     "canonical:validate": "node scripts/canonical/validate.mjs",
     "test:history": "node tests/history/anchors.mjs",
     "build:atlas": "node scripts/canonical/build.mjs",
-    "canonical:promote": "node scripts/canonical/promote.mjs"
+    "canonical:promote": "node scripts/canonical/promote.mjs",
+    "audit:geometry": "node scripts/geometry/audit.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

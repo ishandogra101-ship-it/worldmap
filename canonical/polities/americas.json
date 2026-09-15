@@ -1,54 +1,285 @@
 {
   "region": "The Americas",
   "sources": [
-    { "title": "The Cambridge History of the Native Peoples of the Americas", "edition": "Cambridge University Press" },
-    { "title": "The Aztecs", "author": "Michael E. Smith", "edition": "3rd ed., Wiley-Blackwell" },
-    { "title": "The Incas", "author": "Terence N. D'Altroy", "edition": "2nd ed., Wiley-Blackwell" },
-    { "title": "The Maya", "author": "Michael D. Coe and Stephen Houston", "edition": "9th ed., Thames and Hudson" }
+    {
+      "title": "The Cambridge History of the Native Peoples of the Americas",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "The Aztecs",
+      "author": "Michael E. Smith",
+      "edition": "3rd ed., Wiley-Blackwell"
+    },
+    {
+      "title": "The Incas",
+      "author": "Terence N. D'Altroy",
+      "edition": "2nd ed., Wiley-Blackwell"
+    },
+    {
+      "title": "The Maya",
+      "author": "Michael D. Coe and Stephen Houston",
+      "edition": "9th ed., Thames and Hudson"
+    }
   ],
-  "verification": { "method": "drafted", "by": "claude", "date": "2026-09-15" },
+  "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-15"
+  },
   "polities": [
-    { "id": "olmec", "canonicalName": "Olmec civilization", "type": "state",
-      "founded": -1400, "ended": -400, "mapsTo": ["Olmec", "Olmecs"] },
-    { "id": "teotihuacan", "canonicalName": "Teotihuacan", "type": "city-state",
-      "founded": -100, "ended": 650, "capitals": [{ "name": "Teotihuacan", "lng": -98.84, "lat": 19.69 }],
-      "mapsTo": ["Teotihuacan"] },
-    { "id": "maya-classic", "canonicalName": "Classic Maya city-states", "type": "city-state",
-      "founded": 250, "ended": 900, "capitals": [{ "name": "Tikal", "lng": -89.62, "lat": 17.22 }],
-      "mapsTo": ["Maya", "Maya city-states", "Tikal", "Calakmul"] },
-    { "id": "toltec", "canonicalName": "Toltec state", "type": "state",
-      "founded": 900, "ended": 1168, "capitals": [{ "name": "Tula", "lng": -99.34, "lat": 20.05 }],
-      "mapsTo": ["Toltec", "Toltecs", "Tula"] },
-    { "id": "aztec", "canonicalName": "Aztec Triple Alliance", "type": "confederation",
-      "founded": { "year": 1428, "note": "Alliance of Tenochtitlan, Texcoco and Tlacopan." },
-      "ended": { "year": 1521, "note": "Fall of Tenochtitlan to Cortes and his allies." },
-      "capitals": [{ "name": "Tenochtitlan", "lng": -99.13, "lat": 19.43 }],
-      "successors": ["new-spain"], "mapsTo": ["Aztec Empire", "Aztec", "Mexica", "Triple Alliance"] },
-    { "id": "inca", "canonicalName": "Inca Empire", "type": "empire",
-      "founded": { "year": 1438, "note": "Pachacuti's accession and the imperial expansion; Cusco is older." },
-      "ended": { "year": 1533, "note": "Execution of Atahualpa; Vilcabamba resists to 1572." },
-      "capitals": [{ "name": "Cusco", "lng": -71.98, "lat": -13.53 }],
-      "mapsTo": ["Inca Empire", "Inca", "Tawantinsuyu"] },
-    { "id": "chimu", "canonicalName": "Chimu Empire", "type": "kingdom",
-      "founded": 900, "ended": 1470, "capitals": [{ "name": "Chan Chan", "lng": -79.07, "lat": -8.1 }],
-      "successors": ["inca"], "mapsTo": ["Chimu", "Chimor"] },
-    { "id": "muisca", "canonicalName": "Muisca Confederation", "type": "confederation",
-      "founded": 800, "ended": 1540, "mapsTo": ["Muisca", "Muisca Confederation"] },
-    { "id": "mississippian", "canonicalName": "Mississippian culture polities", "type": "city-state",
-      "founded": 800, "ended": 1600, "capitals": [{ "name": "Cahokia", "lng": -90.06, "lat": 38.66 }],
-      "mapsTo": ["Mississippian", "Cahokia", "Mississippian culture"] },
-    { "id": "haudenosaunee", "canonicalName": "Haudenosaunee Confederacy", "type": "confederation",
-      "founded": { "year": 1450, "range": [1142, 1600], "note": "Oral tradition and archaeology give different dates; the range is wide and honestly so." },
-      "mapsTo": ["Iroquois", "Haudenosaunee", "Iroquois Confederacy", "Six Nations"] },
-    { "id": "new-spain", "canonicalName": "Viceroyalty of New Spain", "type": "state",
-      "founded": 1535, "ended": 1821, "capitals": [{ "name": "Mexico City", "lng": -99.13, "lat": 19.43 }],
-      "predecessors": ["aztec"], "mapsTo": ["Viceroyalty of New Spain", "New Spain"] },
-    { "id": "peru-viceroyalty", "canonicalName": "Viceroyalty of Peru", "type": "state",
-      "founded": 1542, "ended": 1824, "capitals": [{ "name": "Lima", "lng": -77.04, "lat": -12.05 }],
-      "predecessors": ["inca"], "mapsTo": ["Viceroyalty of Peru", "Peru"] },
-    { "id": "united-states", "canonicalName": "United States", "type": "republic",
-      "founded": { "year": 1776, "note": "Declaration; recognised by Britain in 1783." },
-      "capitals": [{ "name": "Washington", "lng": -77.04, "lat": 38.91, "from": 1800 }],
-      "mapsTo": ["United States", "United States of America", "USA"] }
+    {
+      "id": "olmec",
+      "canonicalName": "Olmec civilization",
+      "type": "state",
+      "founded": -1400,
+      "ended": -400,
+      "mapsTo": [
+        "Olmecs"
+      ]
+    },
+    {
+      "id": "teotihuacan",
+      "canonicalName": "Teotihuacan",
+      "type": "city-state",
+      "founded": -100,
+      "ended": 650,
+      "capitals": [
+        {
+          "name": "Teotihuacan",
+          "lng": -98.84,
+          "lat": 19.69
+        }
+      ],
+      "mapsTo": [
+        "Teotihuacan"
+      ]
+    },
+    {
+      "id": "maya-classic",
+      "canonicalName": "Classic Maya city-states",
+      "type": "city-state",
+      "founded": 250,
+      "ended": 900,
+      "capitals": [
+        {
+          "name": "Tikal",
+          "lng": -89.62,
+          "lat": 17.22
+        }
+      ],
+      "mapsTo": [
+        "Maya",
+        "Maya city-states",
+        "Tikal",
+        "Calakmul"
+      ]
+    },
+    {
+      "id": "toltec",
+      "canonicalName": "Toltec state",
+      "type": "state",
+      "founded": 900,
+      "ended": 1168,
+      "capitals": [
+        {
+          "name": "Tula",
+          "lng": -99.34,
+          "lat": 20.05
+        }
+      ],
+      "mapsTo": [
+        "Toltec",
+        "Toltecs",
+        "Tula"
+      ]
+    },
+    {
+      "id": "aztec",
+      "canonicalName": "Aztec Triple Alliance",
+      "type": "confederation",
+      "founded": {
+        "year": 1428,
+        "note": "Alliance of Tenochtitlan, Texcoco and Tlacopan."
+      },
+      "ended": {
+        "year": 1521,
+        "note": "Fall of Tenochtitlan to Cortes and his allies."
+      },
+      "capitals": [
+        {
+          "name": "Tenochtitlan",
+          "lng": -99.13,
+          "lat": 19.43
+        }
+      ],
+      "successors": [
+        "new-spain"
+      ],
+      "mapsTo": [
+        "Aztec Empire",
+        "Aztec",
+        "Mexica",
+        "Triple Alliance"
+      ]
+    },
+    {
+      "id": "inca",
+      "canonicalName": "Inca Empire",
+      "type": "empire",
+      "founded": {
+        "year": 1438,
+        "note": "Pachacuti's accession and the imperial expansion; Cusco is older."
+      },
+      "ended": {
+        "year": 1533,
+        "note": "Execution of Atahualpa; Vilcabamba resists to 1572."
+      },
+      "capitals": [
+        {
+          "name": "Cusco",
+          "lng": -71.98,
+          "lat": -13.53
+        }
+      ],
+      "mapsTo": [
+        "Inca Empire",
+        "Inca",
+        "Tawantinsuyu"
+      ]
+    },
+    {
+      "id": "chimu",
+      "canonicalName": "Chimu Empire",
+      "type": "kingdom",
+      "founded": 900,
+      "ended": 1470,
+      "capitals": [
+        {
+          "name": "Chan Chan",
+          "lng": -79.07,
+          "lat": -8.1
+        }
+      ],
+      "successors": [
+        "inca"
+      ],
+      "mapsTo": [
+        "Chimu",
+        "Chimor"
+      ]
+    },
+    {
+      "id": "muisca",
+      "canonicalName": "Muisca Confederation",
+      "type": "confederation",
+      "founded": 800,
+      "ended": 1540,
+      "mapsTo": [
+        "Muisca",
+        "Muisca Confederation"
+      ]
+    },
+    {
+      "id": "mississippian",
+      "canonicalName": "Mississippian culture polities",
+      "type": "city-state",
+      "founded": 800,
+      "ended": 1600,
+      "capitals": [
+        {
+          "name": "Cahokia",
+          "lng": -90.06,
+          "lat": 38.66
+        }
+      ],
+      "mapsTo": [
+        "Mississippian",
+        "Cahokia",
+        "Mississippian culture"
+      ]
+    },
+    {
+      "id": "haudenosaunee",
+      "canonicalName": "Haudenosaunee Confederacy",
+      "type": "confederation",
+      "founded": {
+        "year": 1450,
+        "range": [
+          1142,
+          1600
+        ],
+        "note": "Oral tradition and archaeology give different dates; the range is wide and honestly so."
+      },
+      "mapsTo": [
+        "Iroquois",
+        "Haudenosaunee",
+        "Iroquois Confederacy",
+        "Six Nations"
+      ]
+    },
+    {
+      "id": "new-spain",
+      "canonicalName": "Viceroyalty of New Spain",
+      "type": "state",
+      "founded": 1535,
+      "ended": 1821,
+      "capitals": [
+        {
+          "name": "Mexico City",
+          "lng": -99.13,
+          "lat": 19.43
+        }
+      ],
+      "predecessors": [
+        "aztec"
+      ],
+      "mapsTo": [
+        "Viceroyalty of New Spain",
+        "New Spain"
+      ]
+    },
+    {
+      "id": "peru-viceroyalty",
+      "canonicalName": "Viceroyalty of Peru",
+      "type": "state",
+      "founded": 1542,
+      "ended": 1824,
+      "capitals": [
+        {
+          "name": "Lima",
+          "lng": -77.04,
+          "lat": -12.05
+        }
+      ],
+      "predecessors": [
+        "inca"
+      ],
+      "mapsTo": [
+        "Viceroyalty of Peru",
+        "Peru"
+      ]
+    },
+    {
+      "id": "united-states",
+      "canonicalName": "United States",
+      "type": "republic",
+      "founded": {
+        "year": 1776,
+        "note": "Declaration; recognised by Britain in 1783."
+      },
+      "capitals": [
+        {
+          "name": "Washington",
+          "lng": -77.04,
+          "lat": 38.91,
+          "from": 1800
+        }
+      ],
+      "mapsTo": [
+        "United States",
+        "United States of America",
+        "USA"
+      ]
+    }
   ]
 }

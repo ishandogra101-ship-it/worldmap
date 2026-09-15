@@ -63,8 +63,6 @@
         }
       ],
       "mapsTo": [
-        "Babylonia",
-        "Babylon",
         "Old Babylonian Empire"
       ]
     },
@@ -83,7 +81,6 @@
         }
       ],
       "mapsTo": [
-        "Assyria",
         "Neo-Assyrian Empire",
         "Assyrian Empire"
       ]
@@ -111,9 +108,7 @@
       ],
       "dynasty": "Achaemenid",
       "mapsTo": [
-        "Achaemenid Empire",
-        "Persia",
-        "Persian Empire"
+        "Achaemenid Empire"
       ]
     },
     {
@@ -182,8 +177,7 @@
       ],
       "mapsTo": [
         "Sasanian Empire",
-        "Sassanid Empire",
-        "Persia"
+        "Sassanid Empire"
       ]
     },
     {
@@ -204,7 +198,6 @@
       ],
       "mapsTo": [
         "Rashidun Caliphate",
-        "Caliphate",
         "Rashidun"
       ]
     },
@@ -230,8 +223,7 @@
       ],
       "mapsTo": [
         "Umayyad Caliphate",
-        "Umayyad",
-        "Caliphate"
+        "Umayyad"
       ]
     },
     {
@@ -257,8 +249,7 @@
       ],
       "mapsTo": [
         "Abbasid Caliphate",
-        "Abbasid",
-        "Caliphate"
+        "Abbasid"
       ]
     },
     {
@@ -339,8 +330,7 @@
       "mapsTo": [
         "Mamluk",
         "Mamluk Sultanate",
-        "Mamluks",
-        "Egypt"
+        "Mamluks"
       ]
     },
     {
@@ -401,8 +391,7 @@
         "mongol-empire"
       ],
       "mapsTo": [
-        "Chagatai Khanate",
-        "Chagatai"
+        "Chagatai Khanate"
       ],
       "region": "Central Asia"
     },
@@ -488,8 +477,7 @@
       "dynasty": "Safavid",
       "mapsTo": [
         "Safavid Empire",
-        "Safavids",
-        "Persia"
+        "Safavids"
       ]
     },
     {
@@ -561,8 +549,7 @@
       "dynasty": "Osman",
       "mapsTo": [
         "Ottoman Empire",
-        "Ottoman",
-        "Turkey"
+        "Ottoman"
       ]
     },
     {
@@ -580,9 +567,7 @@
       ],
       "dynasty": "Qajar",
       "mapsTo": [
-        "Persia",
-        "Qajar",
-        "Iran"
+        "Qajar"
       ]
     }
   ]
