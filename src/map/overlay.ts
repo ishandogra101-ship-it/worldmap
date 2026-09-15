@@ -2,6 +2,7 @@ import type maplibregl from "maplibre-gl";
 import type { Entity, LayerId, PolitySummary } from "../types";
 import { iconSvg, eventIcon, figureIcon } from "../design/icons";
 import { asset } from "../util";
+import { isCultureArea } from "./kinds";
 
 /**
  * Everything drawn *above* the map canvas: realm labels, ruler and figure
@@ -38,17 +39,39 @@ export interface OverlayCallbacks {
   onHover: (info: { name: string; subtitle?: string; detail?: string; color?: string; x: number; y: number } | null) => void;
 }
 
-/** Visible-at-this-zoom thresholds. Tuned so world view stays calm. */
-function peopleThreshold(zoom: number): number {
-  return Math.max(0, Math.min(100, 78 - (zoom - 2) * 10));
+/**
+ * How many people, events and settlements the screen may carry at this zoom.
+ *
+ * This was an absolute prominence gate, and its arithmetic was wrong in a way
+ * nothing on screen announced. Prominence is a logarithm against 350 sitelinks,
+ * so a person documented in a hundred separate Wikipedias scores 79 — under the
+ * world-view gate of 82.5. Measured against the imported data, exactly one
+ * person alive in 1450 cleared it. An atlas of power opened on an empty world
+ * and stayed empty until you zoomed to a continent.
+ *
+ * A budget fixes the arithmetic and the honesty together. The screen takes its
+ * N best-documented candidates from whatever the year actually holds, so a thin
+ * century shows its thin best instead of nothing, and prominence keeps exactly
+ * the job it is described as having: deciding who is drawn first when space runs
+ * out, never who mattered.
+ */
+function peopleBudget(zoom: number): number {
+  if (zoom < 2.2) return 14;
+  if (zoom < 3.2) return 34;
+  if (zoom < 4.5) return 70;
+  return MAX_MARKERS;
 }
-function eventThreshold(zoom: number): number {
-  return Math.max(0, Math.min(100, 84 - (zoom - 2) * 11));
+function eventBudget(zoom: number): number {
+  if (zoom < 2.2) return 5;
+  if (zoom < 3.2) return 12;
+  return 40;
 }
-/** Cities reveal earlier than events: at world scale only the few that anyone
- *  would name unprompted, then steadily more as the view closes in. */
-function cityThreshold(zoom: number): number {
-  return Math.max(0, Math.min(100, 86 - (zoom - 2) * 10));
+/** Settlements reveal earlier than events: at world scale only the handful
+ *  anyone would name unprompted, then steadily more as the view closes in. */
+function cityBudget(zoom: number): number {
+  if (zoom < 2.2) return 6;
+  if (zoom < 3.2) return 16;
+  return 48;
 }
 
 /**
@@ -105,11 +128,19 @@ function indexByDecade(entities: Entity[]): Map<number, Entity[]> {
 /**
  * Whether a marker carries its name at this zoom.
  *
- * Collision sizing and rendering have to agree on this, or the box reserved is
- * not the box drawn.
+ * Everything drawn is named. An unlabelled portrait is a decoration: it tells
+ * the reader a person was here and refuses to say which, so the only way to
+ * learn anything is to click a circle at random. Withholding the name used to
+ * be how crowding was managed, but the budget above already decides how many
+ * people the screen takes, and the collision box below reserves room for the
+ * name — so crowding is handled where it should be, by drawing fewer people
+ * rather than by drawing anonymous ones.
+ *
+ * Collision sizing and rendering both call this, or the box reserved is not the
+ * box drawn.
  */
-function isNamed(e: Entity, zoom: number): boolean {
-  return e.kind === "city" || e.prominence >= 86 || zoom >= 3;
+function isNamed(_e: Entity, _zoom: number): boolean {
+  return true;
 }
 
 function activeAt(e: Entity, year: number): boolean {
@@ -402,6 +433,15 @@ export class OverlayEngine {
       });
     }
 
+    // Sorted so the render pass can stop as soon as a budget is filled: the
+    // best-documented candidates are the ones it reaches first. Labels sort
+    // above everything because they carry no prominence and are budgeted
+    // separately, by MAX_LABELS.
+    c.sort((a, b) => {
+      if ((a.kind === "label") !== (b.kind === "label")) return a.kind === "label" ? -1 : 1;
+      return (b.entity?.prominence ?? 0) - (a.entity?.prominence ?? 0);
+    });
+
     this.candidates = c;
     this.dirty = false;
   }
@@ -417,24 +457,27 @@ export class OverlayEngine {
     const vh = canvas.clientHeight;
     const pad = 80;
 
-    const pThresh = peopleThreshold(zoom);
-    const eThresh = eventThreshold(zoom);
-    const cThresh = cityThreshold(zoom);
+    // 1. project, cull to viewport, and take each kind's best until its budget
+    //    is spent. Candidates arrive in prominence order (see rebuild), so the
+    //    walk can stop early: at world scale it settles after a few dozen
+    //    projections however many people the year holds.
+    const budget = {
+      person: peopleBudget(zoom),
+      event: eventBudget(zoom),
+      city: cityBudget(zoom),
+    };
+    const taken = { person: 0, event: 0, city: 0 };
+    const slot = (k: Candidate["kind"]) =>
+      k === "event" ? "event" as const : k === "city" ? "city" as const : "person" as const;
 
     const xLo = Math.max(0, this.xMin);
     const xHi = Math.min(vw, this.xMax);
 
-    // 1. gate by zoom rules, project, cull to viewport
     const visible: Placed[] = [];
     for (let cand of this.candidates) {
       if (this.labelsOnly && cand.kind !== "label") continue;
-      if (cand.kind === "event") {
-        if (cand.entity!.prominence < eThresh) continue;
-      } else if (cand.kind === "city") {
-        if (cand.entity!.prominence < cThresh) continue;
-      } else if (cand.kind !== "label") {
-        if (cand.entity!.prominence < pThresh) continue;
-      }
+      const s = cand.kind === "label" ? null : slot(cand.kind);
+      if (s && taken[s] >= budget[s]) continue;
       const pt = map.project([cand.lng, cand.lat]);
       if (cand.entity && isNamed(cand.entity, zoom)) {
         // The circle was the whole collision box, so two markers could sit a
@@ -458,6 +501,7 @@ export class OverlayEngine {
       ) {
         continue;
       }
+      if (s) taken[s]++;
       visible.push({ ...cand, x: pt.x, y: pt.y });
     }
 
@@ -564,7 +608,8 @@ export class OverlayEngine {
   private buildLabel(p: PolitySummary, tier: 0 | 1 | 2): HTMLElement {
     const el = document.createElement("button");
     el.type = "button";
-    el.className = `ov-label ov-label--t${tier}`;
+    const people = isCultureArea(p.name);
+    el.className = `ov-label ov-label--t${tier}${people ? " ov-label--people" : ""}`;
     el.textContent = p.name;
     el.style.setProperty("--realm", p.color);
     el.addEventListener("click", (ev) => { ev.stopPropagation(); this.cb.onSelectPolity(p); });
@@ -572,7 +617,9 @@ export class OverlayEngine {
       this.hoveredKey = `L:${p.group}`;
       this.cb.onHover({
         name: p.name,
-        subtitle: p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm",
+        subtitle: people
+          ? "A people, not a state"
+          : p.tier === 0 ? "Large realm" : p.tier === 1 ? "Regional realm" : "Small realm",
         detail: undefined,
         color: p.color,
         x: (ev as PointerEvent).clientX,

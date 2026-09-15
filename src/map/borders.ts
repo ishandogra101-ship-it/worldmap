@@ -1,5 +1,6 @@
 import type { FeatureCollection, Feature, Polygon, MultiPolygon } from "geojson";
 import { asset } from "../util";
+import { isCultureArea } from "./kinds";
 import { groupKey, colorForGroup, tierForArea, type BorderProps } from "./palette";
 import type { PolitySummary, PolityTier } from "../types";
 
@@ -36,6 +37,10 @@ async function fetchSnapshot(fileRel: string): Promise<Snapshot> {
     const p = g ? byGroup.get(g) : undefined;
     props.__tier = p?.tier ?? 2;
     props.__area = p?.area ?? 0;
+    // A state has a border. A cultural or subsistence region does not, and
+    // drawing one around "Savanna hunter-gatherers" claims a frontier nobody
+    // held. See kinds.ts for how the two are told apart and how far that goes.
+    props.__people = isCultureArea(props.NAME as string ?? props.name as string) ? 1 : 0;
   }
   return { fc, polities, byGroup };
 }

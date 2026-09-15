@@ -123,11 +123,14 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
             ["==", ["get", "__tier"], 1], 0.7,
             0.5,
           ],
-          // minor boundaries thin out with the fills they enclose
+          // Minor boundaries thin out with the fills they enclose. A region the
+          // source names as a people rather than a state keeps its extent but
+          // loses the hard edge: the dataset drew where a population lived, not
+          // a frontier anyone patrolled, and a crisp line says otherwise.
           "line-opacity": [
             "interpolate", ["linear"], ["zoom"],
-            1.4, ["*", 0.85, AREA_FADE],
-            3.2, 0.85,
+            1.4, ["*", 0.85, AREA_FADE, ["case", ["==", ["get", "__people"], 1], 0.28, 1]],
+            3.2, ["*", 0.85, ["case", ["==", ["get", "__people"], 1], 0.28, 1]],
           ],
         },
       },

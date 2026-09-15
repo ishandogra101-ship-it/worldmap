@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useAtlas, select, setYear } from "../app/store";
 import { Icon, eventIcon } from "../design/icons";
 import { mapController } from "../map/HistoricalMap";
-import { formatYear } from "../util";
 import type { Entity } from "../types";
 
 /**
@@ -36,12 +35,39 @@ export default function Moment() {
 
   const nothing = realms.length === 0 && rulers.length === 0 && figures.length === 0 && events.length === 0;
 
+  /**
+   * The closed state used to read "The world in 1450 CE", under a timeline
+   * already saying 1450 in four times the size. Two surfaces answering the same
+   * question is one too many, and it left the drawer with nothing to say about
+   * what opening it would give you.
+   *
+   * It now counts what the atlas actually holds for this year. That is more use
+   * closed, and it puts coverage where it cannot be missed: a year the record
+   * barely reaches reads thin at a glance, instead of looking identical to a
+   * well-documented one until you go looking.
+   */
+  const held = useMemo(() => {
+    let people = 0;
+    for (const e of entities) {
+      if (e.kind === "ruler" || e.kind === "figure") {
+        if (e.startYear <= year && year <= e.endYear) people++;
+      }
+    }
+    return { realms: polities.length, people };
+  }, [entities, polities, year]);
+
   return (
     <div className={`moment ${open ? "is-open" : ""}`}>
       <button className="moment__toggle" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
         <span className="moment__label">
-          <span className="eyebrow">The world in</span>
-          <span className="moment__year tnum">{formatYear(year)}</span>
+          <span className="eyebrow">Recorded for this year</span>
+          <span className="moment__count">
+            <span className="tnum">{held.realms}</span>
+            {held.realms === 1 ? " realm" : " realms"}
+            <span className="moment__sep">·</span>
+            <span className="tnum">{held.people}</span>
+            {held.people === 1 ? " person" : " people"}
+          </span>
         </span>
         <Icon name="chevron" size={14} className={open ? "rot-down" : "rot-up"} />
       </button>
@@ -112,10 +138,18 @@ export default function Moment() {
               <li><span className="lk lk--t1" /> Regional realm</li>
               <li><span className="lk lk--t2" /> Small realm</li>
               <li><span className="lk lk--none" /> Not attested in this snapshot</li>
+              <li><span className="lk lk--people" /> A people, not a state</li>
             </ul>
             <p className="moment__fine">
-              Colour identifies a realm; weight shows its scale. Blank land had no state in
-              this dataset — not every corner of history is mapped.
+              Colour identifies a realm; weight shows its scale. Blank land held no state in
+              this dataset, which is not the same as nobody living there.
+            </p>
+            <p className="moment__fine">
+              Some regions are named for a people or a culture rather than a government —
+              "Bantu peoples", "Yamnaya culture". Those are set in italic and drawn without
+              a hard edge, because no frontier was patrolled. The source marks only the ones
+              whose name says so, so more of the map belongs in that category than carries
+              the mark.
             </p>
           </div>
         </div>
