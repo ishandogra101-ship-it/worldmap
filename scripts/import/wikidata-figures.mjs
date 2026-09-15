@@ -9,37 +9,43 @@ import { windowed, dt } from "./windows.mjs";
  * It is the one location Wikidata records consistently for a person, and a
  * lifetime is the span the marker is shown across.
  *
+ * All the occupations go in one query rather than one pass each. Seventeen
+ * separate sweeps of 2,800 years came to roughly 950 queries, which would not
+ * finish inside a job; binding them through VALUES cuts that to one sweep and
+ * lets the window splitter deal with whatever is left.
+ *
  * Occupations are matched exactly rather than through P279*, because the
- * subclass closure under "scientist" or "artist" is enormous and drags the
- * query past the endpoint's time budget. The probe still had two centuries of
- * painters killed with a 502, so the windows start narrow here and the splitter
- * takes them narrower where a period is crowded.
+ * subclass closure under "scientist" or "artist" is enormous and on its own
+ * drags the query past the endpoint's time budget.
  */
 const MIN_SITELINKS = 25;
 
-const OCCUPATIONS = [
-  ["Q1028181", "art"],        // painter
-  ["Q1281618", "art"],        // sculptor
-  ["Q42973", "art"],          // architect
-  ["Q901", "science"],        // scientist
-  ["Q169470", "science"],     // physicist
-  ["Q593644", "science"],     // chemist
-  ["Q864503", "science"],     // biologist
-  ["Q11063", "science"],      // astronomer
-  ["Q4964182", "philosophy"], // philosopher
-  ["Q36180", "literature"],   // writer
-  ["Q49757", "literature"],   // poet
-  ["Q214917", "music"],       // composer
-  ["Q170790", "math"],        // mathematician
-  ["Q205375", "invention"],   // inventor
-  ["Q81096", "invention"],    // engineer
-  ["Q11900105", "exploration"], // explorer
-  ["Q39631", "medicine"],     // physician
-];
+const FIELD = {
+  Q1028181: "art",          // painter
+  Q1281618: "art",          // sculptor
+  Q42973: "art",            // architect
+  Q901: "science",          // scientist
+  Q169470: "science",       // physicist
+  Q593644: "science",       // chemist
+  Q864503: "science",       // biologist
+  Q11063: "science",        // astronomer
+  Q4964182: "philosophy",   // philosopher
+  Q36180: "literature",     // writer
+  Q49757: "literature",     // poet
+  Q214917: "music",         // composer
+  Q170790: "math",          // mathematician
+  Q205375: "invention",     // inventor
+  Q81096: "invention",      // engineer
+  Q11900105: "exploration", // explorer
+  Q39631: "medicine",       // physician
+};
 
-const build = (occ) => (a, b) => `
-SELECT ?person ?personLabel ?birth ?death ?coord ?image ?sitelinks WHERE {
-  ?person wdt:P106 wd:${occ} ; wdt:P569 ?birth ; wikibase:sitelinks ?sitelinks .
+const VALUES = Object.keys(FIELD).map((q) => `wd:${q}`).join(" ");
+
+const build = (a, b) => `
+SELECT ?person ?personLabel ?occ ?birth ?death ?coord ?image ?sitelinks WHERE {
+  VALUES ?occ { ${VALUES} }
+  ?person wdt:P106 ?occ ; wdt:P569 ?birth ; wikibase:sitelinks ?sitelinks .
   FILTER(?birth >= ${dt(a)} && ?birth < ${dt(b)})
   FILTER(?sitelinks >= ${MIN_SITELINKS})
   OPTIONAL { ?person wdt:P570 ?death. }
@@ -52,38 +58,35 @@ export async function fetchFigures({ from = -800, to = 2000, step = 50 } = {}) {
   const byId = new Map();
   let noPlace = 0;
 
-  for (const [occ, field] of OCCUPATIONS) {
-    await windowed({
-      from, to, step, label: `figures/${field}`, build: build(occ),
-      onRows(rows) {
-        for (const r of rows) {
-          const id = qid(val(r, "person"));
-          if (!id || byId.has(id)) continue; // first occupation seen wins the glyph
-          const birth = parseYear(val(r, "birth"));
-          if (birth === null) continue;
-          const pt = parsePoint(val(r, "coord"));
-          if (!pt) { noPlace++; continue; }
-          const death = parseYear(val(r, "death"));
-          byId.set(id, {
-            id,
-            kind: "figure",
-            name: val(r, "personLabel") || id,
-            category: field,
-            startYear: birth,
-            // someone still living gets a span, not an end date the data lacks
-            endYear: death !== null && death >= birth ? death : birth + 72,
-            lng: pt.lng,
-            lat: pt.lat,
-            prominence: prominenceFromSitelinks(val(r, "sitelinks")),
-            image: val(r, "image"),
-            imported: true,
-            source: `https://www.wikidata.org/wiki/${id}`,
-          });
-        }
-      },
-    });
-    console.log(`  figures after ${field}: ${byId.size} total`);
-  }
+  await windowed({
+    from, to, step, label: "figures", build,
+    onRows(rows) {
+      for (const r of rows) {
+        const id = qid(val(r, "person"));
+        if (!id || byId.has(id)) continue; // first occupation seen wins the glyph
+        const birth = parseYear(val(r, "birth"));
+        if (birth === null) continue;
+        const pt = parsePoint(val(r, "coord"));
+        if (!pt) { noPlace++; continue; }
+        const death = parseYear(val(r, "death"));
+        byId.set(id, {
+          id,
+          kind: "figure",
+          name: val(r, "personLabel") || id,
+          category: FIELD[qid(val(r, "occ"))] || "science",
+          startYear: birth,
+          // someone still living gets a span, not an end date the data lacks
+          endYear: death !== null && death >= birth ? death : birth + 72,
+          lng: pt.lng,
+          lat: pt.lat,
+          prominence: prominenceFromSitelinks(val(r, "sitelinks")),
+          image: val(r, "image"),
+          imported: true,
+          source: `https://www.wikidata.org/wiki/${id}`,
+        });
+      }
+    },
+  });
 
   console.log(`  figures: ${byId.size} kept, ${noPlace} dropped for no birthplace coordinate`);
   return [...byId.values()];
