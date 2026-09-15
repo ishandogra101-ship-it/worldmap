@@ -81,8 +81,6 @@ export async function fetchFigures({ from = -800, to = 2000, step = 50 } = {}) {
           lat: pt.lat,
           prominence: prominenceFromSitelinks(val(r, "sitelinks")),
           image: val(r, "image"),
-          imported: true,
-          source: `https://www.wikidata.org/wiki/${id}`,
         });
       }
     },

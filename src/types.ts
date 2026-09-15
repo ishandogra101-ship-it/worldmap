@@ -20,9 +20,12 @@ export interface Entity {
   portrait?: string;
   portraitCredit?: string;
   description?: string;
+  /**
+   * Where the claim comes from. Imported records leave this out and have it
+   * derived from their Wikidata QID, which saves repeating a 40-byte URL that
+   * is already implied by the id on every one of tens of thousands of records.
+   */
   source?: string;
-  /** true when the record came from the Wikidata import rather than the curated set. */
-  imported?: boolean;
   /** a city still inhabited today, so its end year is a bound rather than a fall */
   continuing?: boolean;
 }

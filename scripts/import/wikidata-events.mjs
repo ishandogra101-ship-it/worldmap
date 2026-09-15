@@ -60,8 +60,6 @@ export async function fetchEvents({ from = -3000, to = 2026, step = 50 } = {}) {
           lng: pt.lng,
           lat: pt.lat,
           prominence: prominenceFromSitelinks(val(r, "sitelinks")),
-          imported: true,
-          source: `https://www.wikidata.org/wiki/${id}`,
         });
       }
     },

@@ -19,6 +19,12 @@ async function fetchImported(path: string): Promise<Entity[]> {
   }
 }
 
+/** A bare QID is enough to point at the item page it came from. */
+function withSource(e: Entity): Entity {
+  if (e.source || !/^Q\d+$/.test(e.id)) return e;
+  return { ...e, source: `https://www.wikidata.org/wiki/${e.id}` };
+}
+
 const norm = (s: string) =>
   s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -69,7 +75,7 @@ async function build(): Promise<Entity[]> {
     if (byId.has(e.id)) continue;
     const peers = byKind.get(e.kind) ?? [];
     if (peers.some((c) => sameRecord(c, e))) { suppressed++; continue; }
-    byId.set(e.id, e);
+    byId.set(e.id, withSource(e));
   }
 
   if (imported.length > 0) {

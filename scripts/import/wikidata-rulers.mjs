@@ -77,8 +77,6 @@ export async function fetchRulers({ from = -3000, to = 2026, step = 100 } = {}) 
           lat: pt.lat,
           prominence: prominenceFromSitelinks(val(r, "sitelinks")),
           image: val(r, "image"),
-          imported: true,
-          source: `https://www.wikidata.org/wiki/${id}`,
         });
       }
     },
