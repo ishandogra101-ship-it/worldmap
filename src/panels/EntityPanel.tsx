@@ -461,6 +461,13 @@ function ArcView({
   const last = pts[pts.length - 1][0];
   const peak = pts.reduce((m, q) => (q[1] > m[1] ? q : m), pts[0]);
   const coverage = `Mapped in ${pts.length} of ${arc.snapshots} snapshots`;
+  // Naming one year the widest over-claims when several are a fraction apart:
+  // the Ottomans are drawn within a percent of each other in 1530, 1600 and
+  // 1650. Where that happens, name the span instead.
+  const near = pts.filter((q) => q[1] >= peak[1] * 0.97);
+  const widest = near.length > 1
+    ? `${formatYear(near[0][0])} to ${formatYear(near[near.length - 1][0])}`
+    : formatYear(peak[0]);
 
   if (pts.length < 2) {
     return (
@@ -498,7 +505,7 @@ function ArcView({
         </button>
       </div>
       <p className="sheet__fine">
-        {coverage}. Widest mapped extent {formatYear(peak[0])}.
+        {coverage}. Widest mapped extent {widest}.
       </p>
     </Section>
   );

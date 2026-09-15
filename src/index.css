@@ -694,3 +694,44 @@ kbd {
   display: flex; justify-content: space-between;
   font-size: 10.5px; color: var(--text-3); margin-top: 3px;
 }
+
+/* ---- guided paths ------------------------------------------------------ */
+.popover--wide { width: 286px; }
+.popover__rule { height: 1px; background: var(--border); margin: 6px 0; }
+
+.storyrow {
+  display: flex; flex-direction: column; gap: 1px; width: 100%;
+  padding: 7px 8px; border-radius: var(--r2); text-align: left;
+}
+.storyrow:hover, .storyrow:focus-visible { background: var(--accent-quiet); outline: none; }
+.storyrow__title { font-size: 12.5px; font-weight: 550; color: var(--text); }
+.storyrow__blurb { font-size: 11px; color: var(--text-3); }
+
+/* Takes the moment card's place rather than stacking beside it. */
+.story {
+  position: absolute; left: 20px; bottom: 196px; z-index: 7;
+  width: 320px; max-width: calc(100vw - 40px);
+  background: var(--surface-hi); border: 1px solid var(--border);
+  border-left: 2px solid var(--accent);
+  border-radius: var(--r2); box-shadow: var(--shadow-lg);
+  padding: 11px 13px 10px;
+}
+.app:has(.story) .moment { display: none; }
+
+.story__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.story__close { color: var(--text-3); padding: 2px; margin: -2px -2px 0 0; }
+.story__close:hover { color: var(--text); }
+
+.story__caption {
+  margin: 7px 0 11px; font-size: 13.5px; line-height: 1.45; color: var(--text);
+}
+
+.story__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.story__marks { display: flex; gap: 4px; }
+.story__mark {
+  width: 14px; height: 3px; border-radius: 1px; padding: 0; border: 0;
+  background: var(--border-hi); cursor: pointer;
+}
+.story__mark.is-done { background: var(--text-3); }
+.story__mark.is-on { background: var(--accent); }
+.story__nav { display: flex; align-items: center; gap: 6px; }

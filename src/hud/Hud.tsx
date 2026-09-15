@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { store, useAtlas, toggleTheme, toggleLayer, setYear, select, toggleCompare } from "../app/store";
+import { store, useAtlas, toggleTheme, toggleLayer, setYear, select, toggleCompare, startStory } from "../app/store";
+import { STORIES } from "../data/stories";
 import { Icon } from "../design/icons";
 import { mapController } from "../map/HistoricalMap";
 import type { Entity, LayerId } from "../types";
@@ -39,6 +40,7 @@ export default function Hud() {
   const entities = useAtlas((s) => s.entities);
   const comparing = useAtlas((s) => s.compareYear !== null);
   const [layersOpen, setLayersOpen] = useState(false);
+  const [goOpen, setGoOpen] = useState(false);
 
   const explore = () => {
     const pick = surprise(entities);
@@ -75,14 +77,45 @@ export default function Hud() {
           <kbd className="hud__kbd">{isMac ? "⌘" : "Ctrl"}K</kbd>
         </button>
 
-        <button
-          className="hud__btn hud__icon"
-          onClick={explore}
-          aria-label="Take me somewhere interesting"
-          title="Take me somewhere interesting"
-        >
-          <Icon name="exploration" size={17} />
-        </button>
+        <div className="hud__group">
+          <button
+            className={`hud__btn hud__icon ${goOpen ? "is-on" : ""}`}
+            onClick={() => setGoOpen((v) => !v)}
+            aria-label="Where to start"
+            aria-expanded={goOpen}
+            title="Where to start"
+          >
+            <Icon name="exploration" size={17} />
+          </button>
+          {goOpen && (
+            <>
+              <div className="popover-catch" onClick={() => setGoOpen(false)} />
+              <div className="popover popover--wide" role="menu" aria-label="Where to start">
+                <div className="eyebrow popover__title">Follow a path</div>
+                {STORIES.map((s) => (
+                  <button
+                    key={s.id}
+                    className="storyrow"
+                    role="menuitem"
+                    onClick={() => { setGoOpen(false); startStory(s.id); }}
+                  >
+                    <span className="storyrow__title">{s.title}</span>
+                    <span className="storyrow__blurb">{s.blurb}</span>
+                  </button>
+                ))}
+                <div className="popover__rule" />
+                <button
+                  className="storyrow"
+                  role="menuitem"
+                  onClick={() => { setGoOpen(false); explore(); }}
+                >
+                  <span className="storyrow__title">Somewhere unexpected</span>
+                  <span className="storyrow__blurb">One record, picked at random</span>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
 
         <button
           className={`hud__btn hud__icon ${comparing ? "is-on" : ""}`}

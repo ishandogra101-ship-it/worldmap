@@ -25,6 +25,8 @@ export interface AtlasState {
    * so every other part of the app keeps working unchanged while compare is on.
    */
   compareYear: number | null;
+  /** a guided path being walked, and where along it */
+  story: { id: string; index: number } | null;
   booted: boolean;
   loadingMap: boolean;
 }
@@ -62,6 +64,7 @@ const initial: AtlasState = {
   aboutOpen: false,
   followed: null,
   compareYear: null,
+  story: null,
   booted: false,
   loadingMap: true,
 };
@@ -157,6 +160,23 @@ export function select(selection: Selection | null): void {
 export function toggleLayer(id: LayerId): void {
   const layers = { ...store.get().layers, [id]: !store.get().layers[id] };
   store.set({ layers });
+}
+
+export function startStory(id: string): void {
+  store.set({ story: { id, index: 0 }, playing: false, compareYear: null, commandOpen: false });
+}
+
+export function stopStory(): void {
+  store.set({ story: null });
+}
+
+/** Move by one stop; running off either end leaves the story. */
+export function stepStory(delta: number, length: number): void {
+  const st = store.get().story;
+  if (!st) return;
+  const next = st.index + delta;
+  if (next < 0 || next >= length) { store.set({ story: null }); return; }
+  store.set({ story: { id: st.id, index: next } });
 }
 
 export function setCompareYear(year: number): void {

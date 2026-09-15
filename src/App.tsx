@@ -7,6 +7,7 @@ import MomentStrip from "./hud/MomentStrip";
 import Tooltip from "./hud/Tooltip";
 import Onboarding from "./hud/Onboarding";
 import Compare from "./compare/Compare";
+import StoryPlayer from "./stories/StoryPlayer";
 import EntityPanel from "./panels/EntityPanel";
 import About from "./panels/About";
 import CommandPalette from "./search/CommandPalette";
@@ -51,6 +52,9 @@ export default function App() {
       }
       if (isTyping(e.target)) return;
 
+      // a running story owns the arrows; it handles them on capture
+      if (s.story && (e.key === "ArrowLeft" || e.key === "ArrowRight")) return;
+
       if (e.key === "Escape") {
         if (s.commandOpen) store.set({ commandOpen: false });
         else if (s.aboutOpen) store.set({ aboutOpen: false });
@@ -88,6 +92,7 @@ export default function App() {
       <Moment />
       <MomentStrip />
       <Timeline />
+      <StoryPlayer />
       <EntityPanel />
 
       <Tooltip />
