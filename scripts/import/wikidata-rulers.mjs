@@ -23,7 +23,7 @@ import { rulerPositions } from "./ruler-positions.mjs";
 const MIN_SITELINKS = 4;
 
 const build = (positions) => (a, b) => `
-SELECT ?person ?personLabel ?start ?end ?capcoord ?realmcoord ?ctrycoord ?bpcoord ?dpcoord ?realmLabel ?image ?sitelinks WHERE {
+SELECT ?person ?personLabel ?start ?end ?capcoord ?realmcoord ?ctrycoord ?bpcoord ?dpcoord ?realmLabel ?posLabel ?image ?sitelinks WHERE {
   ${positions ? `VALUES ?pos { ${positions.map((q) => `wd:${q}`).join(" ")} }` : ""}
   ?person wdt:P31 wd:Q5 ; p:P39 ?st .
   ?st ps:P39 ?pos ; pq:P580 ?start .
@@ -34,12 +34,41 @@ SELECT ?person ?personLabel ?start ?end ?capcoord ?realmcoord ?ctrycoord ?bpcoor
   OPTIONAL { ?pos wdt:P1001 ?realm. ?realm wdt:P36 ?cap. ?cap wdt:P625 ?capcoord. }
   OPTIONAL { ?pos wdt:P1001 ?r1. ?r1 wdt:P625 ?realmcoord. }
   OPTIONAL { ?pos wdt:P1001 ?r2. ?r2 rdfs:label ?realmLabel. FILTER(LANG(?realmLabel)="en") }
+  # A third of rulers had no realm at all, because P1001 is often absent and it
+  # was the only thing asked. The office names the realm in most cases anyway —
+  # "King of France", "Emir of the Timurid Empire" — so take that where the
+  # jurisdiction is missing rather than leaving the record unable to say what
+  # the person ruled.
+  OPTIONAL { ?pos rdfs:label ?posLabel. FILTER(LANG(?posLabel)="en") }
   OPTIONAL { ?person wdt:P27 ?ctry. ?ctry wdt:P36 ?ccap. ?ccap wdt:P625 ?ctrycoord. }
   OPTIONAL { ?person wdt:P19 ?bp. ?bp wdt:P625 ?bpcoord. }
   OPTIONAL { ?person wdt:P20 ?dp. ?dp wdt:P625 ?dpcoord. }
   OPTIONAL { ?person wdt:P18 ?image. }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }`;
+
+/**
+ * What this person ruled.
+ *
+ * The position's jurisdiction if Wikidata records one, otherwise the realm read
+ * out of the office's own name. "King of France" and "Emperor of the Ming
+ * dynasty" name their realm in the title; a bare office like "monarch" does
+ * not, and is left blank rather than filled with a word that says nothing.
+ */
+const OF_A_REALM = /\b(?:of|de|von|van)\s+(?:the\s+)?(.+)$/i;
+
+function realmOf(r) {
+  const jurisdiction = val(r, "realmLabel");
+  if (jurisdiction) return jurisdiction;
+  const office = val(r, "posLabel");
+  if (!office) return undefined;
+  const m = OF_A_REALM.exec(office);
+  if (!m) return undefined;
+  const realm = m[1].trim();
+  // "King of Kings" and the like name a style, not a place
+  if (/^(kings?|queens?|emperors?|state|the\s|arms)\b/i.test(realm)) return undefined;
+  return realm.length >= 3 ? realm : undefined;
+}
 
 export async function fetchRulers({ from = -3000, to = 2026, step = 100 } = {}) {
   const positions = await rulerPositions();
@@ -61,23 +90,30 @@ export async function fetchRulers({ from = -3000, to = 2026, step = 100 } = {}) 
           parsePoint(val(r, "bpcoord")) ||
           parsePoint(val(r, "dpcoord"));
         if (!pt) { noPlace++; continue; }
-        // an open-ended reign gets a conventional span rather than running to 2026
-        const end = parseYear(val(r, "end")) ?? start + 25;
+        // A reign with no recorded end gets a conventional span so its marker has
+        // something to be drawn across. That span is invented, so it is flagged
+        // and every surface that shows a date range says so. Running to 2026
+        // instead would be a different invention and a louder one.
+        const recordedEnd = parseYear(val(r, "end"));
+        const end = recordedEnd ?? start + 25;
         const prev = byId.get(id);
         if (prev) {
           // one person, several reigns: widen the span, keep the first placement
           prev.startYear = Math.min(prev.startYear, start);
           prev.endYear = Math.max(prev.endYear, Math.max(end, start));
-          if (!prev.category && val(r, "realmLabel")) prev.category = val(r, "realmLabel");
+          // one recorded end anywhere in the reigns makes the span real
+          if (recordedEnd !== null) delete prev.endEstimated;
+          if (!prev.category) prev.category = realmOf(r);
           continue;
         }
         byId.set(id, {
           id,
           kind: "ruler",
           name: val(r, "personLabel") || id,
-          category: val(r, "realmLabel") || undefined,
+          category: realmOf(r),
           startYear: start,
           endYear: Math.max(end, start),
+          ...(recordedEnd === null ? { endEstimated: true } : {}),
           lng: pt.lng,
           lat: pt.lat,
           prominence: prominenceFromSitelinks(val(r, "sitelinks")),

@@ -100,16 +100,28 @@ export async function beforeAndAfter(
  * them lies within what this realm holds in the year being drawn. A bounding
  * box per feature keeps the ray casting off the great majority of candidates.
  */
+/**
+ * Candidates standing inside a realm's polygons.
+ *
+ * `match` decides which polygons count. Passing a group takes every polygon in
+ * it, which for the Mongol Empire in 1400 means six khanates from Korea to
+ * Moscow — so a panel scoped that way answers about a quarter of Eurasia.
+ * Passing the clicked polity's own name keeps the answer to the shape the
+ * reader pointed at.
+ */
 export function entitiesWithin<T extends { lng: number; lat: number }>(
   fc: FeatureCollection,
-  group: string,
+  match: string | ((props: Record<string, unknown>) => boolean),
   candidates: readonly T[],
 ): T[] {
+  const want = typeof match === "function"
+    ? match
+    : (props: Record<string, unknown>) => String(props.__group || "") === match;
   const boxes: Array<{ rings: number[][][]; x0: number; y0: number; x1: number; y1: number }> = [];
 
   for (const f of fc.features) {
     const props = (f.properties || {}) as Record<string, unknown>;
-    if (String(props.__group || "") !== group) continue;
+    if (!want(props)) continue;
     const g = f.geometry;
     const polys: number[][][][] =
       g?.type === "Polygon" ? [g.coordinates as number[][][]]

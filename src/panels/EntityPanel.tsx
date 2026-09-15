@@ -178,37 +178,51 @@ function PolityView({ p, entities, polities, year }: {
       const snap = nearestSnapshot(manifest, p.snapshotYear);
       const { fc } = await loadSnapshot(snap.file);
       const people = entities.filter((e) => e.kind === "ruler" || e.kind === "figure");
-      const hit = entitiesWithin(fc, p.group, people);
+      // the shape the reader clicked, not every shape sharing its overlord
+      const hit = entitiesWithin(
+        fc,
+        (props) => String(props.NAME ?? props.name ?? "") === p.name,
+        people,
+      );
       if (alive) setWithin(hit);
     })().catch(() => { if (alive) setWithin([]); });
     return () => { alive = false; };
-  }, [entities, p.group, p.snapshotYear]);
+  }, [entities, p.name, p.snapshotYear]);
 
   const here = within ?? [];
   const livingNow = (e: Entity) => e.startYear <= year && year <= e.endYear;
 
   /**
-   * Inside this territory is not the same as belonging to this realm. In 1600
-   * the Ottomans hold Egypt, so a purely geographic list put Tutankhamun under
-   * their name. Everything shown is therefore scoped to the year being drawn,
-   * and a person whose own record names this realm is ranked above one who
-   * merely stands within it — which is what puts a sultan above the Khan of
-   * Crimea rather than the other way round.
+   * Standing inside a territory is not ruling it, and the panel used to say it
+   * was. "Ruling in 1450" on the Chagatai Khanate listed Sejong the Great,
+   * both Ming emperors, the Khan of Crimea, a king of Nepal and Vasily II of
+   * Moscow — because the dataset marks six khanates subject to the Mongol
+   * Empire, the panel took the whole group, and everyone standing in a quarter
+   * of Eurasia came back as a ruler of the Chagatai Khanate. Ranking the
+   * realm's own rulers first did not help: it ordered a false list.
+   *
+   * Two lists now, because the data supports two different claims. A ruler
+   * whose own Wikidata record names this realm is one the atlas can say ruled
+   * it. Everyone else was somewhere inside the outline in that year, which is
+   * all geography can establish, and the heading says only that.
    */
-  const rank = (e: Entity) => {
-    const named = e.category && related(p.name, e.category) ? 1000 : 0;
-    return named + e.prominence;
-  };
+  const rulesThis = (e: Entity) => !!e.category && related(p.name, e.category);
 
   const rulersNow = useMemo(
-    () => here.filter((e) => e.kind === "ruler" && livingNow(e))
-      .sort((a, b) => rank(b) - rank(a))
+    () => here.filter((e) => e.kind === "ruler" && livingNow(e) && rulesThis(e))
+      .sort((a, b) => b.prominence - a.prominence)
       .slice(0, 8),
+    [here, year, p.name],
+  );
+  const alsoHere = useMemo(
+    () => here.filter((e) => e.kind === "ruler" && livingNow(e) && !rulesThis(e))
+      .sort((a, b) => b.prominence - a.prominence)
+      .slice(0, 6),
     [here, year, p.name],
   );
   const figures = useMemo(
     () => here.filter((e) => e.kind === "figure" && livingNow(e))
-      .sort((a, b) => rank(b) - rank(a))
+      .sort((a, b) => b.prominence - a.prominence)
       .slice(0, 8),
     [here, year, p.name],
   );
@@ -331,6 +345,17 @@ function PolityView({ p, entities, polities, year }: {
         </Section>
       )}
 
+      {alsoHere.length > 0 && (
+        <Section title={`Also inside this territory in ${formatYear(year)}`}>
+          {alsoHere.map((r) => <EntityRow key={r.id} e={r} region={r.category} />)}
+          <p className="sheet__fine">
+            These are rulers the atlas places inside this outline in {formatYear(year)}. Their
+            own records name a different realm, shown beside each. Being here is not the same
+            as ruling here.
+          </p>
+        </Section>
+      )}
+
       {figures.length > 0 && (
         <Section title={`Alive here in ${formatYear(year)}`}>
           {figures.map((f) => <EntityRow key={f.id} e={f} />)}
@@ -379,7 +404,11 @@ function EntityView({ e, entities, polities }: {
     ? formatYear(e.startYear)
     : e.continuing
       ? `${formatYear(e.startYear)} – present`
-      : `${formatYear(e.startYear)} – ${formatYear(e.endYear)}`;
+      : e.endEstimated
+        // the end year is the importer's convention, not a record. Printing it
+        // beside a real start year would make one number vouch for the other.
+        ? `from ${formatYear(e.startYear)}`
+        : `${formatYear(e.startYear)} – ${formatYear(e.endYear)}`;
   const verb =
     e.kind === "ruler" ? "Reigned"
     : e.kind === "figure" ? "Lived"
@@ -496,6 +525,14 @@ function EntityView({ e, entities, polities }: {
         <span className="tnum">{span}</span>
         <span className="sheet__century">{centuryLabel(e.startYear)}</span>
       </div>
+
+      {e.endEstimated && (
+        <p className="sheet__fine">
+          The end of this reign is not recorded. The marker is shown to{" "}
+          {formatYear(e.endYear)} so it has a span on the timeline; that year is a
+          convention of this atlas, not a date from the record.
+        </p>
+      )}
 
       {e.description && <p className="sheet__prose">{e.description}</p>}
 
@@ -795,8 +832,12 @@ function EntityRow({ e, muted, region }: { e: Entity; muted?: boolean; region?: 
       </span>
       <span className="erow__name">{e.name}</span>
       {region && <span className="erow__region">{region}</span>}
-      <span className="erow__years tnum">
-        {isPoint ? Math.abs(e.startYear) : `${Math.abs(e.startYear)}–${Math.abs(e.endYear)}`}
+      <span className="erow__years tnum" title={e.endEstimated ? "End of reign not recorded" : undefined}>
+        {isPoint
+          ? Math.abs(e.startYear)
+          : e.endEstimated
+            ? `${Math.abs(e.startYear)}–?`
+            : `${Math.abs(e.startYear)}–${Math.abs(e.endYear)}`}
       </span>
     </button>
   );

@@ -670,9 +670,14 @@ export class OverlayEngine {
     el.addEventListener("click", (ev) => { ev.stopPropagation(); this.cb.onSelectEntity(e); });
     el.addEventListener("pointerenter", (ev) => {
       this.hoveredKey = `${e.kind[0].toUpperCase()}:${e.id}`;
+      const yr = (y: number) => `${Math.abs(y)}${y < 0 ? " BCE" : ""}`;
       const years = e.kind === "event" && e.startYear === e.endYear
         ? undefined
-        : `${Math.abs(e.startYear)}${e.startYear < 0 ? " BCE" : ""} – ${Math.abs(e.endYear)}${e.endYear < 0 ? " BCE" : ""}`;
+        // an invented end year does not go on a hover card as though it were read
+        // off a record; see Entity.endEstimated
+        : e.endEstimated
+          ? `from ${yr(e.startYear)}, end unrecorded`
+          : `${yr(e.startYear)} – ${yr(e.endYear)}`;
       this.cb.onHover({
         name: e.name,
         subtitle: e.category,

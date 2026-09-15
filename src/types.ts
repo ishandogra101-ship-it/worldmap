@@ -9,6 +9,16 @@ export interface Entity {
   category?: string;
   startYear: number;
   endYear: number;
+  /**
+   * True when endYear is a display convention, not a recorded date.
+   *
+   * A ninth of the imported rulers have a reign start in Wikidata and no end.
+   * The importer gives those a span so the marker has something to be shown
+   * across, and that span is invented — it is not what the record says. Every
+   * surface that prints a date range has to say so, or the atlas is quietly
+   * asserting 1,152 end dates nobody wrote down.
+   */
+  endEstimated?: boolean;
   lng: number;
   lat: number;
   /**

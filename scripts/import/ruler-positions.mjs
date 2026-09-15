@@ -1,5 +1,7 @@
 import { sparql, val, qid } from "./sparql.mjs";
 import { WATCHLIST, spellingsOf } from "./watchlist.mjs";
+import { chunked } from "./chunks.mjs";
+import { mappedRealms } from "./mapped-realms.mjs";
 
 /**
  * The set of P39 positions that count as ruling something.
@@ -86,14 +88,54 @@ export async function rulerPositions({ cap = 4000 } = {}) {
        }`),
   ]);
 
-  const out = [...new Set([...heads, ...named, ...seeded])];
+  /**
+   * Positions whose jurisdiction is a realm the map draws.
+   *
+   * The closure and the title regex both ask Wikidata to describe itself. This
+   * asks the other half of the atlas instead: here are 2,857 names the border
+   * layer puts on screen, which of them does Wikidata know an office for. It is
+   * the branch that reaches a realm like the Timurid Empire — drawn across
+   * Central Asia for a century and a half, and represented in the ruler layer
+   * by Timur and nobody after him.
+   *
+   * Chunked because the VALUES block cannot hold 2,857 literals, and tolerant
+   * of a chunk failing: a query that dies takes its own 200 names down and
+   * leaves the rest.
+   */
+  const realms = await mappedRealms();
+  const fromMap = [];
+  try {
+    await chunked({
+      items: realms,
+      size: 200,
+      label: "positions over realms the map draws",
+      build: (chunk) => `
+        SELECT DISTINCT ?pos WHERE {
+          VALUES ?realmName { ${chunk.map((n) => `"${n}"@en`).join(" ")} }
+          ?realm rdfs:label ?realmName .
+          ?pos wdt:P1001 ?realm .
+        }`,
+      onRows(rows) {
+        for (const r of rows) {
+          const id = qid(val(r, "pos"));
+          if (id) fromMap.push(id);
+        }
+      },
+    });
+  } catch (err) {
+    console.warn(`  realm-jurisdiction sweep failed: ${err.message}`);
+  }
+  console.log(`  positions over mapped realms: ${new Set(fromMap).size} from ${realms.length} names`);
+
+  const out = [...new Set([...heads, ...named, ...seeded, ...fromMap])];
   if (out.length === 0) {
     console.warn("  no positions resolved; falling back to the inline closure");
     return null;
   }
   console.log(
     `  ruler positions: ${out.length} total `
-    + `(${named.length} by name, ${seeded.length} from the watchlist)`,
+    + `(${named.length} by title, ${seeded.length} from the watchlist, `
+    + `${new Set(fromMap).size} from realms the map draws)`,
   );
   return out;
 }
