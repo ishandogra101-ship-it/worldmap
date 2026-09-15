@@ -97,10 +97,16 @@ export function baseStyle(theme: "dark" | "light"): StyleSpecification {
           // groups apart, at which point each returns to its own colour.
           // ["zoom"] is only legal as the input to a top-level interpolate, so the
           // per-feature choice lives inside each stop rather than wrapping it.
+          //
+          // The three bands were 0.52 / 0.38 / 0.26 — a two-to-one range across
+          // which a world power and a mid-sized state read as the same object,
+          // so a map of 1850 had no focus anywhere. Widening the range gives
+          // the top band ownership of the eye and lets the rest recede, which
+          // is what carries scale here: weight, never louder hue.
           "fill-opacity": [
             "interpolate", ["linear"], ["zoom"],
-            1.4, ["*", byTier(dark ? 0.52 : 0.46, dark ? 0.38 : 0.34, dark ? 0.26 : 0.24), AREA_FADE],
-            3.2, byTier(dark ? 0.52 : 0.46, dark ? 0.38 : 0.34, dark ? 0.26 : 0.24),
+            1.4, ["*", byTier(dark ? 0.60 : 0.52, dark ? 0.34 : 0.31, dark ? 0.19 : 0.18), AREA_FADE],
+            3.2, byTier(dark ? 0.60 : 0.52, dark ? 0.36 : 0.33, dark ? 0.26 : 0.24),
           ],
           "fill-antialias": true,
         },

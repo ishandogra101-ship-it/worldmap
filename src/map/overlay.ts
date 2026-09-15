@@ -58,6 +58,21 @@ function cityThreshold(zoom: number): number {
  */
 const LABEL_MIN_SCREEN_AREA = 2200;
 
+/**
+ * How much of the screen a realm must hold before it is named, by zoom.
+ *
+ * One sampling cell is 9,216px², so a flat 2,200 threshold let any realm that
+ * caught a single cell write its name — which at world scale meant Jaru naming
+ * a corner of Australia beside the Russian Empire, both in the same breath. A
+ * name at world scale has to be earned by holding a real share of the world;
+ * closer in, the bar drops back to where any visible territory can carry one.
+ */
+function labelMinArea(zoom: number): number {
+  if (zoom < 2.2) return 16_000;
+  if (zoom < 3.2) return 8_000;
+  return LABEL_MIN_SCREEN_AREA;
+}
+
 const MAX_MARKERS = 130;
 const MAX_LABELS = 60;
 const EVENT_WINDOW = 6; // years either side, so events are catchable while scrubbing
@@ -227,10 +242,15 @@ export class OverlayEngine {
     const vh = canvas.clientHeight;
     if (vw === 0 || vh === 0) return;
 
+    const zoom = map.getZoom();
     const STEP = 96;
-    type Cell = { sx: number; sy: number; n: number };
+    // Two accumulators per realm: every cell it occupies, and only the cells of
+    // its homeland. A maritime empire's cells average out somewhere it does not
+    // govern from — in 1850 that put "Portugal" across Brazil, "Denmark" across
+    // Greenland and "Spain" across Mexico, each reading as a plain mistake.
+    type Cell = { sx: number; sy: number; n: number; hx: number; hy: number; hn: number };
     const sov = new Map<string, Cell>();
-    const sub = new Map<string, Cell & { name: string; group: string }>();
+    const sub = new Map<string, { sx: number; sy: number; n: number; name: string; group: string }>();
 
     for (let x = STEP / 2; x < vw; x += STEP) {
       for (let y = STEP / 2; y < vh; y += STEP) {
@@ -244,10 +264,11 @@ export class OverlayEngine {
         const group = String(props.__group || "");
         if (!group) continue;
         let e = sov.get(group);
-        if (!e) { e = { sx: 0, sy: 0, n: 0 }; sov.set(group, e); }
+        if (!e) { e = { sx: 0, sy: 0, n: 0, hx: 0, hy: 0, hn: 0 }; sov.set(group, e); }
         e.sx += x; e.sy += y; e.n++;
 
         const own = String(props.NAME || "");
+        if (own === group) { e.hx += x; e.hy += y; e.hn++; }
         if (own && own !== group) {
           const key = group + "|" + own;
           let t = sub.get(key);
@@ -264,7 +285,20 @@ export class OverlayEngine {
     for (const [group, e] of sov) {
       const p = this.polityByGroup.get(group);
       if (!p) continue;
-      const ll = map.unproject([e.sx / e.n, e.sy / e.n]);
+      // Where the name sits, best source first.
+      //
+      // The realm's true homeland centroid is exact, computed from the geometry
+      // rather than from a 96px sampling grid that misses Portugal entirely at
+      // world scale — which is how "Portugal" ended up written across Brazil.
+      // It is only usable while it is actually on screen, so sampled homeland
+      // cells come next, and the mean of everything held is the last resort.
+      let ll: { lng: number; lat: number };
+      const homePt = p.hasHome ? map.project([p.lng, p.lat]) : null;
+      const onScreen = homePt
+        && homePt.x > 0 && homePt.x < vw && homePt.y > 0 && homePt.y < vh;
+      if (onScreen) ll = { lng: p.lng, lat: p.lat };
+      else if (e.hn > 0) ll = map.unproject([e.hx / e.hn, e.hy / e.hn]);
+      else ll = map.unproject([e.sx / e.n, e.sy / e.n]);
       // Tier by share of *this view*, not of the whole world. Otherwise France
       // reads as minor next to a bold Kalmar Union while you are looking at France.
       const share = maxCells ? e.n / maxCells : 0;
@@ -276,7 +310,13 @@ export class OverlayEngine {
 
     const outSub: typeof this.visibleSub = [];
     for (const t of sub.values()) {
-      if (t.n < 2) continue; // a vassal earns its name only with real presence
+      // A vassal earns its name with real presence, and at world scale not at
+      // all: "Jaru" naming the whole of Australia is the right name at entirely
+      // the wrong altitude.
+      // At world scale a subject does not name itself at all: "Jaru" written
+      // across Australia is the right name at entirely the wrong altitude.
+      if (zoom < 2.4) continue;
+      if (t.n < (zoom < 3.2 ? 3 : 2)) continue;
       const p = this.polityByGroup.get(t.group);
       const ll = map.unproject([t.sx / t.n, t.sy / t.n]);
       outSub.push({
@@ -304,8 +344,14 @@ export class OverlayEngine {
 
     if (this.layers.labels) {
       const CELL_AREA = 96 * 96;
+      const minArea = labelMinArea(this.map.getZoom());
       for (const v of this.visibleSov) {
-        if (v.cells * CELL_AREA < LABEL_MIN_SCREEN_AREA) continue;
+        // A realm is named if it fills enough of this view, or if it is one of
+        // the handful of world powers of its year by total extent. The second
+        // test is what keeps Britain and France on a world map where they are
+        // physically small but politically anything but.
+        const isWorldPower = v.p.tier === 0;
+        if (!isWorldPower && v.tier > 0 && v.cells * CELL_AREA < minArea) continue;
         const base = v.tier === 0 ? 950 : v.tier === 1 ? 640 : 420;
         // tier 0 renders uppercase with wide tracking, so it needs a much
         // larger allowance than a mixed-case label of the same length
@@ -421,7 +467,15 @@ export class OverlayEngine {
     // realm is already obvious from the fill, and the city is the new fact.
     // Without this, "Aztec Empire" sits exactly on Tenochtitlan and hides it.
     const cityBoost = zoom >= 3.5 ? 420 : 0;
-    const rank = (c: Placed) => c.weight + (c.kind === "city" ? cityBoost : 0);
+    // At world and continental scale the political geography outranks any one
+    // person: a portrait of Lincoln was winning the space over "United States
+    // of America", leaving the country it sits in unnamed. Close in, that
+    // inverts — the realm is obvious from the fill and the person is the fact.
+    const labelBoost = zoom < 3 ? 520 : 0;
+    const rank = (c: Placed) =>
+      c.weight
+      + (c.kind === "city" ? cityBoost : 0)
+      + (c.kind === "label" ? labelBoost : 0);
     visible.sort((a, b) => rank(b) - rank(a));
     const placed: Placed[] = [];
     let markerCount = 0;
