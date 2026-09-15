@@ -14,7 +14,7 @@ import { expandSubclasses } from "./expand-types.mjs";
  * the hierarchy that its closure is most of Wikidata, which is the opposite of
  * selective.
  */
-const MIN_SITELINKS = 18;
+const MIN_SITELINKS = 9;
 
 const ROOT_FIELD = {
   Q178561: "battle",     // battle

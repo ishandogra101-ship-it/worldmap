@@ -14,11 +14,15 @@ import { windowed, dt } from "./windows.mjs";
  * finish inside a job; binding them through VALUES cuts that to one sweep and
  * lets the window splitter deal with whatever is left.
  *
+ * The sitelink floor sits low for the same reason it does for rulers: the
+ * level-of-detail system decides what reaches a crowded screen, so a high floor
+ * buys no legibility and costs coverage where documentation is thinnest.
+ *
  * Occupations are matched exactly rather than through P279*, because the
  * subclass closure under "scientist" or "artist" is enormous and on its own
  * drags the query past the endpoint's time budget.
  */
-const MIN_SITELINKS = 25;
+const MIN_SITELINKS = 14;
 
 const FIELD = {
   Q1028181: "art",          // painter

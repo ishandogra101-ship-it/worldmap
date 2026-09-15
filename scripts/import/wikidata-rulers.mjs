@@ -1,5 +1,6 @@
 import { val, qid, parseYear, parsePoint, prominenceFromSitelinks } from "./sparql.mjs";
 import { windowed, dt } from "./windows.mjs";
+import { rulerPositions } from "./ruler-positions.mjs";
 
 /**
  * People who held a position that is a kind of monarch (Q116) — kings, emperors,
@@ -13,17 +14,20 @@ import { windowed, dt } from "./windows.mjs";
  * chain is dropped rather than guessed at. A marker in the wrong place is worse
  * than no marker.
  *
- * The sitelink floor is what keeps the result to people at least one reference
- * work has written about, and it is the same number that later decides at what
- * zoom the marker appears.
+ * The sitelink floor keeps the result to people at least one reference work has
+ * written about, and is the same number that later decides at what zoom a
+ * marker appears. It sits low because nothing obscure reaches a crowded screen
+ * anyway: the level-of-detail system hides it until someone zooms to the region
+ * and asks. Raising it buys no legibility and costs whole traditions.
  */
-const MIN_SITELINKS = 8;
+const MIN_SITELINKS = 4;
 
-const build = (a, b) => `
+const build = (positions) => (a, b) => `
 SELECT ?person ?personLabel ?start ?end ?capcoord ?realmcoord ?ctrycoord ?bpcoord ?dpcoord ?realmLabel ?image ?sitelinks WHERE {
+  ${positions ? `VALUES ?pos { ${positions.map((q) => `wd:${q}`).join(" ")} }` : ""}
   ?person wdt:P31 wd:Q5 ; p:P39 ?st .
   ?st ps:P39 ?pos ; pq:P580 ?start .
-  ?pos wdt:P279* wd:Q116 .
+  ${positions ? "" : "?pos wdt:P279* wd:Q48352 ."}
   FILTER(?start >= ${dt(a)} && ?start < ${dt(b)})
   ?person wikibase:sitelinks ?sitelinks . FILTER(?sitelinks >= ${MIN_SITELINKS})
   OPTIONAL { ?st pq:P582 ?end. }
@@ -38,11 +42,12 @@ SELECT ?person ?personLabel ?start ?end ?capcoord ?realmcoord ?ctrycoord ?bpcoor
 }`;
 
 export async function fetchRulers({ from = -3000, to = 2026, step = 100 } = {}) {
+  const positions = await rulerPositions();
   const byId = new Map();
   let noPlace = 0, noDate = 0;
 
   await windowed({
-    from, to, step, label: "rulers", build,
+    from, to, step, label: "rulers", build: build(positions),
     onRows(rows) {
       for (const r of rows) {
         const id = qid(val(r, "person"));
