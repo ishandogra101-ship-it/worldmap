@@ -18,6 +18,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: wikidata-import
@@ -108,3 +110,41 @@ jobs:
           done
           echo "could not push after 3 attempts" >&2
           exit 1
+
+  # GitHub deliberately does not fire workflows from a push made with the
+  # default GITHUB_TOKEN, so the deploy workflow's push trigger never sees the
+  # commit above. Without this the data would land in the repo and the live site
+  # would keep serving the old build until somebody pushed by hand.
+  deploy:
+    needs: import
+    if: inputs.mode == 'full' && inputs.commit
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /worldmap/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publish:
+    needs: deploy
+    if: inputs.mode == 'full' && inputs.commit
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
