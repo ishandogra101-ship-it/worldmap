@@ -22,7 +22,7 @@ import { fetchRulers } from "./wikidata-rulers.mjs";
 import { fetchFigures } from "./wikidata-figures.mjs";
 import { fetchEvents } from "./wikidata-events.mjs";
 import { fetchPortraits } from "./fetch-portraits.mjs";
-import { WATCHLIST } from "./watchlist.mjs";
+import { WATCHLIST, spellingsOf } from "./watchlist.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..", "..");
@@ -67,11 +67,23 @@ function clean(records, label) {
 function checkWatchlist(records, label) {
   const want = WATCHLIST[label];
   if (!want) return;
-  const hit = [], miss = [];
+  const hit = [], miss = [], underAnotherName = [];
   for (const name of want) {
-    (records.some((e) => e.name && e.name.includes(name)) ? hit : miss).push(name);
+    const found = spellingsOf(name).find(
+      (spelling) => records.some((e) => e.name && e.name.includes(spelling)),
+    );
+    if (!found) miss.push(name);
+    else {
+      hit.push(name);
+      if (found !== name) underAnotherName.push(`${name} as "${found}"`);
+    }
   }
   console.log(`  watchlist: ${hit.length}/${want.length} found`);
+  // Worth saying out loud: it is the difference between a record that is
+  // missing and a record this check could not recognise.
+  if (underAnotherName.length) {
+    console.log(`    under another spelling: ${underAnotherName.join(", ")}`);
+  }
   if (miss.length) console.log(`    still missing: ${miss.join(", ")}`);
 }
 

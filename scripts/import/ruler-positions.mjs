@@ -1,5 +1,5 @@
 import { sparql, val, qid } from "./sparql.mjs";
-import { WATCHLIST } from "./watchlist.mjs";
+import { WATCHLIST, spellingsOf } from "./watchlist.mjs";
 
 /**
  * The set of P39 positions that count as ruling something.
@@ -52,7 +52,14 @@ export async function rulerPositions({ cap = 4000 } = {}) {
     }
   };
 
-  const names = WATCHLIST.rulers.map((n) => `"${n}"@en`).join(" ");
+  // Every accepted spelling, not just the one this project happens to use.
+  // The seed matches Wikidata's English label exactly, and Wikidata calls
+  // Sundiata "Sunjata Keïta" — so seeding on our spelling alone asked for a
+  // label that is not there and quietly contributed nothing for that person.
+  const names = WATCHLIST.rulers
+    .flatMap((n) => spellingsOf(n))
+    .map((n) => `"${n}"@en`)
+    .join(" ");
 
   const [heads, named, seeded] = await Promise.all([
     ask("head of state closure",

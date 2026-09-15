@@ -27,3 +27,39 @@ export const WATCHLIST = {
   ],
   events: ["Battle of Hastings", "Fall of Constantinople", "Battle of Talas"],
 };
+
+/**
+ * Other spellings that count as the same person.
+ *
+ * Run 11 reported Sundiata Keita, Pachacuti and Ibn Sina missing. All three
+ * were in the atlas — as "Sunjata Keïta", "Pachacútec" and "Avicenna", which
+ * are the English labels Wikidata actually carries. A check that reports three
+ * false alarms out of five is worse than no check: it sends the next hour after
+ * people who are already there and buries the two who are not.
+ *
+ * Only spellings of the same individual belong here. This is a lookup for the
+ * report, never for merging records, and nothing is ever collapsed on the
+ * strength of it.
+ */
+export const ALSO_KNOWN_AS = {
+  "Sundiata Keita": ["Sunjata Keïta", "Sundjata", "Mari Djata"],
+  "Pachacuti": ["Pachacútec", "Pachacutec", "Pachakutiq"],
+  "Ibn Sina": ["Avicenna"],
+  "Al-Khwarizmi": ["Muhammad ibn Musa al-Khwarizmi", "al-Khwarizmi"],
+  "Shaka": ["Shaka Zulu", "Shaka kaSenzangakhona"],
+  "Qin Shi Huang": ["Qin Shi Huangdi", "Ying Zheng"],
+  "Sejong": ["Sejong the Great", "Sejong of Joseon"],
+  "Mansa Musa": ["Musa I of Mali", "Kankan Musa"],
+  "Suleiman the Magnificent": ["Suleiman I", "Süleyman I"],
+  "Cyrus the Great": ["Cyrus II of Persia"],
+  "Zheng He": ["Cheng Ho", "Ma He"],
+  "Rumi": ["Jalal ad-Din Muhammad Rumi", "Mevlana"],
+  "Confucius": ["Kong Qiu", "Kongzi"],
+  "Charlemagne": ["Charles the Great", "Karl der Große"],
+  "Attila": ["Attila the Hun"],
+};
+
+/** Every spelling worth accepting for a watchlist name. */
+export function spellingsOf(name) {
+  return [name, ...(ALSO_KNOWN_AS[name] ?? [])];
+}
