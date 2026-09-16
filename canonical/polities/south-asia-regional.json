@@ -207,12 +207,12 @@
       "canonicalName": "Gujarat Sultanate",
       "type": "sultanate",
       "founded": {
-        "year": 1407,
+        "year": 1394,
         "range": [
           1391,
           1407
         ],
-        "note": "Zafar Khan governs independently from 1391 and takes the title of sultan in 1407."
+        "note": "Zafar Khan was made governor in 1391 and the line took the sultan's title in 1407. The Wikipedia article dates the state to 1394, when Muzaffar Shah I declared independence from the Tughlaqs, and that is the year used here."
       },
       "ended": {
         "year": 1573,
@@ -235,7 +235,27 @@
       "mapsTo": [
         "Gujarat",
         "Gujarat Sultanate"
-      ]
+      ],
+      "sources": [
+        {
+          "title": "Gujarat Sultanate",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Gujarat_Sultanate",
+          "locator": "revision 1374127357, lead"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-16",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Gujarat_Sultanate",
+            "revision": 1374127357,
+            "date": "2026-09-16"
+          }
+        ]
+      }
     },
     {
       "id": "malwa-sultanate",

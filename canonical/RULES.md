@@ -17,10 +17,26 @@ There are exactly three values and they mean specific things:
 - `reviewed` — a human read the record against at least one of its named
   references and confirmed or corrected it. `verification.by` names them and
   `verification.date` says when.
+- `sourced` — an automated process fetched a specific document and wrote the
+  record from what it said. `verification.retrieved` records the URL, the
+  revision and the date, so the claim can be re-checked against the same bytes
+  rather than against a page that has since changed. This is weaker than
+  `cited`: nobody judged whether the document is any good, only that it was
+  actually opened and actually says this.
 - `cited` — the record was transcribed from a specific passage of a specific
   source, with the locator recorded in `sources[].locator`.
 
-Nothing may be marked `reviewed` or `cited` by an automated process. The
+Nothing may be marked `reviewed` or `cited` by an automated process.
+
+`sourced` exists because the rule above was written by a session with no network
+at all, where any citation would necessarily have been invented. That is no
+longer the situation, and the gap it left was the wrong one: an agent that had
+genuinely opened Wikipedia and recorded the revision id had no way to say so, so
+real retrieval and pure recall both had to be filed as `drafted`. They are not
+the same thing and the layer should be able to tell them apart. What has not
+changed is that an assistant may not certify its own work as reviewed. The
+validator enforces `sourced` the only way that means anything: a record claiming
+it must name what it fetched, or it fails. The
 validator enforces this: a record whose `verification.method` is `reviewed`
 must carry a `by` that is not the string "claude", and one marked `cited` must
 carry a locator on at least one source.
@@ -51,7 +67,7 @@ staging data.
 
 ## Where this stands today
 
-147 polities and 36 people, every one of them `drafted` — written from an
+172 polities and 36 people, nearly every one of them `drafted` — written from an
 assistant's training knowledge against the named works, with nobody having
 opened those works. That is the honest state and the validator will not let it
 be described as anything else.

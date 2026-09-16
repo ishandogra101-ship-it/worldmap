@@ -76,20 +76,25 @@ becomes another test for free.
 ## Where the numbers stand
 
 ```
-capital test    833 checks: 564 right, 55 correctly showing an overlord,
-                22 under a group label, 109 showing a different polity,
+capital test    833 checks: 566 right, 55 correctly showing an overlord,
+                22 under a group label, 107 showing a different polity,
                 83 drawing nothing
                 West Asia 66%  Americas 73%  South Asia 73%  Europe 77%
-                Africa 78%  East Asia 87%  SE Asia 88%  N Eurasia 100%
-                Central Asia 100%
-border audit    32/39, all 7 failures carrying a correction the app shows
+                Africa 78%  East Asia 90%  SE Asia 88%  Central Asia 100%
+border audit    34/39, all 5 failures carrying a correction the app shows
 anchors         20/20
-canonical       172 polities, 36 people, 208 records — ALL still `drafted`
-claims          20, South Asia only
+canonical       172 polities, 36 people — 207 drafted, 1 sourced
+claims          22 — 20 drafted (South Asia), 2 sourced (East Asia)
 ```
 
-The 109 is the number to watch. It was 180 before the alias pass, and the 71 that
-moved were correct maps the test had been scoring as errors. No geometry changed.
+The 107 is the number to watch. It was 180 before the alias pass. 71 of those
+were correct maps the test had been scoring as errors, and two more were the
+1400 snapshot, which was genuinely wrong and is fixed.
+
+**The remaining errors are upstream, not ours.** This was checked against raw
+historical-basemaps rather than assumed: the unsimplified source also draws the
+Great Khanate over Ming China, and also leaves Lisbon and Constantinople outside
+any polygon. Our simplification is not the cause of any of it.
 
 `drafted` means the assistant wrote it from training recall and **nobody opened a
 source**. Zero records are `cited`. That is the single largest weakness.
@@ -139,11 +144,23 @@ would have been fabricated. It is now the thing standing between this layer and
 its first real source. **Ask the owner before reinterpreting it** — the alias
 pass deliberately did not, and touched no `verification` field.
 
-**3. Extend claims beyond South Asia.** All 20 claims are Indian. The same blob
-problem exists everywhere the source draws one name over ground several polities
-held. `audit:capitals` per region says where to look: West Asia is worst.
+**3. The 83 blanks are a coastline problem, and they are one problem.**
+Every blank checked has the *right* polity 0.03-0.04 degrees away: Lisbon lies
+just outside Portugal in all 17 snapshots it appears in, Constantinople just
+outside Byzantium in 12, and the same for Kilwa, Mbanza Kongo and Timbuktu.
+These are coastal capitals sitting a few kilometres out to sea because the
+source's coastline is coarse, and the raw upstream file has the same defect. It
+is also a visible defect in the app, not only in the test: a strip of land with
+no polity colour follows every shore. Natural Earth land is already on disk at
+`public/data/land.geojson` and the region resolver already intersects with it,
+so the material for a fix is there. One operation would close most of the 83.
 
-**4. Do not re-add an authority area.** Whatever shape the argument takes, the
+**4. Extend claims beyond South Asia.** The same blob problem exists everywhere
+the source draws one name over ground several polities held. `audit:capitals`
+per region says where to look, and the group-label report now names the exact
+labels that need breaking up. West Asia is worst.
+
+**5. Do not re-add an authority area.** Whatever shape the argument takes, the
 answer is no. Read the header of `scripts/canonical/bake.mjs` first.
 
 ## Traps that cost time here

@@ -30,10 +30,15 @@ export interface HistoricalDate {
   note?: string;
 }
 
-export type VerificationMethod = "drafted" | "reviewed" | "cited";
+export type VerificationMethod = "drafted" | "sourced" | "reviewed" | "cited";
 
 export interface Verification {
   method: VerificationMethod;
+  /**
+   * For `sourced` records: exactly what was retrieved, so the claim can be
+   * re-checked against the same bytes rather than a moving target.
+   */
+  retrieved?: { url: string; revision?: string | number; date: string }[];
   /**
    * Who did it. "claude" for drafted records. A real person for reviewed ones —
    * the validator rejects a reviewed record attributed to an assistant, which

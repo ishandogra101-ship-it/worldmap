@@ -48,14 +48,56 @@ export async function makeAtlas() {
     throw new Error(`no region "${id}" in any region file`);
   };
 
+  const claims = await loadClaims();
+
+  /**
+   * Geometry the boundary source itself draws for a name in some other year.
+   *
+   * Some snapshots are simply broken while their neighbours are fine. At 1400
+   * the source draws one "Great Khanate" over China, Manchuria, Mongolia and
+   * Korea, thirty-two years after the Yuan were driven out; at 1492 and 1500 it
+   * draws the Ming and Korea correctly. Rebuilding a Ming frontier from named
+   * physical lines would mean deciding where the northern border ran, and the
+   * honest answer is that this project does not know it better than its own
+   * source does eight decades later.
+   *
+   * So a claim may borrow: "the ground the source gives the Ming Empire in
+   * 1492". It invents nothing, it is reproducible, and the claim's note has to
+   * say why the borrowed year is a fair likeness of the claimed one.
+   *
+   * Only features the source drew are eligible. Anything carrying __claim is
+   * something this layer put there, and borrowing from it would let one claim
+   * silently build on another.
+   */
+  const borrowed = new Map();
+  const wanted = claims.map((c) => c.extent?.asDrawnIn).filter(Boolean);
+  for (const year of new Set(wanted.map((a) => a.year))) {
+    const file = path.join(ROOT, "public", "data", "borders",
+      year < 0 ? `world_bc${-year}.geojson` : `world_${year}.geojson`);
+    const fc = JSON.parse(await readFile(file, "utf8"));
+    for (const f of fc.features) {
+      const name = f.properties?.NAME;
+      if (!name || f.properties.__claim || !f.geometry) continue;
+      const mp = f.geometry.type === "Polygon" ? [f.geometry.coordinates]
+        : f.geometry.type === "MultiPolygon" ? f.geometry.coordinates : [];
+      if (!mp.length) continue;
+      const key = `${year}|${name}`;
+      borrowed.set(key, borrowed.has(key) ? pc.union(borrowed.get(key), mp) : mp);
+    }
+  }
+
   const extentOf = (e) => {
     if (e.region) return regionOf(e.region);
     if (e.union) return e.union.map(regionOf).reduce((a, b) => pc.union(a, b));
     if (e.minus) return pc.difference(extentOf(e.minus.from), extentOf(e.minus.remove));
+    if (e.asDrawnIn) {
+      const key = `${e.asDrawnIn.year}|${e.asDrawnIn.name}`;
+      const mp = borrowed.get(key);
+      if (!mp) throw new Error(`the source draws no "${e.asDrawnIn.name}" in ${e.asDrawnIn.year}`);
+      return mp;
+    }
     throw new Error(`unrecognised extent ${JSON.stringify(e)}`);
   };
-
-  const claims = await loadClaims();
   const polities = await loadPolities();
 
   /**

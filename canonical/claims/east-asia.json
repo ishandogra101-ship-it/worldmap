@@ -1,0 +1,82 @@
+{
+ "region": "East Asia",
+ "sources": [
+  {
+   "title": "Ming dynasty",
+   "author": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Ming_dynasty",
+   "locator": "revision 1367322217, lead"
+  },
+  {
+   "title": "Joseon",
+   "author": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Joseon",
+   "locator": "revision 1373572674, lead and Establishment"
+  },
+  {
+   "title": "Ashikaga shogunate",
+   "author": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Ashikaga_shogunate",
+   "locator": "revision 1370238114, lead"
+  },
+  {
+   "title": "The Cambridge History of China",
+   "edition": "Cambridge University Press, vols. 7-8"
+  }
+ ],
+ "verification": {
+  "method": "sourced",
+  "by": "claude",
+  "date": "2026-09-16",
+  "retrieved": [
+   {
+    "url": "https://en.wikipedia.org/wiki/Ming_dynasty",
+    "revision": 1367322217,
+    "date": "2026-09-16"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Joseon",
+    "revision": 1373572674,
+    "date": "2026-09-16"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Ashikaga_shogunate",
+    "revision": 1370238114,
+    "date": "2026-09-16"
+   }
+  ],
+  "notes": "Dynasty and shogunate dates read off the fetched articles. The extents are not from these documents: they are the boundary source's own 1492 depictions, borrowed by asDrawnIn."
+ },
+ "note": "The 1400 snapshot is broken where the ones on either side are sound. It draws a single 'Great Khanate' from the Tian Shan to the Sea of Japan and from Hainan to the Arctic treeline -- China, Manchuria, Mongolia and Korea as one Mongol polity, thirty-two years after the Yuan were driven out of Beijing. 1300 is correctly Yuan; 1492 correctly names the Ming and Korea. So this file does not rebuild an East Asian frontier from scratch. It borrows the source's own 1492 geometry for the years the source gets wrong, and stops.",
+ "scope": {
+  "from": 1368,
+  "to": 1450,
+  "note": "Only as far as the next good snapshot. From 1492 the source names the Ming and Korea itself, and where the source is right the claim layer must stay out of the way."
+ },
+ "claims": [
+  {
+   "polityId": "ming",
+   "from": 1368,
+   "to": 1450,
+   "extent": {
+    "asDrawnIn": {
+     "year": 1492,
+     "name": "Ming Empire"
+    }
+   },
+   "note": "The Ming took Khanbaliq in 1368 and held China proper from that year; the 1400 snapshot showing the Mongol khanate over Nanjing and Beijing is simply wrong. Extent borrowed from the source's own Ming Empire at 1492, which is a fair likeness of 1400 in the south, west and east. It is conservative in the north: the early Ming held steppe garrisons beyond the later wall line that were given up in the 1430s, so this understates the Yongle frontier rather than overstating it."
+  },
+  {
+   "polityId": "joseon",
+   "from": 1392,
+   "to": 1450,
+   "extent": {
+    "asDrawnIn": {
+     "year": 1492,
+     "name": "Korea"
+    }
+   },
+   "note": "Joseon replaced Goryeo in 1392 and was never Mongol ground after that. Extent borrowed from the source's Korea at 1492. Slightly generous in the far north-east: the Joseon article has the borders reaching 'the natural boundaries at the rivers of Amnok and Tuman' through the subjugation of the Jurchens, and that line was only consolidated under Sejong between 1418 and 1450. The overstatement is a strip along the Tumen. The understatement it replaces is the whole peninsula."
+  }
+ ]
+}
