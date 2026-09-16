@@ -1,0 +1,385 @@
+{
+  "note": "Boundary lines and regions for the subcontinent. Defined once, referenced by claims. See canonical/regions/schema.md.",
+  "lines": [
+    {
+      "id": "krishna-river",
+      "name": "Krishna river",
+      "basis": "Traced west to east along the Krishna's course from its source in the Western Ghats near Mahabaleshwar to its delta on the Bay of Bengal. Historical atlases treat it as the standing frontier between the Deccan sultanates and Vijayanagara.",
+      "points": [
+        [
+          73.67,
+          17.92
+        ],
+        [
+          74.6,
+          17.3
+        ],
+        [
+          75.9,
+          16.75
+        ],
+        [
+          76.9,
+          16.55
+        ],
+        [
+          78.2,
+          16.45
+        ],
+        [
+          79.3,
+          16.55
+        ],
+        [
+          80.1,
+          16.35
+        ],
+        [
+          80.9,
+          15.95
+        ]
+      ]
+    },
+    {
+      "id": "tungabhadra-river",
+      "name": "Tungabhadra river",
+      "basis": "The Krishna's southern tributary, running from the Ghats past Hampi to its confluence. Vijayanagara's capital sat on its south bank, and the doab between the two rivers was the ground both powers fought over for two centuries.",
+      "points": [
+        [
+          75.2,
+          14.0
+        ],
+        [
+          75.9,
+          14.4
+        ],
+        [
+          76.5,
+          15.3
+        ],
+        [
+          77.3,
+          15.6
+        ],
+        [
+          78.2,
+          16.0
+        ]
+      ]
+    },
+    {
+      "id": "narmada-river",
+      "name": "Narmada river",
+      "basis": "Runs east to west across central India to the Gulf of Khambhat. The conventional dividing line between north India and the Deccan in Indian historiography.",
+      "points": [
+        [
+          81.75,
+          22.67
+        ],
+        [
+          80.0,
+          22.85
+        ],
+        [
+          78.2,
+          22.75
+        ],
+        [
+          76.4,
+          22.3
+        ],
+        [
+          74.9,
+          22.1
+        ],
+        [
+          73.5,
+          21.85
+        ],
+        [
+          72.65,
+          21.72
+        ]
+      ]
+    },
+    {
+      "id": "tapti-river",
+      "name": "Tapti river",
+      "basis": "South of and parallel to the Narmada, reaching the sea at Surat. The Khandesh corridor between them was the usual route between Gujarat and the Deccan.",
+      "points": [
+        [
+          78.4,
+          21.6
+        ],
+        [
+          76.9,
+          21.3
+        ],
+        [
+          75.5,
+          21.2
+        ],
+        [
+          74.2,
+          21.2
+        ],
+        [
+          72.85,
+          21.15
+        ]
+      ]
+    },
+    {
+      "id": "vindhya-satpura",
+      "name": "Vindhya and Satpura ranges",
+      "basis": "The hill country flanking the Narmada, the physical barrier the river line stands for.",
+      "points": [
+        [
+          82.0,
+          23.4
+        ],
+        [
+          79.5,
+          23.5
+        ],
+        [
+          77.0,
+          23.2
+        ],
+        [
+          75.0,
+          22.9
+        ],
+        [
+          73.2,
+          22.3
+        ]
+      ]
+    },
+    {
+      "id": "himalaya-front",
+      "name": "Himalayan front",
+      "basis": "The southern edge of the range, where the plains end. Polities of the plains stop here; Himalayan kingdoms sit above it.",
+      "points": [
+        [
+          73.0,
+          33.2
+        ],
+        [
+          75.5,
+          32.2
+        ],
+        [
+          78.0,
+          30.6
+        ],
+        [
+          80.5,
+          29.2
+        ],
+        [
+          83.0,
+          28.2
+        ],
+        [
+          86.0,
+          27.4
+        ],
+        [
+          88.5,
+          26.9
+        ],
+        [
+          92.0,
+          27.2
+        ],
+        [
+          95.5,
+          27.9
+        ]
+      ]
+    },
+    {
+      "id": "indus-east",
+      "name": "Eastern edge of the Indus basin",
+      "basis": "The Thar desert margin, which separated Sindh and the lower Indus from the Gangetic plain and Rajasthan.",
+      "points": [
+        [
+          70.5,
+          24.2
+        ],
+        [
+          71.2,
+          26.0
+        ],
+        [
+          72.0,
+          28.0
+        ],
+        [
+          73.2,
+          30.0
+        ],
+        [
+          74.5,
+          31.6
+        ],
+        [
+          75.5,
+          33.0
+        ]
+      ]
+    },
+    {
+      "id": "bengal-west",
+      "name": "Western edge of the Bengal delta",
+      "basis": "The Rajmahal gap and the Chota Nagpur upland, the approach by which Bengal was invaded and the line its independent sultanate held.",
+      "points": [
+        [
+          86.3,
+          26.3
+        ],
+        [
+          86.8,
+          25.2
+        ],
+        [
+          86.5,
+          24.0
+        ],
+        [
+          86.2,
+          22.8
+        ],
+        [
+          86.8,
+          21.6
+        ]
+      ]
+    },
+    {
+      "id": "gujarat-east",
+      "name": "Eastern edge of Gujarat",
+      "basis": "The Aravalli foothills and the upper Sabarmati, the landward boundary of the Gujarat sultanate.",
+      "points": [
+        [
+          73.3,
+          20.5
+        ],
+        [
+          73.6,
+          22.0
+        ],
+        [
+          73.9,
+          23.5
+        ],
+        [
+          74.2,
+          24.8
+        ],
+        [
+          74.0,
+          25.8
+        ]
+      ]
+    }
+  ],
+  "regions": [
+    {
+      "id": "sa-peninsula-south-of-krishna",
+      "name": "The peninsula south of the Krishna and Tungabhadra",
+      "def": {
+        "kind": "landSouthOf",
+        "line": "krishna-river",
+        "clipTo": "subcontinent"
+      },
+      "basis": "Vijayanagara's core. The Krishna line is the frontier its chronicles and the Bahmani chronicles both describe."
+    },
+    {
+      "id": "sa-deccan-krishna-to-tapti",
+      "name": "The Deccan between the Krishna and the Tapti",
+      "def": {
+        "kind": "landBetween",
+        "north": "tapti-river",
+        "south": "krishna-river",
+        "clipTo": "subcontinent"
+      },
+      "basis": "The Bahmani heartland, and after 1490 the ground the five successor sultanates divided."
+    },
+    {
+      "id": "sa-gangetic-plain",
+      "name": "The Gangetic plain",
+      "def": {
+        "kind": "landBetween",
+        "north": "himalaya-front",
+        "south": "narmada-river",
+        "clipTo": "north-india"
+      },
+      "basis": "The plain between the Himalayan front and the Narmada, from the Punjab rivers to the Bengal delta."
+    },
+    {
+      "id": "sa-bengal",
+      "name": "Bengal",
+      "def": {
+        "kind": "landEastOf",
+        "line": "bengal-west",
+        "clipTo": "bengal-box"
+      },
+      "basis": "The delta and its approaches, the territory of the independent sultanate from 1352."
+    },
+    {
+      "id": "sa-gujarat",
+      "name": "Gujarat",
+      "def": {
+        "kind": "landWestOf",
+        "line": "gujarat-east",
+        "clipTo": "gujarat-box"
+      },
+      "basis": "The peninsula and the plain behind it, the Gujarat sultanate's territory."
+    },
+    {
+      "id": "sa-doab-punjab",
+      "name": "The Doab and the Punjab",
+      "def": {
+        "kind": "landBetween",
+        "north": "himalaya-front",
+        "south": "narmada-river",
+        "clipTo": "doab-box"
+      },
+      "basis": "The Jumna-Ganges doab and the rivers west of it — what the Sultanate of Delhi actually held after Timur."
+    }
+  ],
+  "boxes": {
+    "subcontinent": [
+      67.0,
+      6.0,
+      92.5,
+      36.5
+    ],
+    "north-india": [
+      68.0,
+      20.0,
+      89.0,
+      33.0
+    ],
+    "bengal-box": [
+      85.5,
+      20.5,
+      93.0,
+      27.0
+    ],
+    "gujarat-box": [
+      68.0,
+      20.9,
+      74.2,
+      24.4
+    ],
+    "doab-box": [
+      72.0,
+      24.6,
+      84.0,
+      32.5
+    ]
+  }
+}
