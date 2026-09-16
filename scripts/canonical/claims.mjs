@@ -58,9 +58,23 @@ export async function makeAtlas() {
   const claims = await loadClaims();
   const polities = await loadPolities();
 
-  /** Every claim valid in this year, with its geometry resolved. */
+  /**
+   * Every claim valid in this year, with its geometry resolved.
+   *
+   * A later claim in the file cuts every earlier one it touches. That is how a
+   * cartographer works — lay down the broad thing, then the specific things on
+   * top — and it makes file order an explicit statement rather than an
+   * accident. Delhi is written before Malwa, Jaunpur and the Rajput country,
+   * so those carve their ground out of it, and the alternative (hand-writing a
+   * subtraction for every pair of neighbours) is both laborious and a place for
+   * mistakes to hide.
+   *
+   * Claims that do not touch are unaffected, so ordering only matters where
+   * two claims genuinely disagree about the same ground — which is exactly
+   * where a decision should have to be visible.
+   */
   function at(year) {
-    return claims
+    const live = claims
       .filter((c) => year >= c.from && year < c.to)
       .map((c) => {
         const p = polities.find((x) => x.id === c.polityId);
@@ -72,8 +86,21 @@ export async function makeAtlas() {
           note: c.note,
           sources: c.sources,
           verification: c.verification,
+          // Names this claim takes off the map, each with the reason. A claim
+          // may only unmake a polity the boundary source draws if someone has
+          // written down why — the source is anachronistic here, or this power
+          // annexed it in a year the source has not caught up with.
+          replaces: c.replaces ?? [],
         };
       });
+
+    for (let i = 0; i < live.length; i++) {
+      for (let j = i + 1; j < live.length; j++) {
+        if (live[i].geometry.length === 0) break;
+        live[i].geometry = pc.difference(live[i].geometry, live[j].geometry);
+      }
+    }
+    return live.filter((c) => c.geometry.length > 0);
   }
 
   /** Two claims on the same ground in the same year is a contradiction. */

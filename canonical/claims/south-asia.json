@@ -1,53 +1,283 @@
 {
-  "region": "South Asia",
-  "sources": [
-    { "title": "A History of India", "author": "Hermann Kulke and Dietmar Rothermund", "edition": "4th ed., Routledge" },
-    { "title": "The New Cambridge History of India", "edition": "Cambridge University Press" },
-    { "title": "A History of South India", "author": "K. A. Nilakanta Sastri", "edition": "4th ed., Oxford University Press" },
-    { "title": "An Atlas of the Mughal Empire", "author": "Irfan Habib", "edition": "Oxford University Press" }
-  ],
-  "verification": { "method": "drafted", "by": "claude", "date": "2026-09-16" },
-  "claims": [
-    { "polityId": "delhi-sultanate", "from": 1206, "to": 1290,
-      "extent": { "region": "sa-doab-punjab" },
-      "note": "The Mamluk sultans held the Doab and the Punjab. Expansion south comes later." },
-    { "polityId": "delhi-sultanate", "from": 1290, "to": 1335,
-      "extent": { "union": ["sa-doab-punjab", "sa-gangetic-plain", "sa-gujarat"] },
-      "note": "Khalji and early Tughlaq maximum. Gujarat taken 1299. Southern conquests were raids and short-lived tributary arrangements rather than settled territory, so they are not drawn as held." },
-    { "polityId": "delhi-sultanate", "from": 1335, "to": 1398,
-      "extent": { "union": ["sa-doab-punjab", "sa-gangetic-plain"] },
-      "note": "Contraction under the later Tughlaqs. Bengal gone 1352, the Deccan gone 1347, Gujarat and Malwa going." },
-    { "polityId": "delhi-sultanate", "from": 1398, "to": 1526,
-      "extent": { "region": "sa-doab-punjab" },
-      "note": "After Timur sacked Delhi in 1398 the sultanate held little beyond the Doab and the Punjab. The Sayyids and Lodis ruled from there until Panipat." },
-
-    { "polityId": "vijayanagara", "from": 1336, "to": 1565,
-      "extent": { "region": "sa-peninsula-south-of-krishna" },
-      "note": "The peninsula south of the Krishna and Tungabhadra. The doab between the two rivers was contested with the Bahmanis throughout and is not separately drawn." },
-    { "polityId": "vijayanagara", "from": 1565, "to": 1646,
-      "extent": { "region": "sa-peninsula-south-of-krishna" },
-      "note": "After Talikota the empire survived at Penukonda and Chandragiri with its nayakas increasingly independent. Drawn as the same ground because the successor nayaka states are not yet modelled separately." },
-
-    { "polityId": "bahmani", "from": 1347, "to": 1490,
-      "extent": { "region": "sa-deccan-krishna-to-tapti" },
-      "note": "Broke from Delhi in 1347 and held the Deccan between the Krishna and the Tapti until the five successor sultanates divided it." },
-
-    { "polityId": "bengal-sultanate", "from": 1352, "to": 1576,
-      "extent": { "region": "sa-bengal" },
-      "note": "Independent of Delhi from Ilyas Shah's unification until the Mughal conquest." },
-
-    { "polityId": "gujarat-sultanate", "from": 1391, "to": 1573,
-      "extent": { "region": "sa-gujarat" },
-      "note": "Zafar Khan governed independently from 1391 and took the title of sultan in 1407." },
-
-    { "polityId": "mughal", "from": 1526, "to": 1556,
-      "extent": { "region": "sa-doab-punjab" },
-      "note": "Babur and Humayun held the Doab and the Punjab, and Humayun lost even that to Sher Shah between 1540 and 1555." },
-    { "polityId": "mughal", "from": 1556, "to": 1605,
-      "extent": { "union": ["sa-doab-punjab", "sa-gangetic-plain", "sa-gujarat", "sa-bengal"] },
-      "note": "Akbar's empire: Gujarat 1573, Bengal 1576, the whole northern plain." },
-    { "polityId": "mughal", "from": 1605, "to": 1707,
-      "extent": { "union": ["sa-doab-punjab", "sa-gangetic-plain", "sa-gujarat", "sa-bengal", "sa-deccan-krishna-to-tapti"] },
-      "note": "The Deccan sultanates annexed under Aurangzeb — Bijapur 1686, Golconda 1687. The far south was never held." }
-  ]
+ "region": "South Asia",
+ "sources": [
+  {
+   "title": "A History of India",
+   "author": "Hermann Kulke and Dietmar Rothermund",
+   "edition": "4th ed., Routledge"
+  },
+  {
+   "title": "The New Cambridge History of India",
+   "edition": "Cambridge University Press"
+  },
+  {
+   "title": "A History of South India",
+   "author": "K. A. Nilakanta Sastri",
+   "edition": "4th ed., Oxford University Press"
+  },
+  {
+   "title": "An Atlas of the Mughal Empire",
+   "author": "Irfan Habib",
+   "edition": "Oxford University Press"
+  }
+ ],
+ "verification": {
+  "method": "drafted",
+  "by": "claude",
+  "date": "2026-09-16"
+ },
+ "claims": [
+  {
+   "polityId": "delhi-sultanate",
+   "from": 1206,
+   "to": 1290,
+   "extent": {
+    "region": "sa-doab-punjab-not-marwar"
+   },
+   "note": "The Mamluk sultans held the Doab and the Punjab. Expansion south comes later."
+  },
+  {
+   "polityId": "delhi-sultanate",
+   "from": 1290,
+   "to": 1335,
+   "extent": {
+    "union": [
+     "sa-doab-punjab-not-marwar",
+     "sa-gangetic-plain",
+     "sa-gujarat"
+    ]
+   },
+   "note": "Khalji and early Tughlaq maximum. Gujarat taken 1299. Southern conquests were raids and short-lived tributary arrangements rather than settled territory, so they are not drawn as held."
+  },
+  {
+   "polityId": "delhi-sultanate",
+   "from": 1335,
+   "to": 1398,
+   "extent": {
+    "union": [
+     "sa-doab-punjab-not-marwar",
+     "sa-gangetic-plain"
+    ]
+   },
+   "note": "Contraction under the later Tughlaqs. Bengal gone 1352, the Deccan gone 1347, Gujarat and Malwa going."
+  },
+  {
+   "polityId": "delhi-sultanate",
+   "from": 1398,
+   "to": 1451,
+   "extent": {
+    "region": "sa-delhi-core"
+   },
+   "note": "Timur sacked Delhi in 1398 and the sultanate did not recover under the Sayyids. Contemporaries joked that their writ ran from Delhi to Palam. Drawn as the capital and the upper doab; the Punjab governors, Jaunpur, Malwa and Gujarat were gone."
+  },
+  {
+   "polityId": "delhi-sultanate",
+   "from": 1451,
+   "to": 1526,
+   "extent": {
+    "region": "sa-doab-punjab-not-marwar"
+   },
+   "note": "Bahlul Lodi rebuilt the sultanate from Sirhind, took Jaunpur in 1479, and Sikandar Lodi pushed into Bihar. The Lodis held the Punjab and the plain again until Panipat."
+  },
+  {
+   "polityId": "mughal",
+   "from": 1526,
+   "to": 1556,
+   "extent": {
+    "region": "sa-doab-punjab"
+   },
+   "note": "Babur and Humayun held the Doab and the Punjab, and Humayun lost even that to Sher Shah between 1540 and 1555."
+  },
+  {
+   "polityId": "mughal",
+   "from": 1556,
+   "to": 1605,
+   "extent": {
+    "union": [
+     "sa-doab-punjab",
+     "sa-gangetic-plain",
+     "sa-gujarat",
+     "sa-bengal"
+    ]
+   },
+   "note": "Akbar's empire: Gujarat 1573, Bengal 1576, the whole northern plain."
+  },
+  {
+   "polityId": "mughal",
+   "from": 1605,
+   "to": 1686,
+   "extent": {
+    "union": [
+     "sa-doab-punjab",
+     "sa-gangetic-plain",
+     "sa-gujarat",
+     "sa-bengal"
+    ]
+   },
+   "note": "Jahangir and Shah Jahan held the northern plain. The Deccan war ran for decades without the sultanates falling, so their ground is not drawn as Mughal here.",
+   "replaces": [
+    {
+     "name": "Bengal",
+     "reason": "Akbar annexed Bengal in 1576 and it was a Mughal suba throughout this period. The boundary source goes on drawing it as an independent state."
+    },
+    {
+     "name": "Orissa",
+     "reason": "Annexed by Akbar in 1592 and governed from Bengal. The source still draws it separately."
+    }
+   ]
+  },
+  {
+   "polityId": "mughal",
+   "from": 1686,
+   "to": 1707,
+   "extent": {
+    "union": [
+     "sa-doab-punjab",
+     "sa-gangetic-plain",
+     "sa-gujarat",
+     "sa-bengal",
+     "sa-deccan-krishna-to-tapti"
+    ]
+   },
+   "note": "Bijapur fell in 1686 and Golconda in 1687, bringing the Deccan plateau under Aurangzeb. The far south below the Krishna was never held.",
+   "replaces": [
+    {
+     "name": "Bengal",
+     "reason": "A Mughal suba since 1576."
+    },
+    {
+     "name": "Orissa",
+     "reason": "A Mughal suba since 1592."
+    },
+    {
+     "name": "Bijapur",
+     "reason": "Annexed by Aurangzeb in 1686."
+    },
+    {
+     "name": "Golkonda",
+     "reason": "Annexed by Aurangzeb in 1687."
+    },
+    {
+     "name": "Bidar",
+     "reason": "Taken by Bijapur in 1619 and Mughal with it in 1686."
+    }
+   ]
+  },
+  {
+   "polityId": "vijayanagara",
+   "from": 1336,
+   "to": 1565,
+   "extent": {
+    "region": "sa-peninsula-south-of-krishna"
+   },
+   "note": "The peninsula south of the Krishna and Tungabhadra. The doab between the two rivers was contested with the Bahmanis throughout and is not separately drawn.",
+   "replaces": [
+    {
+     "name": "Chola Empire",
+     "reason": "The Chola line ended in 1279, when the Pandyas took Gangaikonda Cholapuram. The boundary source carries the label into the fifteenth century; this ground was Vijayanagara's from the 1340s."
+    },
+    {
+     "name": "Pandya state",
+     "reason": "The Pandya kingdom broke apart after the Madurai sultanate seized its capital in 1335, and Vijayanagara took Madurai in 1378. The source still draws a Pandya state in 1400."
+    }
+   ]
+  },
+  {
+   "polityId": "vijayanagara",
+   "from": 1565,
+   "to": 1646,
+   "extent": {
+    "region": "sa-peninsula-south-of-krishna"
+   },
+   "note": "After Talikota the empire survived at Penukonda and Chandragiri with its nayakas increasingly independent. Drawn as the same ground because the successor nayaka states are not yet modelled separately."
+  },
+  {
+   "polityId": "bahmani",
+   "from": 1347,
+   "to": 1490,
+   "extent": {
+    "region": "sa-deccan-krishna-to-tapti"
+   },
+   "note": "Broke from Delhi in 1347 and held the Deccan between the Krishna and the Tapti until the five successor sultanates divided it."
+  },
+  {
+   "polityId": "bengal-sultanate",
+   "from": 1352,
+   "to": 1576,
+   "extent": {
+    "region": "sa-bengal"
+   },
+   "note": "Independent of Delhi from Ilyas Shah's unification until the Mughal conquest."
+  },
+  {
+   "polityId": "gujarat-sultanate",
+   "from": 1391,
+   "to": 1573,
+   "extent": {
+    "region": "sa-gujarat"
+   },
+   "note": "Zafar Khan governed independently from 1391 and took the title of sultan in 1407."
+  },
+  {
+   "polityId": "malwa-sultanate",
+   "from": 1392,
+   "to": 1562,
+   "extent": {
+    "region": "sa-malwa"
+   },
+   "note": "Independent of Delhi from 1392 until Akbar annexed it."
+  },
+  {
+   "polityId": "jaunpur",
+   "from": 1394,
+   "to": 1479,
+   "extent": {
+    "region": "sa-eastern-plain"
+   },
+   "note": "The Sharqi sultanate held Awadh and the eastern plain from Delhi's collapse until the Lodis took it back."
+  },
+  {
+   "polityId": "eastern-ganga",
+   "from": 1078,
+   "to": 1434,
+   "extent": {
+    "region": "sa-orissa"
+   },
+   "note": "The Eastern Gangas held the same coast before the Gajapatis, and were never under Delhi."
+  },
+  {
+   "polityId": "gajapati",
+   "from": 1434,
+   "to": 1541,
+   "extent": {
+    "region": "sa-orissa"
+   },
+   "note": "The Gajapatis held the Kalinga coast from the Mahanadi toward the Godavari."
+  },
+  {
+   "polityId": "mewar",
+   "from": 1326,
+   "to": 1818,
+   "extent": {
+    "region": "sa-mewar"
+   },
+   "note": "The Sisodia state in the southern Aravallis — Chittor until 1568, then Udaipur. Marwar, Amber, Bikaner and Jaisalmer were separate Rajput states and are left to the boundary source rather than folded into this one."
+  },
+  {
+   "polityId": "sindh-samma",
+   "from": 1351,
+   "to": 1524,
+   "extent": {
+    "region": "sa-sindh"
+   },
+   "note": "The Sammas ruled the lower Indus from Thatta, independent of Delhi."
+  }
+ ],
+ "note": "Claims are ordered broad to specific. A later claim cuts every earlier one it overlaps, so the file order states which power holds contested ground.",
+ "scope": {
+  "region": "sa-authority",
+  "from": 1206,
+  "to": 1707,
+  "note": "The ground and period this file speaks for. It is a statement of scope, not a licence: where no claim here covers the ground, the boundary source stands. An earlier version treated it as authority and erased everything the source drew inside it, which removed Ahmadnagar, Berar, Bidar, the Gond kingdoms, the Rajput states and the Sinhalese kingdoms from 1492."
+ }
 }

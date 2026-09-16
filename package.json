@@ -19,7 +19,11 @@
     "canonical:promote": "node scripts/canonical/promote.mjs",
     "audit:geometry": "node scripts/geometry/audit.mjs",
     "audit:precision": "node scripts/geometry/precision.mjs",
-    "audit:capitals": "node scripts/geometry/capitals.mjs"
+    "audit:capitals": "node scripts/geometry/capitals.mjs",
+    "bake:claims": "node scripts/canonical/bake.mjs",
+    "strip:empty": "node scripts/geometry/strip-empty.mjs",
+    "build:atlas:borders": "node scripts/canonical/bake.mjs && node scripts/geometry/strip-empty.mjs",
+    "verify": "node scripts/canonical/validate.mjs && node tests/history/anchors.mjs && node scripts/audit/check-borders.mjs && tsc --noEmit"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",
