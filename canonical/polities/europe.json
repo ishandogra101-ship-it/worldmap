@@ -60,7 +60,8 @@
       "mapsTo": [
         "Macedon",
         "Macedonia",
-        "Macedonian Empire"
+        "Macedonian Empire",
+        "Greek city-states@-808..-323"
       ]
     },
     {
@@ -86,7 +87,8 @@
         "roman-empire"
       ],
       "mapsTo": [
-        "Roman Republic"
+        "Roman Republic",
+        "Rome@-509..-27"
       ]
     },
     {
@@ -119,7 +121,8 @@
       ],
       "mapsTo": [
         "Roman Empire",
-        "Western Roman Empire"
+        "Western Roman Empire",
+        "Rome@-27..476"
       ]
     },
     {
@@ -198,7 +201,8 @@
       ],
       "mapsTo": [
         "Holy Roman Empire",
-        "HRE"
+        "HRE",
+        "Germany@962..1806"
       ]
     },
     {
@@ -247,7 +251,9 @@
       ],
       "mapsTo": [
         "England",
-        "Kingdom of England"
+        "Kingdom of England",
+        "England and Ireland@1541..1707",
+        "English territory@927..1707"
       ]
     },
     {
@@ -494,7 +500,8 @@
         "russian-empire"
       ],
       "mapsTo": [
-        "Tsardom of Russia"
+        "Tsardom of Russia",
+        "Russia@1547..1721"
       ]
     },
     {
@@ -516,7 +523,8 @@
         "russia-tsardom"
       ],
       "mapsTo": [
-        "Russian Empire"
+        "Russian Empire",
+        "Russia@1721..1917"
       ]
     },
     {
@@ -548,6 +556,15 @@
         "Austrian Empire",
         "Habsburg",
         "Austria-Hungary"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "hre",
+          "from": 1526,
+          "to": 1806,
+          "kind": "personal-union",
+          "note": "The Habsburgs held the imperial title; the monarchy and the Empire are distinct polities."
+        }
       ]
     },
     {
@@ -566,6 +583,14 @@
       "mapsTo": [
         "Prussia",
         "Kingdom of Prussia"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "hre",
+          "from": 1701,
+          "to": 1806,
+          "kind": "nominal"
+        }
       ]
     }
   ]

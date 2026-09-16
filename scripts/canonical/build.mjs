@@ -104,7 +104,7 @@ await writeFile(path.join(OUT, "polities.json"), JSON.stringify(
     id: p.id, name: p.canonicalName, alternativeNames: p.alternativeNames ?? [],
     type: p.type, region: p.region,
     from: p.founded.year, to: p.ended?.year ?? null,
-    capitals: p.capitals ?? [], mapsTo: p.mapsTo ?? [],
+    capitals: p.capitals ?? [], mapsTo: (p.mapsTo ?? []).map((m) => m.name),
     sources: p.sources.map((s) => [s.author, s.title, s.edition].filter(Boolean).join(", ")),
     verification: p.verification.method,
     reviewed: p.verification.date,

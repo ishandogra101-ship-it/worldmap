@@ -26,12 +26,34 @@ async function readDir(dir) {
   return out;
 }
 
+/**
+ * Names the border dataset uses for a polity, each with the years it applies.
+ *
+ * A place name belongs to different polities at different times, which is the
+ * whole subject of this project. "Persia" is the Achaemenids, then the
+ * Sasanians, then the Safavids, then the Qajars. A flat list of aliases either
+ * lets the Qajars claim every Persia back to 550 BCE, or — if the generic names
+ * are stripped to prevent that — makes the map look wrong everywhere it is
+ * actually right.
+ *
+ * So an entry may be a bare string, or "name@from..to" scoping it to a window.
+ */
+function parseMapsTo(list) {
+  return (list ?? []).map((raw) => {
+    const m = /^(.*)@(-?\d+)\.\.(-?\d+)$/.exec(raw);
+    return m
+      ? { name: m[1], from: Number(m[2]), to: Number(m[3]) }
+      : { name: raw, from: -Infinity, to: Infinity };
+  });
+}
+
 export async function loadPolities() {
   const out = [];
   for (const { file, data } of await readDir(path.join(CANONICAL, "polities"))) {
     for (const p of data.polities) {
       out.push({
         ...p,
+        mapsTo: parseMapsTo(p.mapsTo),
         region: p.region ?? data.region,
         founded: asDate(p.founded),
         ended: asDate(p.ended),
@@ -80,3 +102,17 @@ export const reignAt = (p, year) =>
   (p.reigns ?? []).find(
     (r) => year >= r.start.year && (r.end === undefined || year <= r.end.year),
   );
+
+/** Every name this polity may legitimately be drawn under in a given year. */
+export function namesAt(p, year) {
+  const out = [p.canonicalName, ...(p.alternativeNames ?? [])];
+  for (const m of p.mapsTo ?? []) {
+    if (year >= m.from && year <= m.to) out.push(m.name);
+  }
+  return out;
+}
+
+/** Who this polity answered to in a given year, if anyone. */
+export function overlordAt(p, year) {
+  return (p.subordinateTo ?? []).find((s) => year >= s.from && year <= s.to);
+}

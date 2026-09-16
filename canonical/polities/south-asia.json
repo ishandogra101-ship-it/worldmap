@@ -437,7 +437,16 @@
         "Ladakh",
         "Kashmir and Ladakh"
       ],
-      "notes": "Independent under the Namgyal dynasty through the period the border data assigns it to Punjab powers."
+      "notes": "Independent under the Namgyal dynasty through the period the border data assigns it to Punjab powers.",
+      "subordinateTo": [
+        {
+          "polityId": "british-raj",
+          "from": 1846,
+          "to": 1947,
+          "kind": "princely-state",
+          "note": "Part of Jammu and Kashmir after the Dogra conquest."
+        }
+      ]
     },
     {
       "id": "kashmir-sultanate",
@@ -516,7 +525,21 @@
       "mapsTo": [
         "Bundelkhand"
       ],
-      "notes": "A region of central India, roughly between the Yamuna and the Narmada, never a power reaching the Himalaya. The 1800 border snapshot draws it over Delhi and Agra, which is the error the audit catches."
+      "notes": "A region of central India, roughly between the Yamuna and the Narmada, never a power reaching the Himalaya. The 1800 border snapshot draws it over Delhi and Agra, which is the error the audit catches.",
+      "subordinateTo": [
+        {
+          "polityId": "mughal",
+          "from": 1577,
+          "to": 1707,
+          "kind": "vassal"
+        },
+        {
+          "polityId": "british-raj",
+          "from": 1818,
+          "to": 1947,
+          "kind": "princely-state"
+        }
+      ]
     }
   ]
 }

@@ -47,7 +47,8 @@
       ],
       "mapsTo": [
         "Srivijaya",
-        "Sri Vijaya"
+        "Sri Vijaya",
+        "Srivijaya Empire@671..1288"
       ]
     },
     {
@@ -66,7 +67,8 @@
       "mapsTo": [
         "Khmer Empire",
         "Khmer",
-        "Angkor"
+        "Angkor",
+        "Cambodia@802..1431"
       ]
     },
     {
@@ -85,7 +87,8 @@
       "mapsTo": [
         "Pagan",
         "Bagan",
-        "Pagan Kingdom"
+        "Pagan Kingdom",
+        "Burma@849..1297"
       ]
     },
     {
@@ -143,7 +146,8 @@
       ],
       "mapsTo": [
         "Ayutthaya",
-        "Ayutthaya Kingdom"
+        "Ayutthaya Kingdom",
+        "Siam@1351..1767"
       ]
     },
     {
@@ -163,7 +167,9 @@
         "ayutthaya"
       ],
       "mapsTo": [
-        "Rattanakosin"
+        "Rattanakosin",
+        "Siam@1782..1949",
+        "Thailand@1782..2026"
       ]
     },
     {
@@ -181,7 +187,9 @@
       ],
       "mapsTo": [
         "Dai Viet",
-        "Đại Việt"
+        "Đại Việt",
+        "Vietnam@968..1804",
+        "Annam@968..1804"
       ]
     },
     {
@@ -227,7 +235,8 @@
         "pagan"
       ],
       "mapsTo": [
-        "Toungoo"
+        "Toungoo",
+        "Burma@1510..1752"
       ]
     },
     {
@@ -240,7 +249,9 @@
         "toungoo"
       ],
       "mapsTo": [
-        "Konbaung"
+        "Konbaung",
+        "Burma@1752..1885",
+        "Myanmar@1752..1885"
       ]
     }
   ]

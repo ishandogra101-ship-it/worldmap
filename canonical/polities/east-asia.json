@@ -88,7 +88,8 @@
         "Zhou",
         "Zhou Dynasty",
         "Eastern Zhou",
-        "Western Zhou"
+        "Western Zhou",
+        "Zhou states@-1046..-256"
       ]
     },
     {
@@ -172,7 +173,8 @@
         "Three Kingdoms",
         "Wei",
         "Shu",
-        "Cao Wei"
+        "Cao Wei",
+        "Wu@220..280"
       ]
     },
     {
@@ -455,7 +457,8 @@
         "Ming Empire",
         "Ming Chinese Empire",
         "Ming",
-        "Ming Dynasty"
+        "Ming Dynasty",
+        "China@1368..1644"
       ]
     },
     {
@@ -482,7 +485,8 @@
       "mapsTo": [
         "Qing Empire",
         "Manchu Empire",
-        "Qing"
+        "Qing",
+        "China@1636..1912"
       ]
     },
     {
@@ -529,7 +533,8 @@
       ],
       "mapsTo": [
         "Goryeo",
-        "Koryo"
+        "Koryo",
+        "Korea@918..1392"
       ]
     },
     {
@@ -551,7 +556,8 @@
       ],
       "mapsTo": [
         "Joseon",
-        "Chosun"
+        "Chosun",
+        "Korea@1392..1897"
       ]
     },
     {
@@ -571,7 +577,8 @@
         "nara-japan"
       ],
       "mapsTo": [
-        "Yamato"
+        "Yamato",
+        "Japan@250..710"
       ]
     },
     {
@@ -593,6 +600,9 @@
       ],
       "successors": [
         "kamakura"
+      ],
+      "mapsTo": [
+        "Japan@710..1185"
       ]
     },
     {
@@ -608,7 +618,8 @@
         "ashikaga"
       ],
       "mapsTo": [
-        "Kamakura"
+        "Kamakura",
+        "Japan@1185..1333"
       ]
     },
     {
@@ -625,7 +636,8 @@
       ],
       "mapsTo": [
         "Ashikaga",
-        "Muromachi"
+        "Muromachi",
+        "Japan@1336..1573"
       ]
     },
     {
@@ -647,7 +659,8 @@
       ],
       "mapsTo": [
         "Tokugawa",
-        "Edo Japan"
+        "Edo Japan",
+        "Japan@1603..1868"
       ]
     }
   ]

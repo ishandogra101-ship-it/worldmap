@@ -63,7 +63,9 @@
         }
       ],
       "mapsTo": [
-        "Old Babylonian Empire"
+        "Old Babylonian Empire",
+        "Babylonia@-1894..-1595",
+        "Babylon@-1894..-1595"
       ]
     },
     {
@@ -82,7 +84,8 @@
       ],
       "mapsTo": [
         "Neo-Assyrian Empire",
-        "Assyrian Empire"
+        "Assyrian Empire",
+        "Assyria@-911..-609"
       ]
     },
     {
@@ -108,7 +111,9 @@
       ],
       "dynasty": "Achaemenid",
       "mapsTo": [
-        "Achaemenid Empire"
+        "Achaemenid Empire",
+        "Persia@-550..-330",
+        "Persian Empire@-550..-330"
       ]
     },
     {
@@ -177,7 +182,8 @@
       ],
       "mapsTo": [
         "Sasanian Empire",
-        "Sassanid Empire"
+        "Sassanid Empire",
+        "Persia@224..651"
       ]
     },
     {
@@ -198,7 +204,8 @@
       ],
       "mapsTo": [
         "Rashidun Caliphate",
-        "Rashidun"
+        "Rashidun",
+        "Caliphate@632..661"
       ]
     },
     {
@@ -223,7 +230,8 @@
       ],
       "mapsTo": [
         "Umayyad Caliphate",
-        "Umayyad"
+        "Umayyad",
+        "Caliphate@661..750"
       ]
     },
     {
@@ -249,7 +257,8 @@
       ],
       "mapsTo": [
         "Abbasid Caliphate",
-        "Abbasid"
+        "Abbasid",
+        "Caliphate@750..1258"
       ]
     },
     {
@@ -268,7 +277,8 @@
       ],
       "mapsTo": [
         "Fatimid Caliphate",
-        "Fatimids"
+        "Fatimids",
+        "Egypt@969..1171"
       ]
     },
     {
@@ -330,7 +340,8 @@
       "mapsTo": [
         "Mamluk",
         "Mamluk Sultanate",
-        "Mamluks"
+        "Mamluks",
+        "Egypt@1250..1517"
       ]
     },
     {
@@ -477,7 +488,8 @@
       "dynasty": "Safavid",
       "mapsTo": [
         "Safavid Empire",
-        "Safavids"
+        "Safavids",
+        "Persia@1501..1736"
       ]
     },
     {
@@ -549,7 +561,8 @@
       "dynasty": "Osman",
       "mapsTo": [
         "Ottoman Empire",
-        "Ottoman"
+        "Ottoman",
+        "Turkey@1299..1922"
       ]
     },
     {
@@ -567,7 +580,9 @@
       ],
       "dynasty": "Qajar",
       "mapsTo": [
-        "Qajar"
+        "Qajar",
+        "Persia@1789..1925",
+        "Iran@1789..1925"
       ]
     }
   ]

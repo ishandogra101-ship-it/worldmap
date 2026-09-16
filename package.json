@@ -18,7 +18,8 @@
     "build:atlas": "node scripts/canonical/build.mjs",
     "canonical:promote": "node scripts/canonical/promote.mjs",
     "audit:geometry": "node scripts/geometry/audit.mjs",
-    "audit:precision": "node scripts/geometry/precision.mjs"
+    "audit:precision": "node scripts/geometry/precision.mjs",
+    "audit:capitals": "node scripts/geometry/capitals.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

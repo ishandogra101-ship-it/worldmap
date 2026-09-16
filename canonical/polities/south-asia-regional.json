@@ -1,0 +1,673 @@
+{
+  "region": "South Asia",
+  "sources": [
+    {
+      "title": "The New Cambridge History of India",
+      "edition": "Cambridge University Press, multi-volume"
+    },
+    {
+      "title": "A History of India",
+      "author": "Hermann Kulke and Dietmar Rothermund",
+      "edition": "4th ed., Routledge"
+    },
+    {
+      "title": "The Cambridge Economic History of India, Vol. 1: c.1200–c.1750",
+      "author": "Tapan Raychaudhuri and Irfan Habib (eds.)",
+      "edition": "Cambridge University Press"
+    },
+    {
+      "title": "An Atlas of the Mughal Empire",
+      "author": "Irfan Habib",
+      "edition": "Oxford University Press"
+    },
+    {
+      "title": "A History of South India",
+      "author": "K. A. Nilakanta Sastri",
+      "edition": "4th ed., Oxford University Press"
+    }
+  ],
+  "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-16"
+  },
+  "polities": [
+    {
+      "id": "yadava",
+      "canonicalName": "Seuna (Yadava) dynasty",
+      "type": "kingdom",
+      "founded": 1187,
+      "ended": {
+        "year": 1317,
+        "note": "Annexed by the Khalji sultanate of Delhi."
+      },
+      "capitals": [
+        {
+          "name": "Devagiri",
+          "lng": 75.32,
+          "lat": 19.94
+        }
+      ],
+      "mapsTo": [
+        "Yadava",
+        "Seuna",
+        "Devagiri"
+      ]
+    },
+    {
+      "id": "kakatiya",
+      "canonicalName": "Kakatiya dynasty",
+      "type": "kingdom",
+      "founded": 1163,
+      "ended": {
+        "year": 1323,
+        "note": "Warangal falls to Ulugh Khan for Delhi."
+      },
+      "capitals": [
+        {
+          "name": "Warangal",
+          "lng": 79.59,
+          "lat": 17.98
+        }
+      ],
+      "mapsTo": [
+        "Kakatiya",
+        "Warangal"
+      ]
+    },
+    {
+      "id": "hoysala",
+      "canonicalName": "Hoysala Empire",
+      "type": "kingdom",
+      "founded": 1026,
+      "ended": 1343,
+      "capitals": [
+        {
+          "name": "Dwarasamudra",
+          "lng": 76.2,
+          "lat": 13.21
+        }
+      ],
+      "successors": [
+        "vijayanagara"
+      ],
+      "mapsTo": [
+        "Hoysala",
+        "Hoysalas"
+      ]
+    },
+    {
+      "id": "pandya",
+      "canonicalName": "Pandya dynasty",
+      "type": "kingdom",
+      "founded": {
+        "year": 1190,
+        "note": "The later Pandya revival; the Pandya name reaches back to antiquity."
+      },
+      "ended": 1345,
+      "capitals": [
+        {
+          "name": "Madurai",
+          "lng": 78.12,
+          "lat": 9.93
+        }
+      ],
+      "mapsTo": [
+        "Pandya",
+        "Pandya state",
+        "Pandyas"
+      ]
+    },
+    {
+      "id": "madurai-sultanate",
+      "canonicalName": "Madurai Sultanate",
+      "type": "sultanate",
+      "founded": 1335,
+      "ended": {
+        "year": 1378,
+        "note": "Conquered by Vijayanagara."
+      },
+      "capitals": [
+        {
+          "name": "Madurai",
+          "lng": 78.12,
+          "lat": 9.93
+        }
+      ],
+      "predecessors": [
+        "pandya"
+      ],
+      "successors": [
+        "vijayanagara"
+      ],
+      "mapsTo": [
+        "Madurai Sultanate",
+        "Ma'bar"
+      ]
+    },
+    {
+      "id": "bengal-sultanate",
+      "canonicalName": "Bengal Sultanate",
+      "type": "sultanate",
+      "founded": {
+        "year": 1352,
+        "note": "Ilyas Shah unites Bengal, independent of Delhi."
+      },
+      "ended": {
+        "year": 1576,
+        "note": "Mughal conquest at Rajmahal."
+      },
+      "capitals": [
+        {
+          "name": "Gaur",
+          "lng": 88.14,
+          "lat": 24.87
+        },
+        {
+          "name": "Pandua",
+          "lng": 88.16,
+          "lat": 25.13,
+          "to": 1450
+        }
+      ],
+      "mapsTo": [
+        "Bengal",
+        "Bengal Sultanate",
+        "Gauda"
+      ],
+      "notes": "Independent of Delhi for over two centuries. The 1400 snapshot draws Gaur as the Sultanate of Delhi."
+    },
+    {
+      "id": "jaunpur",
+      "canonicalName": "Jaunpur Sultanate",
+      "type": "sultanate",
+      "founded": {
+        "year": 1394,
+        "note": "Khwaja Jahan declares independence as Delhi collapses."
+      },
+      "ended": {
+        "year": 1479,
+        "note": "Absorbed by the Lodis of Delhi."
+      },
+      "capitals": [
+        {
+          "name": "Jaunpur",
+          "lng": 82.68,
+          "lat": 25.75
+        }
+      ],
+      "mapsTo": [
+        "Jaunpur",
+        "Jaunpur Sultanate",
+        "Sharqi"
+      ]
+    },
+    {
+      "id": "gujarat-sultanate",
+      "canonicalName": "Gujarat Sultanate",
+      "type": "sultanate",
+      "founded": {
+        "year": 1407,
+        "range": [
+          1391,
+          1407
+        ],
+        "note": "Zafar Khan governs independently from 1391 and takes the title of sultan in 1407."
+      },
+      "ended": {
+        "year": 1573,
+        "note": "Mughal conquest under Akbar."
+      },
+      "capitals": [
+        {
+          "name": "Ahmedabad",
+          "lng": 72.58,
+          "lat": 23.03,
+          "from": 1411
+        },
+        {
+          "name": "Patan",
+          "lng": 72.13,
+          "lat": 23.85,
+          "to": 1411
+        }
+      ],
+      "mapsTo": [
+        "Gujarat",
+        "Gujarat Sultanate"
+      ]
+    },
+    {
+      "id": "malwa-sultanate",
+      "canonicalName": "Malwa Sultanate",
+      "type": "sultanate",
+      "founded": 1392,
+      "ended": {
+        "year": 1562,
+        "note": "Mughal annexation."
+      },
+      "capitals": [
+        {
+          "name": "Mandu",
+          "lng": 75.4,
+          "lat": 22.34,
+          "from": 1435
+        },
+        {
+          "name": "Dhar",
+          "lng": 75.3,
+          "lat": 22.6,
+          "to": 1435
+        }
+      ],
+      "mapsTo": [
+        "Malwa",
+        "Malwa Sultanate",
+        "Mandu"
+      ]
+    },
+    {
+      "id": "gajapati",
+      "canonicalName": "Gajapati Kingdom",
+      "type": "kingdom",
+      "founded": 1434,
+      "ended": 1541,
+      "capitals": [
+        {
+          "name": "Cuttack",
+          "lng": 85.88,
+          "lat": 20.46
+        }
+      ],
+      "mapsTo": [
+        "Gajapati",
+        "Orissa",
+        "Odisha",
+        "Kalinga"
+      ]
+    },
+    {
+      "id": "eastern-ganga",
+      "canonicalName": "Eastern Ganga dynasty",
+      "type": "kingdom",
+      "founded": 1078,
+      "ended": 1434,
+      "capitals": [
+        {
+          "name": "Cuttack",
+          "lng": 85.88,
+          "lat": 20.46
+        }
+      ],
+      "successors": [
+        "gajapati"
+      ],
+      "mapsTo": [
+        "Eastern Ganga",
+        "Kalinga",
+        "Orissa"
+      ]
+    },
+    {
+      "id": "mewar",
+      "canonicalName": "Kingdom of Mewar",
+      "type": "kingdom",
+      "founded": 734,
+      "ended": {
+        "year": 1818,
+        "note": "Became a British protected state."
+      },
+      "capitals": [
+        {
+          "name": "Chittorgarh",
+          "lng": 74.63,
+          "lat": 24.88,
+          "to": 1559
+        },
+        {
+          "name": "Udaipur",
+          "lng": 73.71,
+          "lat": 24.58,
+          "from": 1559
+        }
+      ],
+      "dynasty": "Sisodia",
+      "mapsTo": [
+        "Mewar",
+        "Udaipur",
+        "Chittor"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "mughal",
+          "from": 1615,
+          "to": 1707,
+          "kind": "vassal",
+          "note": "Submitted under Rana Amar Singh I after decades of resistance — later than any other Rajput house."
+        },
+        {
+          "polityId": "british-raj",
+          "from": 1818,
+          "to": 1947,
+          "kind": "princely-state"
+        }
+      ]
+    },
+    {
+      "id": "marwar",
+      "canonicalName": "Kingdom of Marwar",
+      "type": "kingdom",
+      "founded": 1226,
+      "ended": 1949,
+      "capitals": [
+        {
+          "name": "Jodhpur",
+          "lng": 73.02,
+          "lat": 26.29,
+          "from": 1459
+        },
+        {
+          "name": "Mandore",
+          "lng": 73.0,
+          "lat": 26.35,
+          "to": 1459
+        }
+      ],
+      "dynasty": "Rathore",
+      "mapsTo": [
+        "Marwar",
+        "Jodhpur"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "mughal",
+          "from": 1583,
+          "to": 1707,
+          "kind": "vassal",
+          "note": "Rathore service to the Mughals from Akbar's reign."
+        },
+        {
+          "polityId": "british-raj",
+          "from": 1818,
+          "to": 1947,
+          "kind": "princely-state"
+        }
+      ]
+    },
+    {
+      "id": "ahmadnagar",
+      "canonicalName": "Ahmadnagar Sultanate",
+      "type": "sultanate",
+      "founded": 1490,
+      "ended": {
+        "year": 1636,
+        "note": "Absorbed by the Mughals."
+      },
+      "capitals": [
+        {
+          "name": "Ahmadnagar",
+          "lng": 74.75,
+          "lat": 19.09
+        }
+      ],
+      "predecessors": [
+        "bahmani"
+      ],
+      "mapsTo": [
+        "Ahmadnagar",
+        "Ahmednagar",
+        "Nizam Shahi"
+      ]
+    },
+    {
+      "id": "bijapur",
+      "canonicalName": "Bijapur Sultanate",
+      "type": "sultanate",
+      "founded": 1490,
+      "ended": {
+        "year": 1686,
+        "note": "Taken by Aurangzeb."
+      },
+      "capitals": [
+        {
+          "name": "Bijapur",
+          "lng": 75.71,
+          "lat": 16.83
+        }
+      ],
+      "predecessors": [
+        "bahmani"
+      ],
+      "mapsTo": [
+        "Bijapur",
+        "Adil Shahi"
+      ]
+    },
+    {
+      "id": "golconda",
+      "canonicalName": "Golconda Sultanate",
+      "type": "sultanate",
+      "founded": 1512,
+      "ended": {
+        "year": 1687,
+        "note": "Taken by Aurangzeb."
+      },
+      "capitals": [
+        {
+          "name": "Golconda",
+          "lng": 78.4,
+          "lat": 17.38
+        },
+        {
+          "name": "Hyderabad",
+          "lng": 78.47,
+          "lat": 17.38,
+          "from": 1591
+        }
+      ],
+      "predecessors": [
+        "bahmani"
+      ],
+      "mapsTo": [
+        "Golconda",
+        "Qutb Shahi",
+        "Golkonda"
+      ]
+    },
+    {
+      "id": "berar",
+      "canonicalName": "Berar Sultanate",
+      "type": "sultanate",
+      "founded": 1490,
+      "ended": 1572,
+      "capitals": [
+        {
+          "name": "Achalpur",
+          "lng": 77.51,
+          "lat": 21.26
+        }
+      ],
+      "predecessors": [
+        "bahmani"
+      ],
+      "mapsTo": [
+        "Berar",
+        "Imad Shahi"
+      ]
+    },
+    {
+      "id": "bidar",
+      "canonicalName": "Bidar Sultanate",
+      "type": "sultanate",
+      "founded": 1492,
+      "ended": 1619,
+      "capitals": [
+        {
+          "name": "Bidar",
+          "lng": 77.52,
+          "lat": 17.91
+        }
+      ],
+      "predecessors": [
+        "bahmani"
+      ],
+      "mapsTo": [
+        "Bidar",
+        "Barid Shahi"
+      ]
+    },
+    {
+      "id": "ahom",
+      "canonicalName": "Ahom Kingdom",
+      "type": "kingdom",
+      "founded": 1228,
+      "ended": {
+        "year": 1826,
+        "note": "Treaty of Yandabo; annexed by the British."
+      },
+      "capitals": [
+        {
+          "name": "Garhgaon",
+          "lng": 94.55,
+          "lat": 26.95
+        }
+      ],
+      "mapsTo": [
+        "Ahom",
+        "Assam",
+        "Ahom Kingdom"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "british-raj",
+          "from": 1826,
+          "to": 1947,
+          "kind": "protectorate"
+        }
+      ]
+    },
+    {
+      "id": "mysore",
+      "canonicalName": "Kingdom of Mysore",
+      "type": "kingdom",
+      "founded": 1399,
+      "ended": 1947,
+      "capitals": [
+        {
+          "name": "Mysore",
+          "lng": 76.64,
+          "lat": 12.3
+        },
+        {
+          "name": "Srirangapatna",
+          "lng": 76.69,
+          "lat": 12.42,
+          "from": 1610,
+          "to": 1799
+        }
+      ],
+      "mapsTo": [
+        "Mysore",
+        "Mysore (Indian princely state)"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "vijayanagara",
+          "from": 1399,
+          "to": 1565,
+          "kind": "vassal",
+          "note": "A Vijayanagara feudatory until Talikota; independent under the Wodeyars after."
+        },
+        {
+          "polityId": "british-raj",
+          "from": 1799,
+          "to": 1947,
+          "kind": "princely-state",
+          "note": "Restored under British paramountcy after Tipu Sultan's defeat."
+        }
+      ]
+    },
+    {
+      "id": "travancore",
+      "canonicalName": "Kingdom of Travancore",
+      "type": "kingdom",
+      "founded": 1729,
+      "ended": 1949,
+      "capitals": [
+        {
+          "name": "Thiruvananthapuram",
+          "lng": 76.94,
+          "lat": 8.52
+        }
+      ],
+      "mapsTo": [
+        "Travancore"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "british-raj",
+          "from": 1795,
+          "to": 1947,
+          "kind": "princely-state"
+        }
+      ]
+    },
+    {
+      "id": "sindh-samma",
+      "canonicalName": "Samma dynasty of Sindh",
+      "type": "kingdom",
+      "founded": 1351,
+      "ended": 1524,
+      "capitals": [
+        {
+          "name": "Thatta",
+          "lng": 67.92,
+          "lat": 24.75
+        }
+      ],
+      "mapsTo": [
+        "Sindh",
+        "Samma",
+        "Thatta"
+      ]
+    },
+    {
+      "id": "hyderabad-state",
+      "canonicalName": "Hyderabad State",
+      "type": "state",
+      "founded": {
+        "year": 1724,
+        "note": "Asaf Jah I establishes an effectively independent Nizamate."
+      },
+      "ended": 1948,
+      "capitals": [
+        {
+          "name": "Hyderabad",
+          "lng": 78.47,
+          "lat": 17.38
+        }
+      ],
+      "dynasty": "Asaf Jahi",
+      "mapsTo": [
+        "Hyderabad",
+        "Nizam",
+        "Nizam's Dominions"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "mughal",
+          "from": 1724,
+          "to": 1748,
+          "kind": "nominal",
+          "note": "The Nizams ruled independently while acknowledging Mughal suzerainty."
+        },
+        {
+          "polityId": "british-raj",
+          "from": 1798,
+          "to": 1948,
+          "kind": "princely-state"
+        }
+      ]
+    }
+  ]
+}

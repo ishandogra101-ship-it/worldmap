@@ -37,7 +37,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadPolities, existsAt } from "../canonical/load.mjs";
+import { loadPolities, existsAt, namesAt } from "../canonical/load.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DIR = path.join(ROOT, "public", "data", "borders");
@@ -151,12 +151,10 @@ for (const [name, list] of byName) {
 // ---- 3. anachronism against the canonical layer -----------------------------
 const canon = await loadPolities();
 const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-const canonByName = new Map();
-for (const p of canon) {
-  for (const n of [p.canonicalName, ...(p.alternativeNames ?? []), ...(p.mapsTo ?? [])]) {
-    canonByName.set(norm(n), p);
-  }
-}
+// A name is resolved against the year it appears in, so "Persia" in 300 CE
+// reaches the Sasanians rather than whichever polity claimed the alias last.
+const resolve = (name, year) =>
+  canon.find((p) => namesAt(p, year).some((n) => norm(n) === norm(name)));
 const anachronisms = [];
 for (const { year, fc } of snapshots) {
   const seen = new Set();
@@ -164,7 +162,7 @@ for (const { year, fc } of snapshots) {
     const name = f.properties.NAME;
     if (!name || seen.has(name)) continue;
     seen.add(name);
-    const p = canonByName.get(norm(name));
+    const p = resolve(name, year) ?? canon.find((q) => namesAt(q, q.founded.year).some((n) => norm(n) === norm(name)));
     if (!p || existsAt(p, year)) continue;
     anachronisms.push({
       year, name, polity: p.canonicalName,

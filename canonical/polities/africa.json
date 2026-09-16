@@ -41,7 +41,9 @@
         }
       ],
       "mapsTo": [
-        "Old Kingdom"
+        "Old Kingdom",
+        "Egypt@-2686..-2181",
+        "Ancient Egypt@-2686..-2181"
       ]
     },
     {
@@ -52,7 +54,9 @@
       "founded": -2055,
       "ended": -1650,
       "mapsTo": [
-        "Middle Kingdom"
+        "Middle Kingdom",
+        "Egypt@-2055..-1650",
+        "Ancient Egypt@-2055..-1650"
       ]
     },
     {
@@ -70,7 +74,9 @@
         }
       ],
       "mapsTo": [
-        "New Kingdom"
+        "New Kingdom",
+        "Egypt@-1550..-1069",
+        "Ancient Egypt@-1550..-1069"
       ]
     },
     {
@@ -96,7 +102,8 @@
       "mapsTo": [
         "Kush",
         "Kingdom of Kush",
-        "Meroe"
+        "Meroe",
+        "Nubia@-1070..350"
       ]
     },
     {
@@ -141,7 +148,8 @@
         "ethiopia-solomonic"
       ],
       "mapsTo": [
-        "Zagwe"
+        "Zagwe",
+        "Ethiopia@1137..1270"
       ]
     },
     {
@@ -173,7 +181,9 @@
         "ethiopia-zagwe"
       ],
       "mapsTo": [
-        "Ethiopian Empire"
+        "Ethiopian Empire",
+        "Ethiopia@1270..1974",
+        "Abyssinia@1270..1974"
       ]
     },
     {
@@ -393,7 +403,8 @@
       ],
       "mapsTo": [
         "Kongo",
-        "Kingdom of Kongo"
+        "Kingdom of Kongo",
+        "Congo@1390..1914"
       ]
     },
     {
@@ -413,7 +424,8 @@
         "mutapa"
       ],
       "mapsTo": [
-        "Great Zimbabwe"
+        "Great Zimbabwe",
+        "Zimbabwe@1220..1450"
       ]
     },
     {

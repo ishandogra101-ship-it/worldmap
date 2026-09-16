@@ -95,6 +95,29 @@ export interface Polity {
   dynasty?: string;
   predecessors?: string[];
   successors?: string[];
+  /**
+   * Periods when this polity was under another's authority.
+   *
+   * The dimension the whole system was missing, and the reason the capital
+   * test could not tell a real error from a correct one. Mysore's capital
+   * drawn as Vijayanagara between 1399 and 1565 is right — Mysore was its
+   * vassal. Mewar's capital drawn as the Sultanate of Delhi is wrong, because
+   * Mewar never submitted to it. Both look identical to a test that knows only
+   * which polities existed.
+   *
+   * `kind` matters because these are not the same relationship. A tributary
+   * sent goods and kept its own government; a vassal owed service; a princely
+   * state under paramountcy ran its internal affairs while another power held
+   * its foreign policy. An atlas that flattens them into "part of" loses most
+   * of how empires actually worked.
+   */
+  subordinateTo?: {
+    polityId: string;
+    from: Year;
+    to: Year;
+    kind: "vassal" | "tributary" | "protectorate" | "princely-state" | "personal-union" | "nominal";
+    note?: string;
+  }[];
   /** names this polity is known by in the borders dataset, for reconciliation */
   mapsTo?: string[];
   sources: SourceRef[];
