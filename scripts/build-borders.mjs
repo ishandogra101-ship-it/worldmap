@@ -84,7 +84,14 @@ async function buildBorders() {
     const cmd = [
       `-i input.geojson`,
       `-simplify visvalingam 60% keep-shapes`,
-      `-filter-fields NAME,SUBJECTO,PARTOF`,
+      // BORDERPRECISION is the source's own statement about each polygon: 1
+      // approximate, 2 moderately precise, 3 determined by international law.
+      // Stripping it was the single worst decision in this pipeline. It meant
+      // the atlas drew a boundary the compilers had marked "approximate" with
+      // exactly the same crisp edge as one fixed by treaty, and had no way to
+      // know the difference. For 100 CE the source marks 440 of 440 polygons
+      // approximate; for 600 CE, 204 of 204.
+      `-filter-fields NAME,SUBJECTO,PARTOF,BORDERPRECISION`,
       `-o out.geojson format=geojson precision=0.001`,
     ].join(" ");
     const result = await run(cmd, "input.geojson", raw);
