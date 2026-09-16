@@ -23,7 +23,8 @@
     "bake:claims": "node scripts/canonical/bake.mjs",
     "strip:empty": "node scripts/geometry/strip-empty.mjs",
     "build:atlas:borders": "node scripts/canonical/bake.mjs && node scripts/geometry/strip-empty.mjs",
-    "verify": "node scripts/canonical/validate.mjs && node tests/history/anchors.mjs && node scripts/audit/check-borders.mjs && tsc --noEmit"
+    "verify": "node scripts/canonical/validate.mjs && node tests/history/anchors.mjs && node scripts/audit/check-borders.mjs && tsc --noEmit",
+    "verify:aliases": "node scripts/canonical/verify-aliases.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

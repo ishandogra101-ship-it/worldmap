@@ -202,7 +202,8 @@
       ],
       "mapsTo": [
         "Pallava",
-        "Pallavas"
+        "Pallavas",
+        "Pallava state"
       ]
     },
     {
@@ -297,7 +298,9 @@
         {
           "name": "Gulbarga",
           "lng": 76.83,
-          "lat": 17.33
+          "lat": 17.33,
+          "to": 1425,
+          "note": "Ahmad Shah I moved the seat to Bidar; the Bidar capital record already carries 1425."
         },
         {
           "name": "Bidar",
@@ -496,7 +499,8 @@
       "mapsTo": [
         "British Raj",
         "British India",
-        "British East India Company"
+        "British East India Company",
+        "India@1858..1947"
       ]
     },
     {

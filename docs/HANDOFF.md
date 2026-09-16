@@ -76,40 +76,68 @@ becomes another test for free.
 ## Where the numbers stand
 
 ```
-capital test    831 checks: 526 right, 42 correctly showing an overlord,
-                180 showing a different polity, 83 drawing nothing
-                South Asia 61%  West Asia 48%  Americas 61%  Europe 68%
-                Africa 76%  East Asia 81%  SE Asia 86%  Central Asia 100%
+capital test    833 checks: 564 right, 55 correctly showing an overlord,
+                22 under a group label, 109 showing a different polity,
+                83 drawing nothing
+                West Asia 66%  Americas 73%  South Asia 73%  Europe 77%
+                Africa 78%  East Asia 87%  SE Asia 88%  N Eurasia 100%
+                Central Asia 100%
 border audit    32/39, all 7 failures carrying a correction the app shows
 anchors         20/20
-canonical       170 polities, 36 people, 206 records — ALL still `drafted`
+canonical       172 polities, 36 people, 208 records — ALL still `drafted`
 claims          20, South Asia only
 ```
+
+The 109 is the number to watch. It was 180 before the alias pass, and the 71 that
+moved were correct maps the test had been scoring as errors. No geometry changed.
 
 `drafted` means the assistant wrote it from training recall and **nobody opened a
 source**. Zero records are `cited`. That is the single largest weakness.
 
 ## What to do next, in order
 
-**1. The capital test is crying wolf, and that hides the real errors.**
-A large share of the 180 failures are name-matching gaps rather than map errors:
-Cairo drawn as "Mamluke Sultanate", Tikal as "Maya states", Berlin as "German
-Empire" in 1900. All correct maps, all counted as failures. Fixing the alias
-matching costs nothing in geometry and makes every later measurement honest.
+**1. DONE — the capital test no longer cries wolf.**
+109 real failures, down from 180. What moved and why is in
+`docs/CAPITAL-TEST.md`. Three mechanisms now separate the kinds of not-an-error,
+and the distinction between them is the point:
 
-**2. Use the network access that was just granted.**
-The environment's policy was `Trusted` until 2026-09-16 and blocked everything
-below. Verify what is reachable before planning around it:
+- an **alias** (`mapsTo`) is another name for the same polity, and the evidence
+  for each new one is a Wikipedia redirect that `npm run verify:aliases` re-checks;
+- a **collective** (`canonical/collectives.json`) is a group label covering
+  several polities, counted as a pass and still reported, because it marks
+  exactly where the claim layer has work;
+- an **overlord** (`subordinateTo`) was already there and mostly just needed the
+  overlord's own name filling in. Four princely states failed at 1945 only
+  because "India" was missing from the British Raj's `mapsTo`.
 
-- **Wikipedia + Wikidata** — promote `drafted` records to `cited` with real
-  locators, and finish the bulk ruler import that stalled.
-- **Overpass / OpenStreetMap** — replace the hand-traced rivers in
-  `canonical/regions/*.json`. Every line there is roughly ten points typed from
-  memory. The cost of that is measured: the traced Krishna ran half a degree
-  north of the real river and put Bijapur city on the wrong side of its own
-  frontier.
-- **Pleiades, World Historical Gazetteer** — pre-1000 CE places, the thinnest
-  part of the atlas.
+An ethnographic label is none of these. "Eastern North American hunter-gatherers"
+over Cahokia stays a failure, and should.
+
+**2. Use the network. Here is what actually answers, checked 2026-09-16.**
+
+- **Wikipedia** — works, both REST and the action API. It returns 429 without a
+  real User-Agent, which looks like a block and is not one.
+- **Wikidata entity API** (`wbgetentities`, `wbsearchentities`) — works.
+- **Wikidata SPARQL** — rate-limited to **one request a minute**, and the error
+  body blames an active WDQS outage rather than anything here. Bulk SPARQL
+  harvesting is off the table; loop the entity API instead.
+- **Overpass** — one mirror answers, `maps.mail.ru/osm/tools/overpass`. It
+  returned the Krishna as 49 ways and 4,679 coordinates in 9 seconds.
+  `overpass-api.de` resets the connection, kumi and private.coffee time out,
+  osm.jp has an expired certificate, and `overpass.osm.ch` replies but holds only
+  Switzerland. One slow mirror means cache every response to disk; do not write a
+  loop that refetches.
+- **Nominatim, Pleiades, World Historical Gazetteer, api.openstreetmap.org,
+  raw Natural Earth** — all work.
+- **npm** — works. `node_modules` was empty, so `npm run verify` was failing on
+  787 phantom type errors that had nothing to do with any change. `npm install`
+  first.
+
+`RULES.md` says no automated process may mark a record `reviewed` or `cited`.
+That rule was written by a session with no network at all, where any citation
+would have been fabricated. It is now the thing standing between this layer and
+its first real source. **Ask the owner before reinterpreting it** — the alias
+pass deliberately did not, and touched no `verification` field.
 
 **3. Extend claims beyond South Asia.** All 20 claims are Indian. The same blob
 problem exists everywhere the source draws one name over ground several polities

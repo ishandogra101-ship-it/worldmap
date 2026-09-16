@@ -23,7 +23,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadPolities, existsAt, namesAt, overlordAt } from "../canonical/load.mjs";
+import { loadPolities, loadCollectives, existsAt, namesAt, overlordAt, normName as norm } from "../canonical/load.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DIR = path.join(ROOT, "public", "data", "borders");
@@ -47,7 +47,6 @@ const covers = (pt, g) => {
   if (g.type === "MultiPolygon") return g.coordinates.some((p) => inPoly(pt, p));
   return false;
 };
-const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
 const files = (await readdir(DIR)).filter((f) => f.endsWith(".geojson"));
 const snapshots = [];
@@ -59,6 +58,7 @@ for (const f of files) {
 snapshots.sort((a, b) => a.year - b.year);
 
 const polities = await loadPolities();
+const collectives = await loadCollectives();
 const results = [];
 
 for (const p of polities) {
@@ -89,10 +89,20 @@ for (const p of polities) {
           }
         }
       }
+      // A group label the layer draws instead of naming one polity is a correct
+      // but coarse map, not a wrong one. It is reported on its own so the claim
+      // layer can still find it -- see canonical/collectives.json.
+      let collective = null;
+      if (!ok) {
+        for (const h of hits) {
+          const c = collectives.get(norm(h));
+          if (c?.members.has(p.id)) { ok = true; collective = h; break; }
+        }
+      }
       results.push({
         polity: p.canonicalName, id: p.id, region: p.region,
         capital: cap.name, year,
-        drawn: hits, ok, under, blank: hits.length === 0,
+        drawn: hits, ok, under, collective, blank: hits.length === 0,
       });
     }
   }
@@ -104,8 +114,10 @@ const right = results.filter((r) => r.ok);
 
 console.log(`\ncapital test — ${results.length} checks across ${polities.length} canonical polities\n`);
 const asVassal = right.filter((r) => r.under);
-console.log(`  ${right.length - asVassal.length} show the right polity at its own capital`);
+const asGroup = right.filter((r) => r.collective);
+console.log(`  ${right.length - asVassal.length - asGroup.length} show the right polity at its own capital`);
 console.log(`  ${asVassal.length} show the overlord a vassal answered to, which is correct`);
+console.log(`  ${asGroup.length} show a group label that covers it, which is correct but coarse`);
 console.log(`  ${wrong.length} show a DIFFERENT polity at a capital`);
 console.log(`  ${blank.length} draw nothing at the capital at all\n`);
 
@@ -129,6 +141,20 @@ for (const g of sorted) {
   console.log(`  ${g.polity} — capital ${g.rows[0].capital} — wrong in ${g.rows.length} snapshot${g.rows.length > 1 ? "s" : ""}`);
   console.log(`      years:  ${years.join(", ")}`);
   console.log(`      drawn:  ${worst}`);
+}
+
+if (asGroup.length) {
+  const byLabel = new Map();
+  for (const r of asGroup) {
+    const g = byLabel.get(r.collective) ?? new Set();
+    g.add(r.polity); byLabel.set(r.collective, g);
+  }
+  console.log(`DRAWN UNDER A GROUP LABEL`);
+  console.log(`(not an error -- this is where the claim layer has work, and where it lands next)\n`);
+  for (const [label, pols] of [...byLabel].sort((a, b) => b[1].size - a[1].size)) {
+    console.log(`  ${label}: ${[...pols].join(", ")}`);
+  }
+  console.log("");
 }
 
 if (blank.length) {

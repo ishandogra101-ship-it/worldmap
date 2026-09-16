@@ -28,3 +28,10 @@ the full schema by `scripts/canonical/load.mjs`.
 
 `mapsTo` is how a canonical polity is reconciled against the imported border
 layer. It is a list of the names that layer uses, not a claim about history.
+
+A group label the layer draws over several polities at once — "Rajput kingdoms",
+"Greek city-states" — does not belong in `mapsTo`. It goes in
+`canonical/collectives.json`, which lists the label once with the polity ids it
+covers, instead of repeating it on each member. The capital test counts a
+collective as a pass and reports it separately, because it marks where the claim
+layer still has work. See `docs/CAPITAL-TEST.md`.

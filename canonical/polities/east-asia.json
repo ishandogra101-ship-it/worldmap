@@ -89,7 +89,8 @@
         "Zhou Dynasty",
         "Eastern Zhou",
         "Western Zhou",
-        "Zhou states@-1046..-256"
+        "Zhou states@-1046..-256",
+        "Zhoa"
       ]
     },
     {
@@ -187,10 +188,10 @@
         "three-kingdoms"
       ],
       "mapsTo": [
-        "Jin",
-        "Jin Dynasty",
-        "Western Jin",
-        "Eastern Jin"
+        "Jin@265..420",
+        "Jin Dynasty@265..420",
+        "Western Jin@265..317",
+        "Eastern Jin@317..420"
       ]
     },
     {
@@ -363,9 +364,9 @@
         "yuan"
       ],
       "mapsTo": [
-        "Jin",
-        "Jurchen Jin",
-        "Jin Empire"
+        "Jin@1115..1234",
+        "Jurchen Jin@1115..1234",
+        "Jin Empire@1115..1234"
       ]
     },
     {
@@ -535,6 +536,15 @@
         "Goryeo",
         "Koryo",
         "Korea@918..1392"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "yuan",
+          "from": 1270,
+          "to": 1356,
+          "kind": "vassal",
+          "note": "Submitted after the Mongol invasions; threw off Yuan overlordship as the dynasty declined."
+        }
       ]
     },
     {

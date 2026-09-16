@@ -61,7 +61,10 @@
         "Macedon",
         "Macedonia",
         "Macedonian Empire",
-        "Greek city-states@-808..-323"
+        "Greek city-states@-808..-323",
+        "Empire of Alexander@-336..-323",
+        "Kingdom of Kassander@-317..-297",
+        "Macedon and Hellenic League@-276..-168"
       ]
     },
     {
@@ -122,7 +125,8 @@
       "mapsTo": [
         "Roman Empire",
         "Western Roman Empire",
-        "Rome@-27..476"
+        "Rome@-27..476",
+        "Rome (Maximian)@286..305"
       ]
     },
     {
@@ -252,7 +256,7 @@
       "mapsTo": [
         "England",
         "Kingdom of England",
-        "England and Ireland@1541..1707",
+        "England and Ireland@1177..1707",
         "English territory@927..1707"
       ]
     },
@@ -483,7 +487,17 @@
       "mapsTo": [
         "Muscovy",
         "Moscow",
-        "Grand Duchy of Moscow"
+        "Grand Duchy of Moscow",
+        "Tsardom of Muscovy@1283..1546"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "golden-horde",
+          "from": 1283,
+          "to": 1480,
+          "kind": "tributary",
+          "note": "The khan granted the grand-princely title and the Moscow princes collected his tribute, until the standoff on the Ugra in 1480."
+        }
       ]
     },
     {
@@ -555,7 +569,8 @@
         "Austria",
         "Austrian Empire",
         "Habsburg",
-        "Austria-Hungary"
+        "Austria-Hungary",
+        "Austro-Hungarian Empire@1867..1918"
       ],
       "subordinateTo": [
         {
@@ -582,7 +597,8 @@
       ],
       "mapsTo": [
         "Prussia",
-        "Kingdom of Prussia"
+        "Kingdom of Prussia",
+        "Brandenburg@1701..1806"
       ],
       "subordinateTo": [
         {
@@ -590,8 +606,45 @@
           "from": 1701,
           "to": 1806,
           "kind": "nominal"
+        },
+        {
+          "polityId": "german-empire",
+          "from": 1871,
+          "to": 1918,
+          "kind": "personal-union",
+          "note": "The King of Prussia was ex officio German Emperor. Prussia kept its own crown, army and government inside the federal empire."
         }
       ]
+    },
+    {
+      "id": "german-empire",
+      "canonicalName": "German Empire",
+      "alternativeNames": [
+        "Deutsches Reich",
+        "Imperial Germany"
+      ],
+      "type": "empire",
+      "founded": {
+        "year": 1871,
+        "note": "Proclaimed at Versailles after the Franco-Prussian war."
+      },
+      "ended": {
+        "year": 1918,
+        "note": "November Revolution."
+      },
+      "capitals": [
+        {
+          "name": "Berlin",
+          "lng": 13.4,
+          "lat": 52.52
+        }
+      ],
+      "mapsTo": [
+        "German Empire",
+        "Germany@1871..1918",
+        "Imperial Germany"
+      ],
+      "notes": "A federation of 25 states. Prussia held about two thirds of its territory and population and its king was the emperor, which is why Berlin is the capital of both records."
     }
   ]
 }

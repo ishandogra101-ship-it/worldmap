@@ -1,0 +1,40 @@
+{
+  "note": "Group labels the border layer draws instead of naming a single polity.",
+  "why": [
+    "A capital drawn under a group label is not the same kind of result as a capital drawn under another polity's name, and the capital test used to score them alike.",
+    "'Rajput kingdoms' over Jodhpur is a correct but coarse map: Marwar is one of the kingdoms meant. 'Delhi Sultanate' over Jodhpur is a wrong map. Counting both as failures buried the second kind under the first.",
+    "So a collective is a pass that is still reported, because it is exactly where the claim layer has work to do. See docs/HANDOFF.md priority 3.",
+    "The line: a collective names POLITIES. A label naming a people or a way of life -- 'Bantu peoples', 'Eastern North American hunter-gatherers', 'West African cereal farmers' -- is the source declining to name a state. Where we hold that a state stood there, that stays a failure. Cahokia was a city of some tens of thousands and drawing foragers over it is an error, not a generalisation."
+  ],
+  "collectives": [
+    {
+      "name": "Rajput kingdoms",
+      "alsoDrawnAs": ["Rajputs", "Rajastan"],
+      "members": ["marwar", "mewar", "bundelkhand"],
+      "note": "The Rajput states of Rajputana. 'Rajastan' is the border layer's spelling."
+    },
+    {
+      "name": "Hindu kingdoms",
+      "alsoDrawnAs": ["minor Hindu kingdoms"],
+      "members": ["hoysala", "kakatiya", "yadava", "pallava", "mysore", "chola", "pandya", "vijayanagara", "chalukya"],
+      "note": "The layer's catch-all for the peninsular Hindu states it does not name individually."
+    },
+    {
+      "name": "Islamic states",
+      "alsoDrawnAs": ["Islamic and Hindu states"],
+      "members": ["berar", "bijapur", "ahmadnagar", "bidar", "golconda", "bahmani", "gujarat-sultanate", "malwa-sultanate"],
+      "note": "Chiefly the Deccan sultanates after the Bahmani break-up."
+    },
+    {
+      "name": "Greek city-states",
+      "members": ["athens", "macedon"],
+      "note": "The poleis. Already carried on Macedon's mapsTo before this file existed."
+    },
+    {
+      "name": "Maya states",
+      "alsoDrawnAs": ["Maya chiefdoms and states"],
+      "members": ["maya-classic"],
+      "note": "One member today. Kept here rather than as an alias because the label is a group name, and a later Postclassic record belongs in it too."
+    }
+  ]
+}

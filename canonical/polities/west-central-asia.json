@@ -134,7 +134,8 @@
       ],
       "mapsTo": [
         "Seleucid Empire",
-        "Seleucids"
+        "Seleucids",
+        "Seleucid Kingdom"
       ]
     },
     {
@@ -147,7 +148,9 @@
         {
           "name": "Ctesiphon",
           "lng": 44.58,
-          "lat": 33.09
+          "lat": 33.09,
+          "from": -141,
+          "note": "Mithridates I took Seleucid Mesopotamia in 141 BCE. Ctesiphon proper grew up opposite Seleucia somewhat later; the earlier Parthian seats were Nisa and Hecatompylos."
         }
       ],
       "dynasty": "Arsacid",
@@ -259,6 +262,22 @@
         "Abbasid Caliphate",
         "Abbasid",
         "Caliphate@750..1258"
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "buyid",
+          "from": 945,
+          "to": 1055,
+          "kind": "nominal",
+          "note": "The caliphs kept the title and lost the government. Buyid amirs held Baghdad from 945."
+        },
+        {
+          "polityId": "seljuk",
+          "from": 1055,
+          "to": 1157,
+          "kind": "nominal",
+          "note": "Tughril took Baghdad in 1055. The caliphate recovered real authority in Iraq later under al-Nasir, so a Buyid or Seljuk name over Baghdad in 1200 is an error, not this relationship."
+        }
       ]
     },
     {
@@ -341,7 +360,8 @@
         "Mamluk",
         "Mamluk Sultanate",
         "Mamluks",
-        "Egypt@1250..1517"
+        "Egypt@1250..1517",
+        "Mamluke Sultanate"
       ]
     },
     {
@@ -388,7 +408,8 @@
       ],
       "mapsTo": [
         "Golden Horde",
-        "Kipchak Khanate"
+        "Kipchak Khanate",
+        "Blue Horde"
       ],
       "region": "Central Asia"
     },
@@ -542,7 +563,9 @@
           "name": "Bursa",
           "lng": 29.06,
           "lat": 40.19,
-          "to": 1365
+          "to": 1365,
+          "from": 1335,
+          "note": "Ottoman capital from 1335; Bursa was Byzantine until Orhan took it in 1326."
         },
         {
           "name": "Edirne",
@@ -584,6 +607,36 @@
         "Persia@1789..1925",
         "Iran@1789..1925"
       ]
+    },
+    {
+      "id": "buyid",
+      "canonicalName": "Buyid dynasty",
+      "alternativeNames": [
+        "Buwayhid dynasty"
+      ],
+      "type": "dynasty",
+      "founded": 934,
+      "ended": 1062,
+      "capitals": [
+        {
+          "name": "Shiraz",
+          "lng": 52.53,
+          "lat": 29.59
+        },
+        {
+          "name": "Baghdad",
+          "lng": 44.36,
+          "lat": 33.31,
+          "from": 945
+        }
+      ],
+      "mapsTo": [
+        "Buyid",
+        "Buwayhid",
+        "Buyid Emirates",
+        "Buwayhid Emirates"
+      ],
+      "notes": "Daylamite Shi'a amirs who held Iraq and western Iran and ruled through the Abbasid caliphs rather than replacing them."
     }
   ]
 }

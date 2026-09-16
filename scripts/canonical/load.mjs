@@ -116,3 +116,27 @@ export function namesAt(p, year) {
 export function overlordAt(p, year) {
   return (p.subordinateTo ?? []).find((s) => year >= s.from && year <= s.to);
 }
+
+/**
+ * Group labels the border layer draws in place of naming a single polity.
+ *
+ * Returns a lookup from a normalised drawn name to the set of polity ids that
+ * label legitimately covers. See canonical/collectives.json for why a
+ * collective is a pass that still gets reported.
+ */
+export async function loadCollectives() {
+  const raw = JSON.parse(
+    await readFile(path.join(CANONICAL, "collectives.json"), "utf8"),
+  );
+  const byName = new Map();
+  for (const c of raw.collectives) {
+    for (const n of [c.name, ...(c.alsoDrawnAs ?? [])]) {
+      byName.set(normName(n), { label: c.name, members: new Set(c.members) });
+    }
+  }
+  return byName;
+}
+
+/** The name comparison the reconciliation uses everywhere: fold case and punctuation. */
+export const normName = (s) =>
+  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
