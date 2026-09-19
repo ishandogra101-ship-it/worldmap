@@ -66,7 +66,9 @@ export interface SourceRef {
 export type PolityType =
   | "empire" | "kingdom" | "sultanate" | "caliphate" | "khanate"
   | "republic" | "confederation" | "city-state" | "dynasty"
-  | "principality" | "state" | "theocracy" | "league";
+  | "principality" | "state" | "theocracy" | "league"
+  /** a chartered trading company exercising sovereignty — the East India Company */
+  | "company-state";
 
 export interface Capital {
   name: string;

@@ -356,7 +356,43 @@
         "Mughal Empire",
         "Mughal",
         "Mogul Empire"
-      ]
+      ],
+      "subordinateTo": [
+        {
+          "polityId": "maratha",
+          "from": 1772,
+          "to": 1803,
+          "kind": "nominal",
+          "note": "Shah Alam II could not return to Delhi until 1772, and did so under the protection of Mahadaji Scindia; a Gwalior garrison held the city from 1788. The emperor reigned and the Marathas governed, which is why the map draws Mahratta states over Delhi and is right to."
+        },
+        {
+          "polityId": "east-india-company",
+          "from": 1803,
+          "to": 1857,
+          "kind": "nominal",
+          "note": "The Company took Delhi in 1803 after the Second Anglo-Maratha War and Shah Alam became its pensioner. The contemporary saying put the empire of Shah Alam as reaching from Delhi to Palam, a suburb -- the dynasty outlasted its territory by half a century."
+        }
+      ],
+      "sources": [
+        {
+          "title": "Shah Alam II",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Shah_Alam_II",
+          "locator": "revision 1366062944, Second reign"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Shah_Alam_II",
+            "revision": 1366062944,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "maratha",

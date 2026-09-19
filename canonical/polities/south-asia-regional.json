@@ -554,8 +554,8 @@
       ],
       "mapsTo": [
         "Ahom",
-        "Assam",
-        "Ahom Kingdom"
+        "Ahom Kingdom",
+        "Assam@1807..1826"
       ],
       "subordinateTo": [
         {
@@ -564,7 +564,8 @@
           "to": 1947,
           "kind": "protectorate"
         }
-      ]
+      ],
+      "notes": "The source uses the name Assam for two different things. At 1815 it is the Brahmaputra valley and it is this kingdom. At 1783 it is a western polygon over the duars between Bhutan and Bengal, which the Ahoms did not hold. So the name is scoped: unscoped, a claim here supersedes the source's Assam in every year and deletes the duars along with it."
     },
     {
       "id": "mysore",
@@ -688,6 +689,118 @@
           "kind": "princely-state"
         }
       ]
+    },
+    {
+      "id": "awadh",
+      "canonicalName": "Awadh",
+      "alternativeNames": [
+        "Oudh",
+        "Oudh State"
+      ],
+      "type": "kingdom",
+      "founded": {
+        "year": 1722,
+        "note": "Saadat Ali Khan I appointed subahdar; the line became hereditary and effectively independent as Mughal authority receded."
+      },
+      "ended": {
+        "year": 1856,
+        "note": "Annexed by the East India Company."
+      },
+      "capitals": [
+        {
+          "name": "Faizabad",
+          "lng": 82.14,
+          "lat": 26.78,
+          "to": 1775
+        },
+        {
+          "name": "Lucknow",
+          "lng": 80.95,
+          "lat": 26.85,
+          "from": 1775
+        }
+      ],
+      "mapsTo": [
+        "Oudh",
+        "Awadh",
+        "Oudh State",
+        "Kingdom of Oudh"
+      ],
+      "sources": [
+        {
+          "title": "Awadh",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Awadh",
+          "locator": "revision 1375387704, lead"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Awadh",
+            "revision": 1375387704,
+            "date": "2026-09-19"
+          }
+        ]
+      },
+      "notes": "The Awadh article has the nawabs presiding from 1720 to 1856, with Ayodhya and Faizabad the early capitals before the move to Lucknow."
+    },
+    {
+      "id": "east-india-company",
+      "canonicalName": "East India Company in India",
+      "alternativeNames": [
+        "British East India Company",
+        "Company rule in India",
+        "Presidency of Fort William in Bengal"
+      ],
+      "type": "company-state",
+      "founded": {
+        "year": 1765,
+        "note": "The grant of the diwani of Bengal, Bihar and Orissa after Buxar. The company traded from 1612 and held Bengal militarily from 1757; 1765 is when it governed."
+      },
+      "ended": {
+        "year": 1858,
+        "note": "The Crown took over after the rebellion of 1857; the British Raj record continues from there."
+      },
+      "capitals": [
+        {
+          "name": "Calcutta",
+          "lng": 88.36,
+          "lat": 22.57
+        }
+      ],
+      "mapsTo": [
+        "British East India Company",
+        "East India Company",
+        "Company rule in India"
+      ],
+      "successors": [
+        "british-raj"
+      ],
+      "sources": [
+        {
+          "title": "Bengal Presidency",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Bengal_Presidency",
+          "locator": "revision 1370890965, lead"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Bengal_Presidency",
+            "revision": 1370890965,
+            "date": "2026-09-19"
+          }
+        ]
+      },
+      "notes": "Kept distinct from the British Raj, which begins in 1858. The boundary source names the company itself at 1815, so this record exists mainly to let the broken 1800 snapshot be repaired."
     }
   ]
 }

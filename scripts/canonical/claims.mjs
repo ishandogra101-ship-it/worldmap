@@ -70,7 +70,17 @@ export async function makeAtlas() {
    * silently build on another.
    */
   const borrowed = new Map();
-  const wanted = claims.map((c) => c.extent?.asDrawnIn).filter(Boolean);
+  // walk the whole extent tree: an asDrawnIn nested inside a union or a minus
+  // still needs its snapshot loaded, and only collecting the top level meant a
+  // borrowed year silently went missing
+  const wanted = [];
+  const collect = (e) => {
+    if (!e || typeof e !== "object") return;
+    if (e.asDrawnIn) wanted.push(e.asDrawnIn);
+    for (const m of e.union ?? []) collect(m);
+    if (e.minus) { collect(e.minus.from); collect(e.minus.remove); }
+  };
+  for (const c of claims) collect(c.extent);
   for (const year of new Set(wanted.map((a) => a.year))) {
     const file = path.join(ROOT, "public", "data", "borders",
       year < 0 ? `world_bc${-year}.geojson` : `world_${year}.geojson`);
@@ -88,7 +98,13 @@ export async function makeAtlas() {
 
   const extentOf = (e) => {
     if (e.region) return regionOf(e.region);
-    if (e.union) return e.union.map(regionOf).reduce((a, b) => pc.union(a, b));
+    // members may be region ids or whole extents, so a union can mix a named
+    // region with a borrowed one
+    if (e.union) {
+      return e.union
+        .map((m) => (typeof m === "string" ? regionOf(m) : extentOf(m)))
+        .reduce((a, b) => (a.length ? pc.union(a, b) : b));
+    }
     if (e.minus) return pc.difference(extentOf(e.minus.from), extentOf(e.minus.remove));
     if (e.asDrawnIn) {
       const key = `${e.asDrawnIn.year}|${e.asDrawnIn.name}`;

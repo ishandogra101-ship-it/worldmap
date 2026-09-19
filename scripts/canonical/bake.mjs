@@ -122,8 +122,13 @@ for (const file of files) {
     const n = String(f.properties?.NAME ?? "").trim();
     if (n && areaOf(coordsOf(f.geometry)) >= INVISIBLE) hadGeometry.add(n);
   }
+  const droppedByName = [];
   for (const f of source) {
-    if (superseded.has(String(f.properties?.NAME ?? "").toLowerCase())) { replaced++; continue; }
+    if (superseded.has(String(f.properties?.NAME ?? "").toLowerCase())) {
+      replaced++;
+      droppedByName.push(f);
+      continue;
+    }
     const mp = coordsOf(f.geometry);
     if (mp.length === 0) { kept.push(f); continue; }
     // Nowhere near a claim: keep it untouched, and never hand it to the
@@ -181,6 +186,55 @@ for (const file of files) {
    * ground several polities held, which is the error the claim layer exists to
    * fix, reintroduced by the fix itself. The bake stops rather than write it.
    */
+  /**
+   * A name surviving is not the same as ground surviving.
+   *
+   * Superseding drops the source's whole feature of that name, which is right
+   * when the source and the claim are describing the same state and the claim
+   * draws it better. It is a disaster when the source has hung that name on
+   * ground the polity never held, because then the claim replaces a continent
+   * with a county and the difference silently becomes empty map.
+   *
+   * That is not hypothetical. At 1800 the source draws "Bundelkhand" from
+   * Rajasthan to Assam and from the Deccan to the Himalaya — it is using the
+   * name to cover the whole Gangetic plain. A correct Bundelkhand claim, the
+   * country between the Yamuna and the Vindhyas, superseded it and blanked
+   * Delhi, Lucknow, Varanasi, Patna and Calcutta in one step. Every name still
+   * survived, so the guard below said nothing.
+   *
+   * So measure the ground, not the labels. Whatever a superseded feature held
+   * that no claim covers has to be accounted for: either the claim is drawn too
+   * narrow, or the rest of that ground belongs to polities this file has not
+   * named yet and should.
+   */
+  const claimed = held.reduce((a, h) => (a.length ? pc.union(a, h.geometry) : h.geometry), []);
+  const abandoned = [];
+  for (const f of droppedByName) {
+    const mp = coordsOf(f.geometry);
+    if (!mp.length) continue;
+    const had = areaOf(mp);
+    if (had < SLIVER) continue;
+    let left = [];
+    try { left = claimed.length ? pc.difference(mp, claimed) : mp; } catch { left = mp; }
+    const lost = areaOf(left);
+    const name = String(f.properties?.NAME ?? "").trim();
+    const excused = held.some((h) =>
+      (h.replaces ?? []).some((r) => String(r.name).toLowerCase() === name.toLowerCase()));
+    if (lost > SLIVER && !excused) abandoned.push({ name, had, lost });
+  }
+  if (abandoned.length) {
+    console.error(
+      `\n${file}: superseding left ground with nothing drawn on it:\n` +
+        abandoned.map((a) =>
+          `    ${a.name}: held ${a.had.toFixed(1)}, ${a.lost.toFixed(1)} now uncovered`).join("\n") +
+        `\n\n  The source was using that name to cover ground the polity did not hold.\n` +
+        `  Name the states that actually held it, or say in the claim's replaces[]\n` +
+        `  why that ground should be blank.\n`,
+    );
+    process.exitCode = 1;
+    continue;
+  }
+
   const survived = new Set(
     kept.filter((f) => f.geometry?.coordinates?.length)
       .map((f) => String(f.properties?.NAME ?? "").trim()),

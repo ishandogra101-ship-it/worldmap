@@ -76,20 +76,20 @@ becomes another test for free.
 ## Where the numbers stand
 
 ```
-capital test    833 checks: 566 right, 55 correctly showing an overlord,
-                22 under a group label, 107 showing a different polity,
-                83 drawing nothing
-                West Asia 66%  Americas 73%  South Asia 73%  Europe 77%
-                Africa 78%  East Asia 90%  SE Asia 88%  Central Asia 100%
-border audit    34/39, all 5 failures carrying a correction the app shows
+capital test    840 checks: 601 right, 57 correctly showing an overlord,
+                16 under a group label, 87 showing a different polity,
+                79 drawing nothing
+                West Asia 66%  Americas 73%  Europe 77%  Africa 78%
+                South Asia 82%  East Asia 90%  SE Asia 88%
+border audit    36/39, all 3 failures carrying a correction the app shows
 anchors         20/20
-canonical       172 polities, 36 people — 207 drafted, 1 sourced
-claims          22 — 20 drafted (South Asia), 2 sourced (East Asia)
+canonical       174 polities, 36 people — 206 drafted, 4 sourced
+claims          31 — 20 drafted (South Asia), 11 sourced
 ```
 
-The 107 is the number to watch. It was 180 before the alias pass. 71 of those
-were correct maps the test had been scoring as errors, and two more were the
-1400 snapshot, which was genuinely wrong and is fixed.
+The 87 is the number to watch. It was 180 before the alias pass: 71 of those
+were correct maps the test had been scoring as errors, and the rest have been
+fixed snapshot by snapshot since.
 
 **The remaining errors are upstream, not ours.** This was checked against raw
 historical-basemaps rather than assumed: the unsimplified source also draws the
@@ -144,23 +144,36 @@ would have been fabricated. It is now the thing standing between this layer and
 its first real source. **Ask the owner before reinterpreting it** — the alias
 pass deliberately did not, and touched no `verification` field.
 
-**3. The 83 blanks are a coastline problem, and they are one problem.**
+**3. Look for the single broken snapshot between two sound ones.**
+Twice now the worst errors on the map have had this shape, and both times the
+repair was cheap once it was seen. At 1400 the source drew one Great Khanate
+over China, Manchuria, Mongolia and Korea while 1300 and 1492 were fine. At 1800
+it drew one feature named "Bundelkhand" from Rajasthan to Assam, covering Delhi,
+Lucknow, Patna and Calcutta, while 1783 named Bengal, Oudh and the Mahratta
+states correctly and 1815 named the Company. Neither needed a new frontier
+invented: `extent: { asDrawnIn: { year, name } }` borrows the ground the source
+itself gives a name in a year it gets right. **1815 is the next one** — its
+"Maratha Confederacy" runs from 66.7E to 86.9E and from 14N to 37N, taking in
+Ranjit Singh's Punjab, Kashmir and Sindh, none of which the Marathas held. The
+same for Hyderabad at 1783 and 1815.
+
+**4. The 79 blanks are a coastline problem, and they are one problem.**
 Every blank checked has the *right* polity 0.03-0.04 degrees away: Lisbon lies
 just outside Portugal in all 17 snapshots it appears in, Constantinople just
 outside Byzantium in 12, and the same for Kilwa, Mbanza Kongo and Timbuktu.
 These are coastal capitals sitting a few kilometres out to sea because the
 source's coastline is coarse, and the raw upstream file has the same defect. It
-is also a visible defect in the app, not only in the test: a strip of land with
-no polity colour follows every shore. Natural Earth land is already on disk at
-`public/data/land.geojson` and the region resolver already intersects with it,
-so the material for a fix is there. One operation would close most of the 83.
+is also a visible defect in the app: a strip of land with no polity colour
+follows every shore. Natural Earth land is already on disk at
+`public/data/land.geojson` and the region resolver already intersects with it.
+One operation would close most of the 79.
 
-**4. Extend claims beyond South Asia.** The same blob problem exists everywhere
+**5. Extend claims beyond South Asia.** The same blob problem exists everywhere
 the source draws one name over ground several polities held. `audit:capitals`
 per region says where to look, and the group-label report now names the exact
 labels that need breaking up. West Asia is worst.
 
-**5. Do not re-add an authority area.** Whatever shape the argument takes, the
+**6. Do not re-add an authority area.** Whatever shape the argument takes, the
 answer is no. Read the header of `scripts/canonical/bake.mjs` first.
 
 ## Traps that cost time here
@@ -174,5 +187,20 @@ answer is no. Read the header of `scripts/canonical/bake.mjs` first.
   rings. Check bounding boxes before handing it anything, or it silently
   deletes features.
 - `pkill -f` matches and kills the agent's own shell. Twice.
+- `bake:claims` writes the files it reads. Once a source feature is superseded
+  it is gone from the snapshot, so a guard cannot catch the loss on a second
+  run — and the second run looks clean. Restore with
+  `git checkout HEAD -- public/data/borders` before testing anything about the
+  bake, or you will be measuring your own output.
+- A claim supersedes the source's whole feature of that polity's name. When the
+  source has hung that name on ground the polity never held, a correct claim
+  replaces a continent with a county. The ground guard in `bake.mjs` catches it
+  now; it did not before, because the name survived and only the land vanished.
+- An unwindowed name in `mapsTo` supersedes in every year the claim is held.
+  "Assam" means the Ahom kingdom at 1815 and the Bhutan duars at 1783, and the
+  unscoped alias deleted Bhutan from three snapshots.
+- `npm run build:atlas` regenerates `public/data/polities.json`, which is what
+  the app reads for "the atlas knows this was here". Adding a polity without
+  rerunning it leaves the app unaware of it.
 - The boundary source ships features with a name and a null geometry, and others
   that are three collinear points. Neither is a polity.

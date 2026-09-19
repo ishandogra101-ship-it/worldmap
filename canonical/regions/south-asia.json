@@ -434,6 +434,147 @@
      21.6
     ]
    ]
+  },
+  {
+   "id": "yamuna-lower",
+   "name": "Yamuna, plains reach",
+   "basis": "Traced from OpenStreetMap, not from memory. The Yamuna below the Himalayan gorge, from the Delhi reach to the confluence at Prayagraj. OSM relation for the Yamuna (waterway=river), restricted to the points below 28.2N so the upper Himalayan course does not drag the line north, then reduced to one ordered polyline by binning at a quarter degree of longitude and taking the median latitude of each bin. Bundelkhand is classically the country between this river and the Vindhyas.",
+   "points": [
+    [
+     77.5,
+     27.96
+    ],
+    [
+     77.75,
+     27.5
+    ],
+    [
+     78,
+     27.25
+    ],
+    [
+     78.5,
+     26.96
+    ],
+    [
+     78.75,
+     26.88
+    ],
+    [
+     79.75,
+     26.16
+    ],
+    [
+     81,
+     25.61
+    ],
+    [
+     81.25,
+     25.37
+    ],
+    [
+     81.5,
+     25.27
+    ],
+    [
+     82,
+     25.43
+    ]
+   ]
+  },
+  {
+   "id": "brahmaputra-assam",
+   "name": "Brahmaputra, Assam reach",
+   "basis": "Traced from OpenStreetMap, not from memory. The Brahmaputra across the Assam valley, from the Goalpara reach to the Sadiya head. Same OSM relation and same binning as the Yamuna, restricted to points east of 90.8E and below 28N -- the relation also carries the Yarlung Tsangpo across Tibet at about 29N and the Jamuna running south through Bangladesh, and neither belongs to this frontier. The Ahom kingdom article calls the kingdom a state of the Brahmaputra Valley.",
+   "points": [
+    [
+     91,
+     26.2
+    ],
+    [
+     91.5,
+     26.15
+    ],
+    [
+     92,
+     26.29
+    ],
+    [
+     92.5,
+     26.58
+    ],
+    [
+     93.25,
+     26.66
+    ],
+    [
+     93.5,
+     26.78
+    ],
+    [
+     94.25,
+     26.88
+    ],
+    [
+     94.5,
+     27.07
+    ],
+    [
+     94.75,
+     27.45
+    ],
+    [
+     95,
+     27.56
+    ],
+    [
+     95.25,
+     27.81
+    ],
+    [
+     95.5,
+     27.92
+    ]
+   ]
+  },
+  {
+   "id": "indus-ladakh",
+   "name": "Indus, Ladakh reach",
+   "basis": "Traced from OpenStreetMap, not from memory. The Indus between the Tibetan border and the Gilgit reach, the valley Ladakh is built along. Same OSM relation and binning, restricted to points east of 75.5E and north of 32N. The line passes through 77.5E 34.12N, which is Leh -- the capital sits on the river, which is a useful check that the trace is the real course.",
+   "points": [
+    [
+     75.5,
+     35.35
+    ],
+    [
+     75.75,
+     35.31
+    ],
+    [
+     76.75,
+     34.43
+    ],
+    [
+     77.5,
+     34.12
+    ],
+    [
+     78.5,
+     33.27
+    ],
+    [
+     78.75,
+     33.17
+    ],
+    [
+     79,
+     33.17
+    ],
+    [
+     79.5,
+     32.75
+    ]
+   ]
   }
  ],
  "regions": [
@@ -638,6 +779,63 @@
     "remove": "sa-marwar"
    },
    "basis": "What the sultans of Delhi actually governed. The box that defines the Doab and the Punjab reaches 72 east, which handed Jodhpur to the Lodis."
+  },
+  {
+   "id": "sa-bundelkhand",
+   "name": "Bundelkhand",
+   "def": {
+    "kind": "landBetween",
+    "north": "yamuna-lower",
+    "south": "vindhya-satpura",
+    "clipTo": "bundelkhand-box"
+   },
+   "basis": "The country between the Yamuna and the Vindhyas, which is how Bundelkhand is ordinarily defined. Both lines are traced from OSM. Orchha and Panna sit inside it."
+  },
+  {
+   "id": "sa-assam-valley",
+   "name": "The Assam valley",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "assam-box"
+   },
+   "basis": "The Brahmaputra valley from the Goalpara reach to Sadiya. A box, and coarse on purpose: it takes in the flanking hill margins the Ahoms contested rather than only the valley floor they administered, and the region resolver has no way to band a corridor around a river. The western limit is 90.6E and not further, because Bhutan and the duars lie beyond it -- an earlier version reached 88E to match what the source calls Assam at 1783 and swallowed Bhutan whole in three snapshots. It is coarser than the kingdom; it is not in Burma, which is where the source puts it."
+  },
+  {
+   "id": "sa-ladakh",
+   "name": "Ladakh",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "ladakh-box"
+   },
+   "basis": "The upper Indus and Shyok basin between the Karakoram and the Great Himalaya. A box: the two ranges are real frontiers but this project has no traced line for either, and inventing one would be worse than admitting the box. The bounds follow the traced Indus reach through Ladakh."
+  },
+  {
+   "id": "sa-mysore",
+   "name": "The Mysore plateau",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "mysore-box"
+   },
+   "basis": "The southern Karnataka plateau around Mysore, Srirangapatna and Bangalore. A box, and the weakest extent in this file: Mysore's reach moved a great deal between the Wodeyars and Tipu Sultan and this does not follow it."
+  },
+  {
+   "id": "sa-marwar-proper",
+   "name": "Marwar",
+   "def": {
+    "kind": "minus",
+    "from": "sa-marwar-box-region",
+    "remove": "sa-mewar"
+   },
+   "basis": "Jodhpur, Barmer, Jalore, Nagaur and Pali -- the districts the Marwar article names -- with Mewar cut out where the boxes meet along the Aravallis. Narrower than sa-marwar, which is the whole desert block including Bikaner and Jaisalmer; those were their own Rathore and Bhati states and are not claimed here."
+  },
+  {
+   "id": "sa-marwar-box-region",
+   "name": "Marwar box",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "marwar-proper-box"
+   },
+   "basis": "The rectangle sa-marwar-proper starts from, before Mewar is removed. Not meant to be claimed directly."
   }
  ],
  "boxes": {
@@ -742,6 +940,36 @@
    24.0,
    74.5,
    28.5
+  ],
+  "bundelkhand-box": [
+   78.2,
+   23.6,
+   82.2,
+   26.6
+  ],
+  "assam-box": [
+   90.6,
+   25.5,
+   96.2,
+   28.0
+  ],
+  "ladakh-box": [
+   75.8,
+   32.3,
+   79.6,
+   35.6
+  ],
+  "mysore-box": [
+   75.6,
+   11.6,
+   78.4,
+   14.3
+  ],
+  "marwar-proper-box": [
+   71.6,
+   24.6,
+   75.0,
+   27.6
   ]
  }
 }

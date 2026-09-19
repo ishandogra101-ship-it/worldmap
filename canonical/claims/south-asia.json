@@ -271,13 +271,286 @@
     "region": "sa-sindh"
    },
    "note": "The Sammas ruled the lower Indus from Thatta, independent of Delhi."
+  },
+  {
+   "polityId": "maratha",
+   "from": 1796,
+   "to": 1803,
+   "extent": {
+    "asDrawnIn": {
+     "year": 1783,
+     "name": "Mahratta states"
+    }
+   },
+   "note": "Scindia held Delhi from 1788 with the Mughal emperor as a pensioner, until the Second Anglo-Maratha War of 1803-05 brought the country around Delhi into direct Company rule. The source separates the Marathas into two features at 1783 -- Mahratta states in the north around Delhi and Gwalior, and the Maratha Confederacy in the Deccan -- and at 1800 only the Deccan one survives. This borrows the northern one.",
+   "sources": [
+    {
+     "title": "Second Anglo-Maratha War",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Second_Anglo-Maratha_War",
+     "locator": "revision 1374669056, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Second_Anglo-Maratha_War",
+      "revision": 1374669056,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "maratha",
+   "from": 1796,
+   "to": 1803,
+   "extent": {
+    "asDrawnIn": {
+     "year": 1783,
+     "name": "Maratha Confederacy"
+    }
+   },
+   "note": "The Deccan and central-India half of the same claim. It exists because a claim supersedes the source's feature of that polity's name: without restating this, repairing Delhi would have deleted Pune, Nagpur and Cuttack. Borrowed from 1783 rather than 1800 because the 1783 feature also covers Allahabad, Rewa and Baghelkhand, which the Marathas still held in 1800 and lost to the Company in 1803 -- the 1800 feature has already shed them to the mislabelled blob.",
+   "sources": [
+    {
+     "title": "Second Anglo-Maratha War",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Second_Anglo-Maratha_War",
+     "locator": "revision 1374669056, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Second_Anglo-Maratha_War",
+      "revision": 1374669056,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "awadh",
+   "from": 1796,
+   "to": 1805,
+   "extent": {
+    "asDrawnIn": {
+     "year": 1783,
+     "name": "Oudh"
+    }
+   },
+   "note": "The nawabs held Awadh from 1722 to 1856 and the source draws Oudh at both 1783 and 1815 -- only the 1800 snapshot loses it. Extent borrowed from 1783, before the 1801 treaty took half the territory, which is the right side of that change for 1800.",
+   "sources": [
+    {
+     "title": "Awadh",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Awadh",
+     "locator": "revision 1375387704, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Awadh",
+      "revision": 1375387704,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "east-india-company",
+   "from": 1796,
+   "to": 1805,
+   "extent": {
+    "asDrawnIn": {
+     "year": 1783,
+     "name": "Bengal"
+    }
+   },
+   "note": "The company governed Bengal, Bihar and Orissa from the diwani of 1765. The source draws Bengal at 1783 and the British East India Company at 1815; at 1800 it draws neither. Extent borrowed from 1783 rather than 1815, because the 1815 shape already includes Delhi and the ceded provinces, which the company did not hold in 1800.",
+   "sources": [
+    {
+     "title": "Bengal Presidency",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Bengal_Presidency",
+     "locator": "revision 1370890965, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Bengal_Presidency",
+      "revision": 1370890965,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "marwar",
+   "from": 1707,
+   "to": 1818,
+   "extent": {
+    "region": "sa-marwar-proper"
+   },
+   "note": "Ajit Singh recovered Jodhpur after Aurangzeb's death and Marwar was not administered from Delhi again. The boundary source draws Mughal Empire over Jodhpur at 1715, 1783, 1800 and 1815; it was a Rathore state throughout, and a Maratha tributary rather than a Mughal province for much of the later stretch. Extent is the districts the Marwar article names, with Mewar cut out. Bikaner and Jaisalmer are not claimed.",
+   "sources": [
+    {
+     "title": "Marwar",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Marwar",
+     "locator": "revision 1373625466, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-16",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Marwar",
+      "revision": 1373625466,
+      "date": "2026-09-16"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "ladakh",
+   "from": 1460,
+   "to": 1842,
+   "extent": {
+    "region": "sa-ladakh"
+   },
+   "note": "The Namgyal dynasty article has the kingdom lasting 1460 to 1842 with conflicts against the NEIGHBOURING Mughal Empire -- neighbouring, so Leh was never inside it. The source draws Mughal Empire over Leh at 1715, Lahore at 1783, Afghanistan at 1800 and the Maratha Confederacy at 1815. None of those held Ladakh. It fell to the Dogras in 1842.",
+   "sources": [
+    {
+     "title": "Namgyal dynasty of Ladakh",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Namgyal_dynasty_of_Ladakh",
+     "locator": "revision 1371628527, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-16",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Namgyal_dynasty_of_Ladakh",
+      "revision": 1371628527,
+      "date": "2026-09-16"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "ahom",
+   "from": 1671,
+   "to": 1806,
+   "extent": {
+    "region": "sa-assam-valley"
+   },
+   "note": "The Ahom kingdom article calls it a kingdom of the Brahmaputra Valley, 1228 to 1826. The source draws Shan states over Garhgaon from 1530 to 1715 and Burma at 1783 and 1800, which puts Assam in the wrong country -- the dynasty was of Tai origin but the kingdom was not a Shan state, and Assam was not Burmese until the invasions after 1817. It stops at 1806 because the source names Assam itself at 1815. The claim starts at 1671, after Saraighat settled the Mughal question; the earlier centuries are left alone because the western frontier with the Koch and the Mughals moved and this file cannot yet say where.",
+   "sources": [
+    {
+     "title": "Ahom kingdom",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Ahom_kingdom",
+     "locator": "revision 1369232811, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-16",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Ahom_kingdom",
+      "revision": 1369232811,
+      "date": "2026-09-16"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "bundelkhand",
+   "from": 1675,
+   "to": 1818,
+   "extent": {
+    "region": "sa-bundelkhand"
+   },
+   "note": "Chhatrasal was Maharaja of Bundelkhand from 1675 to 1731 and the article is explicit that he led its independence from the Mughals. The source draws Mughal Empire over Orchha at 1715. Extent is the country between the Yamuna and the Vindhyas.",
+   "sources": [
+    {
+     "title": "Chhatrasal",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Chhatrasal",
+     "locator": "revision 1358578977, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-16",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Chhatrasal",
+      "revision": 1358578977,
+      "date": "2026-09-16"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "mysore",
+   "from": 1610,
+   "to": 1760,
+   "extent": {
+    "region": "sa-mysore"
+   },
+   "note": "The Wodeyars declared independence from a collapsing Vijayanagara in the sixteenth century and Srirangapatna was the seat from 1610. The source draws Vijayanagara over Mysore at 1650, sixty years after the Wodeyars broke with it and four after Vijayanagara itself ended, and Hindu kingdoms at 1700 and 1715. It stops at 1760 because from 1783 the source names Mysore itself, and draws it larger than this box -- Haidar Ali and Tipu Sultan took Malabar and the south, and where the source is right the claim layer has no business overwriting it with something smaller.",
+   "sources": [
+    {
+     "title": "Kingdom of Mysore",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Kingdom_of_Mysore",
+     "locator": "revision 1375204030, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-16",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Kingdom_of_Mysore",
+      "revision": 1375204030,
+      "date": "2026-09-16"
+     }
+    ]
+   }
   }
  ],
  "note": "Claims are ordered broad to specific. A later claim cuts every earlier one it overlaps, so the file order states which power holds contested ground.",
  "scope": {
   "region": "sa-authority",
   "from": 1206,
-  "to": 1707,
-  "note": "The ground and period this file speaks for. It is a statement of scope, not a licence: where no claim here covers the ground, the boundary source stands. An earlier version treated it as authority and erased everything the source drew inside it, which removed Ahmadnagar, Berar, Bidar, the Gond kingdoms, the Rajput states and the Sinhalese kingdoms from 1492."
+  "to": 1849,
+  "note": "The ground and period this file speaks for. It is a statement of scope, not a licence: where no claim here covers the ground, the boundary source stands. An earlier version treated it as authority and erased everything the source drew inside it, which removed Ahmadnagar, Berar, Bidar, the Gond kingdoms, the Rajput states and the Sinhalese kingdoms from 1492. Extended past 1707 because stopping at Aurangzeb's death left the eighteenth century to the source alone, and the source draws five names over the whole subcontinent in 1715: Mughal Empire, Maratha, Hindu kingdoms, Shan states and Tibet. Marwar, Ladakh and Bundelkhand fell inside the Mughal blob and Assam inside the Shan one."
  }
 }
