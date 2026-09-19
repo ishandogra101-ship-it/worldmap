@@ -86,10 +86,18 @@ export async function makeAtlas() {
       year < 0 ? `world_bc${-year}.geojson` : `world_${year}.geojson`);
     const fc = JSON.parse(await readFile(file, "utf8"));
     for (const f of fc.features) {
-      const name = f.properties?.NAME;
-      if (!name || f.properties.__claim || !f.geometry) continue;
-      const mp = f.geometry.type === "Polygon" ? [f.geometry.coordinates]
-        : f.geometry.type === "MultiPolygon" ? f.geometry.coordinates : [];
+      // Borrowing must see the boundary source as it shipped, not as this
+      // pipeline last left it. bake and fill-gaps both write into these files:
+      // __claim and __carried features are theirs, __untrimmed and
+      // __fillUntrimmed rewind their cuts, and __sourceName rewinds a relabel.
+      // Reading the processed file instead made a borrowed extent depend on how
+      // many times the pipeline had been run.
+      if (f.properties?.__claim || f.properties?.__carried) continue;
+      const name = f.properties?.__sourceName ?? f.properties?.NAME;
+      const geom = f.properties?.__untrimmed ?? f.properties?.__fillUntrimmed ?? f.geometry;
+      if (!name || !geom) continue;
+      const mp = geom.type === "Polygon" ? [geom.coordinates]
+        : geom.type === "MultiPolygon" ? geom.coordinates : [];
       if (!mp.length) continue;
       const key = `${year}|${name}`;
       borrowed.set(key, borrowed.has(key) ? pc.union(borrowed.get(key), mp) : mp);

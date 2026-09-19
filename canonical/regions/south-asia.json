@@ -836,6 +836,37 @@
     "clipTo": "marwar-proper-box"
    },
    "basis": "The rectangle sa-marwar-proper starts from, before Mewar is removed. Not meant to be claimed directly."
+  },
+  {
+   "id": "sa-deccan-west",
+   "name": "The western Deccan",
+   "def": {
+    "kind": "landBetween",
+    "north": "narmada-river",
+    "south": "tungabhadra-river",
+    "clipTo": "yadava-box"
+   },
+   "basis": "The Seuna article puts the realm at its peak as stretching from the Narmada in the north to the Tungabhadra in the south, in the western part of the Deccan. Both rivers are already named lines in this file, so the frontier is the one the description gives rather than one drawn to fit."
+  },
+  {
+   "id": "sa-deccan-east",
+   "name": "The eastern Deccan",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "kakatiya-box"
+   },
+   "basis": "Telangana and coastal Andhra around Warangal. A box: the Kakatiya article gives the reach as most of the eastern Deccan, Telangana and Andhra Pradesh with parts of eastern Karnataka, northern Tamil Nadu and southern Odisha, and that is a description of a territory rather than of a frontier. Coarse and said to be coarse."
+  },
+  {
+   "id": "sa-deccan-satavahana",
+   "name": "The Deccan between the Narmada and the Krishna",
+   "def": {
+    "kind": "landBetween",
+    "north": "narmada-river",
+    "south": "krishna-river",
+    "clipTo": "satavahana-box"
+   },
+   "basis": "The Satavahana heartland, holding both capitals the article names: Pratishthana, which is Paithan on the Godavari, and Amaravati on the lower Krishna. The article adds that at times the rule extended into Gujarat, Madhya Pradesh and Karnataka, which this does not attempt to draw."
   }
  ],
  "boxes": {
@@ -970,6 +1001,24 @@
    24.6,
    75.0,
    27.6
+  ],
+  "yadava-box": [
+   72.5,
+   14.2,
+   77.4,
+   22.6
+  ],
+  "kakatiya-box": [
+   77.4,
+   14.2,
+   82.6,
+   19.9
+  ],
+  "satavahana-box": [
+   72.5,
+   15.3,
+   82.2,
+   22.6
   ]
  }
 }

@@ -274,7 +274,34 @@
       ],
       "mapsTo": [
         "Great Britain"
-      ]
+      ],
+      "capitals": [
+        {
+          "name": "London",
+          "lng": -0.128,
+          "lat": 51.507
+        }
+      ],
+      "sources": [
+        {
+          "title": "London",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/London",
+          "locator": "revision 1374995287, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/London",
+            "revision": 1374995287,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "united-kingdom",

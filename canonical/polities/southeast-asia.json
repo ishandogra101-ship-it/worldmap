@@ -124,7 +124,34 @@
       "mapsTo": [
         "Singhasari",
         "Singosari"
-      ]
+      ],
+      "capitals": [
+        {
+          "name": "Singhasari",
+          "lng": 112.666,
+          "lat": -7.893
+        }
+      ],
+      "sources": [
+        {
+          "title": "Singosari",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Singosari",
+          "locator": "revision 1367573355, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Singosari",
+            "revision": 1367573355,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "ayutthaya",
@@ -237,8 +264,37 @@
       ],
       "mapsTo": [
         "Toungoo",
-        "Burma@1510..1752"
-      ]
+        "Burma@1510..1752",
+        "Ava@1599..1752"
+      ],
+      "capitals": [
+        {
+          "name": "Taungoo",
+          "lng": 96.433,
+          "lat": 18.933
+        }
+      ],
+      "sources": [
+        {
+          "title": "Taungoo",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Taungoo",
+          "locator": "revision 1373353591, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Taungoo",
+            "revision": 1373353591,
+            "date": "2026-09-19"
+          }
+        ]
+      },
+      "notes": "The Toungoo article splits the dynasty into the First Toungoo Empire (1510-1599) and the Nyaungyan Restoration (1599-1752), which ruled from Ava. So the name Ava on the map after 1599 is this dynasty's seat, not the independent Kingdom of Ava that ended in 1555 -- which is why the alias is windowed and not bare."
     },
     {
       "id": "konbaung",

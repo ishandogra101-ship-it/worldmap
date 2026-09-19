@@ -1,0 +1,45 @@
+{
+ "region": "europe",
+ "sources": [
+  {
+   "title": "See each claim; this file's claims carry their own sources."
+  }
+ ],
+ "verification": {
+  "method": "drafted",
+  "by": "claude",
+  "date": "2026-09-19"
+ },
+ "note": "Claims for polities the boundary source does not name in any year, so there is nothing to carry from a neighbouring snapshot and an extent has to be stated.",
+ "claims": [
+  {
+   "polityId": "athens",
+   "from": -508,
+   "to": -322,
+   "extent": {
+    "region": "eu-attica"
+   },
+   "note": "Athens and the Attic peninsula. The source draws Greek city-states, a fair collective label that the capital test already counts as correct, but the atlas holds Athens as a polity in its own right and could not show it at all. What is drawn is the city's own country: the fifth-century empire was a maritime league, not territory.",
+   "sources": [
+    {
+     "title": "Athens",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Athens",
+     "locator": "revision 1375604421, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Athens",
+      "revision": 1375604421,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  }
+ ]
+}

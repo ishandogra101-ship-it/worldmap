@@ -1,0 +1,23 @@
+{
+ "note": "Regions for Southeast Asian polities the boundary source does not name.",
+ "lines": [],
+ "boxes": {
+  "east-java-box": [
+   110.0,
+   -8.9,
+   114.8,
+   -6.3
+  ]
+ },
+ "regions": [
+  {
+   "id": "sea-east-java",
+   "name": "Eastern Java",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "east-java-box"
+   },
+   "basis": "Eastern and part of central Java, holding Trowulan and Singhasari. Clipped to land, so the result is the island and not a rectangle of sea. Majapahit's wider reach across the archipelago is contested in the scholarship and is not drawn."
+  }
+ ]
+}

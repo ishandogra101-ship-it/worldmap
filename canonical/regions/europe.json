@@ -1,0 +1,23 @@
+{
+ "note": "Regions for European polities the boundary source does not name.",
+ "lines": [],
+ "boxes": {
+  "attica-box": [
+   22.85,
+   37.5,
+   24.2,
+   38.45
+  ]
+ },
+ "regions": [
+  {
+   "id": "eu-attica",
+   "name": "Attica",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "attica-box"
+   },
+   "basis": "The Attic peninsula around Athens and the Piraeus. Athens' power in the fifth century was a maritime league and not a land empire, so what is drawn here is the city's own country and nothing of the Aegean it led."
+  }
+ ]
+}

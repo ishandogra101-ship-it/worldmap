@@ -185,10 +185,16 @@
     },
     {
       "id": "mississippian",
-      "canonicalName": "Mississippian culture polities",
+      "canonicalName": "Cahokia and the Mississippian polities",
       "type": "city-state",
-      "founded": 800,
-      "ended": 1600,
+      "founded": {
+        "year": 1050,
+        "note": "The Cahokia article dates the city to c. 1050-1350. The broader Mississippian period begins earlier and runs later elsewhere; this record is the Cahokia-centred polity, which is what the atlas can place."
+      },
+      "ended": {
+        "year": 1350,
+        "note": "Cahokia was abandoned. The peoples the boundary source names in the valley afterwards -- Chickasaw, Quapaw, Miami, Illinois -- are not this polity and the map is right to draw them."
+      },
       "capitals": [
         {
           "name": "Cahokia",
@@ -200,7 +206,27 @@
         "Mississippian",
         "Cahokia",
         "Mississippian culture"
-      ]
+      ],
+      "sources": [
+        {
+          "title": "Cahokia",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Cahokia",
+          "locator": "revision 1374576739, lead"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Cahokia",
+            "revision": 1374576739,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "haudenosaunee",

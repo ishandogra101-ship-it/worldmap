@@ -544,6 +544,93 @@
      }
     ]
    }
+  },
+  {
+   "polityId": "yadava",
+   "from": 1187,
+   "to": 1317,
+   "extent": {
+    "region": "sa-deccan-west"
+   },
+   "note": "The Seuna article gives the realm at its peak as stretching from the Narmada in the north to the Tungabhadra in the south, in the western Deccan, from Devagiri. The boundary source names no Yadava state in any year and draws minor Hindu kingdoms and Rajput kingdoms over Devagiri instead -- the second of which is not even the right part of India.",
+   "sources": [
+    {
+     "title": "Seuna (Yadava) dynasty",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Seuna_(Yadava)_dynasty",
+     "locator": "revision 1353122232, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Seuna_(Yadava)_dynasty",
+      "revision": 1353122232,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "kakatiya",
+   "from": 1163,
+   "to": 1323,
+   "extent": {
+    "region": "sa-deccan-east"
+   },
+   "note": "The Kakatiya article gives the reach as most of the eastern Deccan, Telangana and Andhra Pradesh with parts of eastern Karnataka, northern Tamil Nadu and southern Odisha, from Orugallu, now Warangal. The source draws minor Hindu kingdoms and Rajput kingdoms there. The box stops at 77.4E where the Seuna claim begins, so the two Deccan powers do not overlap.",
+   "sources": [
+    {
+     "title": "Kakatiya dynasty",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Kakatiya_dynasty",
+     "locator": "revision 1370874315, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Kakatiya_dynasty",
+      "revision": 1370874315,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "satavahana",
+   "from": -100,
+   "to": 220,
+   "extent": {
+    "region": "sa-deccan-satavahana"
+   },
+   "note": "The Satavahana article names Pratishthana, which is Paithan, and Amaravati as capitals at different times; the claim holds both. The source draws the Saka kingdom over Paithan in three of these four snapshots and the Mauryan empire in the fourth, eighty-five years after the Mauryas ended.",
+   "sources": [
+    {
+     "title": "Satavahana dynasty",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Satavahana_dynasty",
+     "locator": "revision 1369412860, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Satavahana_dynasty",
+      "revision": 1369412860,
+      "date": "2026-09-19"
+     }
+    ]
+   }
   }
  ],
  "note": "Claims are ordered broad to specific. A later claim cuts every earlier one it overlaps, so the file order states which power holds contested ground.",

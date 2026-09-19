@@ -1,0 +1,66 @@
+{
+ "region": "southeast-asia",
+ "sources": [
+  {
+   "title": "See each claim; this file's claims carry their own sources."
+  }
+ ],
+ "verification": {
+  "method": "drafted",
+  "by": "claude",
+  "date": "2026-09-19"
+ },
+ "note": "Claims for polities the boundary source does not name in any year, so there is nothing to carry from a neighbouring snapshot and an extent has to be stated.",
+ "claims": [
+  {
+   "polityId": "majapahit",
+   "from": 1293,
+   "to": 1527,
+   "extent": {
+    "region": "sea-east-java"
+   },
+   "note": "Majapahit from Trowulan in eastern Java. The source draws Kediri over Trowulan at 1300 and 1400 -- Kediri was conquered in 1293 -- and Malaysian Islamic states at 1492 and 1500. The wider thalassocracy across the archipelago is disputed in the scholarship and is not drawn.",
+   "sources": [
+    {
+     "title": "Majapahit",
+     "author": "Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Majapahit",
+     "locator": "revision 1373017822, lead"
+    }
+   ],
+   "verification": {
+    "method": "sourced",
+    "by": "claude",
+    "date": "2026-09-19",
+    "retrieved": [
+     {
+      "url": "https://en.wikipedia.org/wiki/Majapahit",
+      "revision": 1373017822,
+      "date": "2026-09-19"
+     }
+    ]
+   }
+  },
+  {
+   "polityId": "singhasari",
+   "from": 1222,
+   "to": 1292,
+   "extent": {
+    "region": "sea-east-java"
+   },
+   "note": "Singhasari held the same Javanese ground between Kediri and Majapahit. The source draws Kediri over it at 1279, fifty-seven years after Kediri fell.",
+   "sources": [
+    {
+     "title": "A History of Modern Indonesia",
+     "author": "M. C. Ricklefs",
+     "edition": "4th ed., Palgrave"
+    }
+   ],
+   "verification": {
+    "method": "drafted",
+    "by": "claude",
+    "date": "2026-09-19"
+   }
+  }
+ ]
+}

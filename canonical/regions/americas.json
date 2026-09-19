@@ -1,0 +1,23 @@
+{
+ "note": "Regions for American polities the boundary source does not name.",
+ "lines": [],
+ "boxes": {
+  "mississippian-box": [
+   -92.5,
+   32.5,
+   -85.0,
+   42.0
+  ]
+ },
+ "regions": [
+  {
+   "id": "am-mississippi-valley",
+   "name": "The middle Mississippi and lower Ohio",
+   "def": {
+    "kind": "bbox",
+    "clipTo": "mississippian-box"
+   },
+   "basis": "The American Bottom around Cahokia and the valleys either side of the Mississippi-Ohio confluence. The bounding longitudes follow the Mississippi's own course as traced from OpenStreetMap, which runs through 90.2W at the latitude of Cahokia. A box, and much smaller than the Mississippian world the archaeology article describes across the Southern United States and the Eastern Woodlands: it is the core, not the extent."
+  }
+ ]
+}

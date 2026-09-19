@@ -90,7 +90,34 @@
       "mapsTo": [
         "Shunga",
         "Sunga"
-      ]
+      ],
+      "capitals": [
+        {
+          "name": "Pataliputra",
+          "lng": 85.138,
+          "lat": 25.594
+        }
+      ],
+      "sources": [
+        {
+          "title": "Patna",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Patna",
+          "locator": "revision 1373926534, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Patna",
+            "revision": 1373926534,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "satavahana",
@@ -109,7 +136,34 @@
         "Satavahana",
         "Satavahanas",
         "Andhra"
-      ]
+      ],
+      "capitals": [
+        {
+          "name": "Pratishthana (Paithan)",
+          "lng": 75.38,
+          "lat": 19.48
+        }
+      ],
+      "sources": [
+        {
+          "title": "Paithan",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Paithan",
+          "locator": "revision 1374404857, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Paithan",
+            "revision": 1374404857,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "kushan",

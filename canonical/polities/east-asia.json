@@ -212,7 +212,34 @@
         "Southern Qi",
         "Northern Zhou",
         "Northern Qi"
-      ]
+      ],
+      "capitals": [
+        {
+          "name": "Jiankang (Nanjing)",
+          "lng": 118.779,
+          "lat": 32.061
+        }
+      ],
+      "sources": [
+        {
+          "title": "Nanjing",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Nanjing",
+          "locator": "revision 1375302994, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Nanjing",
+            "revision": 1375302994,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "sui",
@@ -367,7 +394,34 @@
         "Jin@1115..1234",
         "Jurchen Jin@1115..1234",
         "Jin Empire@1115..1234"
-      ]
+      ],
+      "capitals": [
+        {
+          "name": "Zhongdu (Beijing)",
+          "lng": 116.397,
+          "lat": 39.907
+        }
+      ],
+      "sources": [
+        {
+          "title": "Beijing",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Beijing",
+          "locator": "revision 1374136870, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Beijing",
+            "revision": 1374136870,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "yuan",
@@ -418,7 +472,34 @@
         "Northern Yuan",
         "Mongolia"
       ],
-      "notes": "The Yuan remnant after 1368, in Mongolia and not in China proper. This is the polity the 1400 border snapshot draws over the whole of China as 'Great Khanate'."
+      "notes": "The Yuan remnant after 1368, in Mongolia and not in China proper. This is the polity the 1400 border snapshot draws over the whole of China as 'Great Khanate'.",
+      "capitals": [
+        {
+          "name": "Karakorum",
+          "lng": 102.848,
+          "lat": 47.21
+        }
+      ],
+      "sources": [
+        {
+          "title": "Karakorum",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Karakorum",
+          "locator": "revision 1372672444, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Karakorum",
+            "revision": 1372672444,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "ming",
@@ -629,8 +710,36 @@
       ],
       "mapsTo": [
         "Kamakura",
-        "Japan@1185..1333"
-      ]
+        "Japan@1185..1333",
+        "Shogun Japan (Kamakura)"
+      ],
+      "capitals": [
+        {
+          "name": "Kamakura",
+          "lng": 139.553,
+          "lat": 35.32
+        }
+      ],
+      "sources": [
+        {
+          "title": "Kamakura",
+          "author": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Kamakura",
+          "locator": "revision 1375348709, coordinates"
+        }
+      ],
+      "verification": {
+        "method": "sourced",
+        "by": "claude",
+        "date": "2026-09-19",
+        "retrieved": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Kamakura",
+            "revision": 1375348709,
+            "date": "2026-09-19"
+          }
+        ]
+      }
     },
     {
       "id": "ashikaga",

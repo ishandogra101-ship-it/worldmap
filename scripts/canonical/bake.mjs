@@ -91,7 +91,35 @@ for (const file of files) {
 
   const fc = JSON.parse(await readFile(path.join(DIR, file), "utf8"));
   // strip any claim features from a previous bake, so this is idempotent
-  const source = fc.features.filter((f) => !f.properties?.__claim);
+  /**
+   * Rewind to the geometry the boundary source shipped.
+   *
+   * Two scripts cut these files and each has to be able to undo only its own
+   * cuts, or they undo each other's. `__untrimmed` always holds the pristine
+   * source shape and belongs to this script; `__fillUntrimmed` holds whatever
+   * this script left behind and belongs to fill-gaps. Sharing one marker meant
+   * fill-gaps restored past the claim cuts and quietly reversed the bake.
+   */
+  const source = fc.features
+    .filter((f) => !f.properties?.__claim && !f.properties?.__carried)
+    .map((f) => {
+      const p = { ...f.properties };
+      // pristine = this script's own rewind if it trimmed the feature, else
+      // fill-gaps' rewind, which for a feature the bake never touched is the
+      // same thing, else the geometry as it stands
+      const geometry = p.__untrimmed ?? p.__fillUntrimmed ?? f.geometry;
+      delete p.__fillUntrimmed;
+      if (p.__sourceName) {
+        p.NAME = p.__sourceName;
+        if (p.__sourceSubjectTo !== null && p.__sourceSubjectTo !== undefined) p.SUBJECTO = p.__sourceSubjectTo;
+        else delete p.SUBJECTO;
+        if (p.__sourcePartOf !== null && p.__sourcePartOf !== undefined) p.PARTOF = p.__sourcePartOf;
+        else delete p.PARTOF;
+        delete p.__sourceName; delete p.__sourceSubjectTo; delete p.__sourcePartOf;
+        delete p.__renamed; delete p.__carriedNote;
+      }
+      return { ...f, properties: p, geometry };
+    });
 
   // The ground the claims actually occupy. Nothing else is touched.
   const footprint = held.map((h) => h.geometry).reduce((a, b) => pc.union(a, b), []);
@@ -161,7 +189,9 @@ for (const file of files) {
     const g = asGeometry(parts);
     if (!g) { replaced++; continue; }
     if (cut) trimmed++;
-    kept.push({ ...f, geometry: g });
+    kept.push(cut
+      ? { ...f, properties: { ...f.properties, __untrimmed: f.properties.__untrimmed ?? f.geometry }, geometry: g }
+      : { ...f, geometry: g });
   }
 
   const claimFeatures = held.map((h) => ({

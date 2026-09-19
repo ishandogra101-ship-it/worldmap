@@ -76,20 +76,25 @@ becomes another test for free.
 ## Where the numbers stand
 
 ```
-capital test    840 checks: 601 right, 57 correctly showing an overlord,
-                16 under a group label, 87 showing a different polity,
-                79 drawing nothing
-                West Asia 66%  Americas 73%  Europe 77%  Africa 78%
-                South Asia 82%  East Asia 90%  SE Asia 88%
-border audit    36/39, all 3 failures carrying a correction the app shows
+absence test    0 — every polity the atlas knows existed is drawn in every
+                year it existed, across 1077 polity-years. This fails the build.
+capital test    856 checks: 741 right, 4 correctly showing an overlord,
+                44 showing a different polity, 67 drawing nothing
+border audit    38/39, the 1 failure carrying a correction the app shows
 anchors         20/20
-canonical       174 polities, 36 people — 206 drafted, 4 sourced
-claims          31 — 20 drafted (South Asia), 11 sourced
+canonical       174 polities, 36 people — 196 drafted, 14 sourced
+claims          39 — 21 drafted, 18 sourced
 ```
 
-The 87 is the number to watch. It was 180 before the alias pass: 71 of those
-were correct maps the test had been scoring as errors, and the rest have been
-fixed snapshot by snapshot since.
+The 44 is the number to watch. It was 180 before any of this.
+
+**The absence test is the one that must never go red.** The app used to carry a
+panel naming the realms a snapshot failed to draw, explaining that the gap was
+the boundary source's fault. The owner's answer was that he did not want to be
+told what was missing, he wanted it on the map, and he was right: an atlas that
+knows the Ahom kingdom stood in 1715 and prints a note instead of drawing it has
+stopped being a map. 311 polity-years were missing. There are none now, and
+`npm run verify` fails if that changes.
 
 **The remaining errors are upstream, not ours.** This was checked against raw
 historical-basemaps rather than assumed: the unsimplified source also draws the
@@ -144,20 +149,43 @@ would have been fabricated. It is now the thing standing between this layer and
 its first real source. **Ask the owner before reinterpreting it** — the alias
 pass deliberately did not, and touched no `verification` field.
 
-**3. Look for the single broken snapshot between two sound ones.**
-Twice now the worst errors on the map have had this shape, and both times the
-repair was cheap once it was seen. At 1400 the source drew one Great Khanate
-over China, Manchuria, Mongolia and Korea while 1300 and 1492 were fine. At 1800
-it drew one feature named "Bundelkhand" from Rajasthan to Assam, covering Delhi,
-Lucknow, Patna and Calcutta, while 1783 named Bengal, Oudh and the Mahratta
-states correctly and 1815 named the Company. Neither needed a new frontier
-invented: `extent: { asDrawnIn: { year, name } }` borrows the ground the source
-itself gives a name in a year it gets right. **1815 is the next one** — its
-"Maratha Confederacy" runs from 66.7E to 86.9E and from 14N to 37N, taking in
-Ranjit Singh's Punjab, Kashmir and Sindh, none of which the Marathas held. The
-same for Hyderabad at 1783 and 1815.
+**3. How the missing polities got drawn, so you can extend it.**
+`bake:claims` then `fill:gaps`, in that order. Three mechanisms, none of which
+invents a border:
 
-**4. The 79 blanks are a coastline problem, and they are one problem.**
+- **Relabel.** The commonest reason a polity is missing is that the map still
+  calls its ground by the name of the state before it: "Mauryan Empire" over
+  Pataliputra in 100 BCE, "Liao" over Beijing in 1200, "Sui Empire" over
+  Chang'an in 700. Decidable from the canonical layer — a drawn name whose
+  polity had already ended means the ground is its successor's, one not yet
+  founded means its predecessor's — and the tie broken by whose capital falls
+  inside the polygon. 13 features, every one a real correction.
+- **Carry.** For a polity the source draws in other years but not this one, take
+  the *intersection* of the nearest earlier and nearest later depictions. Not
+  the nearest: Byzantium is drawn at 600 across the Levant and at 800 without
+  it, and carrying either one whole is wrong in a different direction. What it
+  held before and after it held in between. 246 polity-years.
+- **Claim.** For the 8 the source draws in no year at all, an extent has to be
+  stated. See `canonical/regions/` — the Yadava realm is the land between the
+  Narmada and the Tungabhadra because the article says so, the Swahili coast is
+  computed one degree inland of the real coastline, Bundelkhand is the country
+  between the Yamuna and the Vindhyas.
+
+`fill:gaps` never erases a polity the source names: if carrying a shape would
+take a named feature's last ground, it leaves it alone and says so. That guard
+fired 183 times.
+
+**4. Look for the single broken snapshot between two sound ones.**
+Twice the worst errors on the map had this shape. At 1400 the source drew one
+Great Khanate over China, Manchuria, Mongolia and Korea while 1300 and 1492 were
+fine. At 1800 it drew one feature named "Bundelkhand" from Rajasthan to Assam,
+covering Delhi, Lucknow, Patna and Calcutta, while 1783 and 1815 were fine.
+`extent: { asDrawnIn: { year, name } }` borrows the source's own drawing from a
+year it gets right. **1815 is the next one** — its "Maratha Confederacy" runs
+from 66.7E to 86.9E and 14N to 37N, taking in Ranjit Singh's Punjab, Kashmir and
+Sindh, none of which the Marathas held.
+
+**5. The 67 blanks are a coastline problemand they are one problem.**
 Every blank checked has the *right* polity 0.03-0.04 degrees away: Lisbon lies
 just outside Portugal in all 17 snapshots it appears in, Constantinople just
 outside Byzantium in 12, and the same for Kilwa, Mbanza Kongo and Timbuktu.
@@ -168,12 +196,12 @@ follows every shore. Natural Earth land is already on disk at
 `public/data/land.geojson` and the region resolver already intersects with it.
 One operation would close most of the 79.
 
-**5. Extend claims beyond South Asia.** The same blob problem exists everywhere
+**6. Extend claims beyond South Asia.** The same blob problem exists everywhere
 the source draws one name over ground several polities held. `audit:capitals`
 per region says where to look, and the group-label report now names the exact
 labels that need breaking up. West Asia is worst.
 
-**6. Do not re-add an authority area.** Whatever shape the argument takes, the
+**7. Do not re-add an authority area.** Whatever shape the argument takes, the
 answer is no. Read the header of `scripts/canonical/bake.mjs` first.
 
 ## Traps that cost time here
@@ -199,6 +227,15 @@ answer is no. Read the header of `scripts/canonical/bake.mjs` first.
 - An unwindowed name in `mapsTo` supersedes in every year the claim is held.
   "Assam" means the Ahom kingdom at 1815 and the Bhutan duars at 1783, and the
   unscoped alias deleted Bhutan from three snapshots.
+- The snapshot files carry `__untrimmed` and `__fillUntrimmed`, which hold the
+  geometry each script cut so the cut can be undone on the next run. Without
+  them the pipeline is not idempotent: run two borrows from run one's output.
+  They cost about 9% of the file size. `__renamed`/`__sourceName` do the same
+  for a relabel, and restoring a relabel must put SUBJECTO and PARTOF back too —
+  "Great Khanate" is SUBJECTO "Mongol Empire", and restoring only NAME rewrote
+  the other two.
+- `asDrawnIn` must read the source as it shipped, not as the pipeline left it,
+  or a borrowed extent depends on how many times you have run the bake.
 - `npm run build:atlas` regenerates `public/data/polities.json`, which is what
   the app reads for "the atlas knows this was here". Adding a polity without
   rerunning it leaves the app unaware of it.
